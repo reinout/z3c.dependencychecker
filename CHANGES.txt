@@ -10,6 +10,8 @@ Changelog of z3c.dependencychecker
 
 - Added documentation.
 
+- Moved source code to zope's svn repository.
+
 
 0.1 (2009-12-02)
 ----------------
