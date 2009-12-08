@@ -1,0 +1,16 @@
+"""Imports from the standard library"""
+
+# os is a stdlib, so os.path imports should be OK
+import os.path
+
+import tempfile
+import random
+from datetime import datetime
+
+
+# "use" them.
+
+tempfile.mkdtemp(prefix="not really")
+random.thingy
+datetime.now()
+os.path.join(me, you)

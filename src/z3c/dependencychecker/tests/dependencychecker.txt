@@ -1,0 +1,8 @@
+"""
+.. :doctest:
+
+Sample test:
+
+    >>> from z3c.dependencychecker import dependencychecker
+
+"""

@@ -1,0 +1,10 @@
+"""Using our test dependency and also using one that's missing"""
+
+# This one's OK:
+import z3c.testsetup
+# This one's missing:
+import reinout.hurray
+
+
+z3c.testsetup.something()
+reinout.hurray.hip_hip()

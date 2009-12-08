@@ -1,0 +1,33 @@
+from setuptools import setup, find_packages
+
+
+setup(name='sample1',
+      version='0.2dev',
+      description='',
+      long_description='',
+      classifiers=[],
+      keywords=[],
+      author='The Health Agency',
+      author_email='techniek@thehealthagency.com',
+      url='http://www.thehealthagency.com',
+      license='ZPL',
+      package_dir={'': 'src'},
+      packages=find_packages('src'),
+      include_package_data=True,
+      zip_safe=False,
+      install_requires=[
+          # Don't forget to add this by hand to the
+          # src/sample1.egg-info/requires.txt file!
+          'setuptools',
+          'zest.releaser',
+          'unneeded.req',
+          ],
+      extras_require = {
+          'test': [
+              # Don't forget to add this by hand to the
+              # src/sample1.egg-info/requires.txt file!
+              'z3c.testsetup>=0.3',
+              'zope.testing',
+              ],
+          },
+      )

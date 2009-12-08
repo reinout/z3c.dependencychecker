@@ -1,0 +1,84 @@
+Usage of z3c.dependencychecker
+==============================
+
+.. :doctest:
+
+
+Installation
+------------
+
+Either install z3c.dependencychecker globally (``easy_install
+z3c.dependencychecker``) or install it in your buildout.
+
+
+Usage
+-----
+
+Run the ``dependencychecker`` or ``bin/dependencychecker`` script from your
+project's root folder and it will report on your dependencies.
+
+By default, it looks in the ``src/`` directory for your sources.
+Alternatively, you can specify a start directory yourself, for instance
+``'.'`` if there's no ``src/`` directory.
+
+We have a sample project in a temp directory:
+
+    >>> sample1_dir
+    '/TESTTEMP/sample1'
+    >>> ls(sample1_dir)
+    setup.py
+    src
+
+For our test, we call the main() method, just like the ``dependencychecker``
+script would.
+
+    >>> import os
+    >>> os.chdir(sample1_dir)
+    >>> from z3c.dependencychecker import dependencychecker
+    >>> dependencychecker.main()
+    Unused imports
+    ==============
+    /TESTTEMP/sample1/src/sample1/unusedimports.py:7:  tempfile
+    /TESTTEMP/sample1/src/sample1/unusedimports.py:4:  zest.releaser
+    /TESTTEMP/sample1/src/sample1/unusedimports.py:6:  os
+    <BLANKLINE>
+    Missing test requirements
+    =========================
+         reinout.hurray
+    <BLANKLINE>
+    Unneeded requirements
+    =====================
+         unneeded.req
+    <BLANKLINE>
+    Unneeded test requirements
+    ==========================
+         zope.testing
+    <BLANKLINE>
+    Note: requirements are taken from the egginfo dir, so you need
+    to re-run buildout (or setup.py or whatever) for changes in
+    setup.py to have effect.
+    <BLANKLINE>
+
+So z3c.dependencychecker reports on:
+
+- **Unused imports**: pyflakes is another tool that does this (and that also
+  reports on missing variables inside the files).
+
+- **Missing (test) requirements**: imports without a corresponding requirement
+  in the ``setup.py``.  There might be false alarms, but at least you've got a
+  (hopefully short) list of items to check.
+
+  Watch out for packages that have a different name than how they're imported.
+  For instance a requirement on ``pydns`` which is used as ``import DNS`` in
+  your code: pydns and DNS lead to separate "missing requirements: DNS" and
+  "unneeded requirements: pydns" warnings.
+
+- **Unneeded (test) requirements**: requirements in your setup.py that aren't
+  imported anywhere in your code.  You *might* need them because not
+  everything needs to be imported.  It at least gives you a much smaller list
+  to check by hand.
+
+  If something is only imported in a test file, it shouldn't be in the generic
+  defaults.  Currently you don't get a separate list of requirements that
+  should be moved from the regular to the test requirements.
+

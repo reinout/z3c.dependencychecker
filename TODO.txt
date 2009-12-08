@@ -1,0 +1,16 @@
+TODO
+====
+
+- Add tests for zcml ``package="another.import"`` detection.
+
+- Improve test coverage.
+
+- Try it on more projects and gather feedback.
+
+- Add some extra fallbacks for often-used packages like PIL (which is really
+  Imaging when you import it).
+
+- Optionally check imports inside doctests.
+
+- Optionally report separately on dependencies that should be moved from the
+  regular to the test dependencies.
