@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-0.3 (unreleased)
+0.3 (2009-12-08)
 ----------------
 
 - Sorted "unneeded requirements" reports and filtered out duplicates.
