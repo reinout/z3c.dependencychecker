@@ -1,10 +1,14 @@
-"""Using our test dependency and also using one that's missing"""
+"Testing test requirements"""
 
 # This one's OK:
 import z3c.testsetup
 # This one's missing:
 import reinout.hurray
+# This one us a global requirement, but should be a test requirement.
+import needed.by.test
 
 
+# Using them here to prevent them from being required 
 z3c.testsetup.something()
 reinout.hurray.hip_hip()
+needed.by.test

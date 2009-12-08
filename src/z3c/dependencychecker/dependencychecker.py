@@ -120,6 +120,7 @@ def filter_missing(imports, required):
                 found = True
         if not found:
             missing.append(needed)
+    missing = sorted(set(missing))
     return missing
 
 
@@ -140,6 +141,7 @@ def filter_unneeded(imports, required):
                 found = True
         if not found:
             unneeded.append(req)
+    unneeded = sorted(set(unneeded))
     return unneeded
 
 
@@ -233,7 +235,14 @@ def main():
 
     install_unneeded = filter_unneeded(install_imports + zcml_imports,
                                        install_required)
-    print_modules(install_unneeded, "Unneeded requirements")
+    # See if one of ours is needed by the tests
+    really_unneeded = filter_unneeded(test_imports + zcml_test_imports,
+                                      install_unneeded)
+    move_to_test = sorted(set(install_unneeded) - set(really_unneeded))
+
+    print_modules(really_unneeded, "Unneeded requirements")
+    print_modules(move_to_test,
+                  "Requirements that should be test requirements")
 
     test_unneeded = filter_unneeded(test_imports + zcml_test_imports,
                                     test_required)

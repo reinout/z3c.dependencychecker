@@ -21,6 +21,7 @@ setup(name='sample1',
           'setuptools',
           'zest.releaser',
           'unneeded.req',
+          'needed.by.test',
           ],
       extras_require = {
           'test': [

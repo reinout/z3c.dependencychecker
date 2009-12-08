@@ -1,8 +1,103 @@
 """
 .. :doctest:
 
-Sample test:
+Detailed tests for dependencychecker:
 
     >>> from z3c.dependencychecker import dependencychecker
+
+
+Filtering out missing requirements
+----------------------------------
+
+Empty lists, no problems:
+
+    >>> dependencychecker.filter_missing([], [])
+    []
+
+Exact matching lists result in an empty list:
+
+    >>> dependencychecker.filter_missing(['a'], ['a'])
+    []
+
+A missing import is reported:
+
+    >>> imports = ['flup']
+    >>> required = []
+    >>> dependencychecker.filter_missing(imports, required)
+    ['flup']
+
+Everything is reported just once:
+
+    >>> imports = ['flup', 'flup']
+    >>> required = []
+    >>> dependencychecker.filter_missing(imports, required)
+    ['flup']
+
+And it sorted for reproducible display:
+
+    >>> imports = ['a', 'c', 'b']
+    >>> required = []
+    >>> dependencychecker.filter_missing(imports, required)
+    ['a', 'b', 'c']
+
+A requirement for some.thing is assumed to be enough for some.thing.else:
+
+    >>> imports = ['some.thing.else']
+    >>> required = ['some.thing']
+    >>> dependencychecker.filter_missing(imports, required)
+    []
+
+But a requirement that is more specific than the import fails:
+
+    >>> imports = ['some.thing']
+    >>> required = ['some.thing.else']
+    >>> dependencychecker.filter_missing(imports, required)
+    ['some.thing']
+
+An oft-occurring example is a an import like ``from zope import interface``,
+and a requirement for ``zope.interface``.  zope is picked up by the
+importchecker mechanism (not zope.interface!), so we get the following problem:
+
+    >>> imports = ['zope']
+    >>> required = ['zope.interface']
+    >>> dependencychecker.filter_missing(imports, required)
+    ['zope']
+
+
+Filter out unneeded requirements
+--------------------------------
+
+Empty lists, no problems:
+
+    >>> dependencychecker.filter_unneeded([], [])
+    []
+
+Exact matches are fine:
+
+    >>> imports = ['zope.interface']
+    >>> required = ['zope.interface']
+    >>> dependencychecker.filter_unneeded(imports, required)
+    []
+
+Too-specific requirements are reported:
+
+    >>> imports = ['zope']
+    >>> required = ['zope.interface']
+    >>> dependencychecker.filter_unneeded(imports, required)
+    ['zope.interface']
+
+There are no duplicates in the output:
+
+    >>> imports = []
+    >>> required = ['a', 'a']
+    >>> dependencychecker.filter_unneeded(imports, required)
+    ['a']
+
+And the output is sorted:
+
+    >>> imports = []
+    >>> required = ['a', 'c', 'b']
+    >>> dependencychecker.filter_unneeded(imports, required)
+    ['a', 'b', 'c']
 
 """

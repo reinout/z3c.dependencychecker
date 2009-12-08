@@ -50,6 +50,10 @@ script would.
     =====================
          unneeded.req
     <BLANKLINE>
+    Requirements that should be test requirements
+    =============================================
+         needed.by.test
+    <BLANKLINE>
     Unneeded test requirements
     ==========================
          zope.testing

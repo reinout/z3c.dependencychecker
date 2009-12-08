@@ -4,7 +4,10 @@ Changelog of z3c.dependencychecker
 0.3 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Sorted "unneeded requirements" reports and filtered out duplicates.
+
+- Reporting separately on dependencies that should be moved from the regular
+  to the test dependencies.
 
 
 0.2 (2009-12-08)
