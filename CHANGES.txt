@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-0.2 (unreleased)
+0.2 (2009-12-08)
 ----------------
 
 - Added tests.  Initial quick test puts coverage at 86%.
