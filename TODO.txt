@@ -14,3 +14,5 @@ TODO
 
 - Optionally report separately on dependencies that should be moved from the
   regular to the test dependencies.
+
+- Sort "missing requirements" reports and filter out duplicates.
