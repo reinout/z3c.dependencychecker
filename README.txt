@@ -46,3 +46,12 @@ copy from `lovely.recipe's checkout
 - `Reinout van Rees <http://reinout.vanrees.org>`_ (`The Health Agency
   <http://www.thehealthagency.com>`_) added the dependency checker
   functionality and packaged it.
+
+
+Source code
+-----------
+
+The source code can be found in zope's svn repository:
+http://svn.zope.org/repos/main/z3c.dependencychecker
+
+At the moment, bugs and suggestions can be send to Reinout.
