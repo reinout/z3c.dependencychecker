@@ -1,0 +1,7 @@
+"""Test the from imports"""
+
+from zope import interface
+
+
+# Use it to prevent "unused!" warnings
+interface

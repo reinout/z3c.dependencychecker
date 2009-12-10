@@ -42,6 +42,11 @@ script would.
     /TESTTEMP/sample1/src/sample1/unusedimports.py:4:  zest.releaser
     /TESTTEMP/sample1/src/sample1/unusedimports.py:6:  os
     <BLANKLINE>
+    Missing requirements
+    ====================
+         missing.req
+         zope
+    <BLANKLINE>
     Missing test requirements
     =========================
          reinout.hurray
