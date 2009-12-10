@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-0.4 (unreleased)
+0.4 (2009-12-10)
 ----------------
 
 - Supporting "from zope import interface"-style imports where you really want
