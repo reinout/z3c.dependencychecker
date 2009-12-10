@@ -314,5 +314,3 @@ def main():
         print "to re-run buildout (or setup.py or whatever) for changes in "
         print "setup.py to have effect."
         print
-
-    # TODO: report on unneeded requirements
