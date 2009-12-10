@@ -148,5 +148,102 @@ Finding from-imports in doctests:
     []
 
 
+Grabbing the name from setup.py
+-------------------------------
+
+Mock that we print our name (provided that we're called with ``--name`` of
+course):
+
+    >>> import os
+    >>> import sys
+    >>> import tempfile
+    >>> newtempdir = tempfile.mkdtemp(prefix='depcheck')
+    >>> setup_py = os.path.join(newtempdir, 'setup.py')
+    >>> open(setup_py, 'w').write('\n'.join([
+    ...     "import sys",
+    ...     "assert '--name' in sys.argv",
+    ...     "print 'my_name'"]))
+    >>> os.chdir(newtempdir)
+
+Grab the name:
+
+    >>> dependencychecker.name_from_setup()
+    'my_name'
+
+Mock that something goes wrong:
+
+    >>> open(setup_py, 'w').write("raise UserError('raargh')")
+
+Grab the name, which results in a (mocked) sys.exit():
+
+    >>> dependencychecker.name_from_setup()
+    Traceback (most recent call last):
+    ...
+    MockExitException: 1
+
+
+Corner case: egg info contents and location
+-------------------------------------------
+
+We're in a temp dir.  First restore the setup.py:
+
+    >>> open(setup_py, 'w').write('\n'.join([
+    ...     "import sys",
+    ...     "assert '--name' in sys.argv",
+    ...     "print 'my_name'"]))
+
+The normal ``src/xyz.egg-info`` case is already handled by the main example.
+Here we create the egg info dir directly in the directory itself.  Not the
+common case, but we support the lack of ``src/`` dir.
+
+    >>> os.mkdir('my_name.egg-info')
+
+If we grab the requirements now, we hit two corner cases:
+
+- The egg-info dir is here, not in src.
+
+- The requires.txt file is missing.
+
+Grab it and watch the fireworks:
+
+    >>> dependencychecker.existing_requirements()
+    Traceback (most recent call last):
+    ...
+    MockExitException: 1
+
+
+Determining the path
+--------------------
+
+The main test flow already finds the by-default src dir.  We test two corner
+cases here:
+
+Pass the path on the command line:
+
+    >>> sys.argv[1:] = [newtempdir]
+    >>> dependencychecker.determine_path() == newtempdir
+    True
+
+Pass a non-existing path:
+
+    >>> sys.argv[1:] = ['/does/not/exist']
+    >>> dependencychecker.determine_path()
+    Traceback (most recent call last):
+    ...
+    MockExitException: 1
+    
+Pass a file instead of a directory:
+
+    >>> sys.argv[1:] = [setup_py]
+    >>> dependencychecker.determine_path()
+    Traceback (most recent call last):
+    ...
+    MockExitException: 1
+
+
+Clean up the tempdir, btw:
+
+    >>> import shutil
+    >>> shutil.rmtree(newtempdir)
 
 """

@@ -45,11 +45,22 @@ def ls(directory):
         print item
 
 
+class MockExitException(Exception):
+    pass
+
+
+def mock_exit(code=None):
+    # Mock for sys.exit
+    raise MockExitException(code)
+
+
 def setup(test):
     """Set up tempdir with sample project"""
     test.orig_sysargv = sys.argv[:]
+    test.orig_exit = sys.exit
     test.orig_dir = os.getcwd()
     sys.argv[1:] = []
+    sys.exit = mock_exit
     test.tempdir = tempfile.mkdtemp(prefix='dependencychecker')
     sample1_source = pkg_resources.resource_filename(
         'z3c.dependencychecker.tests', 'sample1')
@@ -74,6 +85,7 @@ def teardown(test):
     """Clean up"""
     #print "Not zapping", test.tempdir
     shutil.rmtree(test.tempdir)
+    sys.exit = test.orig_exit
     sys.argv[:] = test.orig_sysargv
     os.chdir(test.orig_dir)
 

@@ -258,7 +258,7 @@ def print_modules(modules, heading):
         print
 
 
-def main():
+def determine_path():
     if len(sys.argv) > 1:
         path = sys.argv[1]
     else:
@@ -268,7 +268,11 @@ def main():
     if not os.path.isdir(path):
         print "Unknown path:", path
         sys.exit(1)
+    return path
 
+
+def main():
+    path = determine_path()
     db = importchecker.ImportDatabase(path)
     # TODO: find zcml files
     db.findModules()

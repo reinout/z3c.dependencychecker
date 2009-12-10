@@ -6,7 +6,9 @@ Changelog of z3c.dependencychecker
 
 - Documentation update.
 
-- Improved test coverage.
+- Improved test coverage. The dependencychecker module self is at 100%, the
+  original import checker module is at 91% coverage.
+
 
 0.5 (2009-12-10)
 ----------------

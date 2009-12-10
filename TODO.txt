@@ -1,11 +1,11 @@
 TODO
 ====
 
-- Improve test coverage.
+- Improve test coverage of original import checker module.
 
 - Try it on more projects and gather feedback.
 
-- Add some extra fallbacks for often-used packages like PIL (which is really
-  Imaging when you import it).
+- Optionally add some extra fallbacks for often-used packages like PIL (which
+  is really Imaging when you import it).
 
 
