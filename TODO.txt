@@ -1,8 +1,6 @@
 TODO
 ====
 
-- Add tests for zcml ``package="another.import"`` detection.
-
 - Improve test coverage.
 
 - Try it on more projects and gather feedback.

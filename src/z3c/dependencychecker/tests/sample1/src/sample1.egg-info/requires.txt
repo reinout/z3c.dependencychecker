@@ -2,9 +2,11 @@ setuptools
 zest.releaser
 unneeded.req
 needed.by.test
+needed.by.zcml
 
 [test]
 my.package
+needed.by.test.zcml
 z3c.testsetup>=0.3
 zope.testbrowser
 zope.testing

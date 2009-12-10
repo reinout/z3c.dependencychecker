@@ -22,12 +22,14 @@ setup(name='sample1',
           'zest.releaser',
           'unneeded.req',
           'needed.by.test',
+          'needed.by.zcml',
           ],
       extras_require = {
           'test': [
               # Don't forget to add this by hand to the
               # src/sample1.egg-info/requires.txt file!
               'my.package',
+              'needed.by.test.zcml',
               'z3c.testsetup>=0.3',
               'zope.testbrowser',
               'zope.testing',

@@ -6,6 +6,7 @@ Changelog of z3c.dependencychecker
 
 - Documentation update.
 
+- Improved test coverage.
 
 0.5 (2009-12-10)
 ----------------

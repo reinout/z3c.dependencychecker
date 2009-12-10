@@ -1,0 +1,5 @@
+<zcml>
+
+  <include package="needed.by.test.zcml"/>
+
+</zcml>
