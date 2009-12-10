@@ -4,7 +4,9 @@ Changelog of z3c.dependencychecker
 0.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Supporting "from zope import interface"-style imports where you really want
+  to be told you're missing an "zope.interface" dependency instead of just
+  "zope" (which is just a namespace package).
 
 
 0.3 (2009-12-08)

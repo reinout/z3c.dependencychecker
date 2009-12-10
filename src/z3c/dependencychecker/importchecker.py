@@ -86,7 +86,8 @@ class ImportFinder:
                 name = as_name
             names_dict[name] = orig_name
         self._map.setdefault(module_name, {'names': names_dict,
-                                           'lineno': stmt.lineno})
+                                           'lineno': stmt.lineno,
+                                           'fromimport': True})
 
     def visitImport(self, stmt):
         """Will be called for 'import foo.bar' statements
@@ -97,7 +98,8 @@ class ImportFinder:
             else:
                 name = as_name
             self._map.setdefault(orig_name, {'names': {name: orig_name},
-                                             'lineno': stmt.lineno})
+                                             'lineno': stmt.lineno,
+                                             'fromimport': False})
 
     def getMap(self):
         return self._map
@@ -129,7 +131,22 @@ class Module:
     def getImportedModuleNames(self):
         """Return the names of imported modules.
         """
-        return self._map.keys()
+        result = []
+        for modulename in self._map.keys():
+            if not self._map[modulename]['fromimport']:
+                # Regular import
+                result.append(modulename)
+            else:
+                # from xyz import abc, return xyz.abc to help with detecting
+                # "from zope import interface"-style imports where
+                # zope.inteface is the real module and zope just a namespace
+                # package.  This is for the dependencychecker, btw.
+                if len(self._map[modulename]['names'].values()) == 0:
+                    # from xyz import *
+                    result.append(modulename)
+                for submodule in self._map[modulename]['names'].values():
+                    result.append('.'.join([modulename, submodule]))
+        return result
 
     def getImportNames(self):
         """Return the names of imports; add dottednames as well.

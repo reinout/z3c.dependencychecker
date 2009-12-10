@@ -45,7 +45,8 @@ script would.
     Missing requirements
     ====================
          missing.req
-         zope
+         something.origname
+         zope.interface
     <BLANKLINE>
     Missing test requirements
     =========================
