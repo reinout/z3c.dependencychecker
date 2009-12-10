@@ -4,5 +4,7 @@ unneeded.req
 needed.by.test
 
 [test]
+my.package
 z3c.testsetup>=0.3
+zope.testbrowser
 zope.testing

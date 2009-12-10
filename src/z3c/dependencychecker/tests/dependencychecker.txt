@@ -100,4 +100,53 @@ And the output is sorted:
     >>> dependencychecker.filter_unneeded(imports, required)
     ['a', 'b', 'c']
 
+
+Testing the regexes
+-------------------
+
+Finding package="" in zcml files:
+
+    >>> import re
+    >>> input = ''
+    >>> re.findall(dependencychecker.ZCML_PACKAGE_PATTERN, input)
+    []
+    >>> input = '<bla\npackage="zope.interface"/>'
+    >>> re.findall(dependencychecker.ZCML_PACKAGE_PATTERN, input)
+    ['zope.interface']
+
+Finding imports in doctests:
+
+    >>> input = ''
+    >>> re.findall(dependencychecker.DOCTEST_IMPORT, input)
+    []
+    >>> input = '    >>> print 7'
+    >>> re.findall(dependencychecker.DOCTEST_IMPORT, input)
+    []
+    >>> input = '    >>> import zope.interface'
+    >>> re.findall(dependencychecker.DOCTEST_IMPORT, input)
+    ['zope.interface']
+    >>> input = '    >>> #import zope.interface'
+    >>> re.findall(dependencychecker.DOCTEST_IMPORT, input)
+    []
+
+Finding from-imports in doctests:
+
+    >>> input = ''
+    >>> re.findall(dependencychecker.DOCTEST_FROM_IMPORT, input)
+    []
+    >>> input = '    >>> print 7'
+    >>> re.findall(dependencychecker.DOCTEST_FROM_IMPORT, input)
+    []
+    >>> input = '    >>> from zope import interface'
+    >>> re.findall(dependencychecker.DOCTEST_FROM_IMPORT, input)
+    [('zope', 'interface')]
+    >>> input = '    >>> from zope import interface, component'
+    >>> re.findall(dependencychecker.DOCTEST_FROM_IMPORT, input)
+    [('zope', 'interface, component')]
+    >>> input = '    >>> #from zope import interface'
+    >>> re.findall(dependencychecker.DOCTEST_FROM_IMPORT, input)
+    []
+
+
+
 """

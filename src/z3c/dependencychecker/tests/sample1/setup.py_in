@@ -27,7 +27,9 @@ setup(name='sample1',
           'test': [
               # Don't forget to add this by hand to the
               # src/sample1.egg-info/requires.txt file!
+              'my.package',
               'z3c.testsetup>=0.3',
+              'zope.testbrowser',
               'zope.testing',
               ],
           },

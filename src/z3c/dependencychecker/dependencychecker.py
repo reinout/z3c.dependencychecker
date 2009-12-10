@@ -33,6 +33,43 @@ package=     #
 """, re.VERBOSE)
 
 
+DOCTEST_IMPORT = re.compile(r"""
+^            # From start of line
+\s+          # Whitespace.
+>>>          # Doctestmarker.
+\s+          # Whitespace.
+import       # 'import' keyword
+\s+          # Whitespace
+(?P<module>  # Start of 'module' variable.
+\S+          # Non-whitespace string.
+)            # End of 'import' variable.
+""", re.VERBOSE)
+
+
+DOCTEST_FROM_IMPORT = re.compile(r"""
+^            # From start of line
+\s+          # Whitespace.
+>>>          # Doctestmarker.
+\s+          # Whitespace.
+from         # 'from' keyword
+\s+          # Whitespace
+(?P<module>  # Start of 'module' variable.
+\S+          # Non-whitespace string.
+)            # End of 'import' variable.
+\s+          # Whitespace.
+import       # 'import' keyword
+\s+          # Whitespace.
+(?P<sub>     # Start of 'sub' variable.
+[            # Any of:
+  a-zA-Z     # a-z
+  0-9        # numbers
+  ,          # comma
+  \s         # whitespace
+]+           # more than one.
+)            # End of 'import' variable.
+""", re.VERBOSE)
+
+
 def print_unused_imports(unused_imports):
     found = []
     for path in sorted(unused_imports.keys()):
@@ -193,6 +230,25 @@ def includes_from_zcml(path):
     return modules, test_modules
 
 
+def imports_from_doctests(path):
+    test_modules = []
+    for path, dirs, files in os.walk(path):
+        for filename in [
+            os.path.abspath(os.path.join(path, filename))
+            for filename in files
+            if fnmatch.fnmatch(filename, '*.txt')
+            or fnmatch.fnmatch(filename, '*.rst')
+            or fnmatch.fnmatch(filename, '*.py')]:
+            lines = open(filename).readlines()
+            for line in lines:
+                test_modules += re.findall(DOCTEST_IMPORT, line)
+                for (module, sub) in re.findall(DOCTEST_FROM_IMPORT, line):
+                    submodules = [item.strip() for item in sub.split(',')]
+                    for submodule in submodules:
+                        test_modules.append('.'.join([module, submodule]))
+    return sorted(set(test_modules))
+
+
 def print_modules(modules, heading):
     if modules:
         print heading
@@ -222,6 +278,7 @@ def main():
     (install_required, test_required) = existing_requirements()
     stdlib = stdlib_modules()
     (zcml_imports, zcml_test_imports) = includes_from_zcml(path)
+    doctest_imports = imports_from_doctests(path)
 
     print_unused_imports(unused_imports)
 
@@ -229,23 +286,26 @@ def main():
                                      install_required + stdlib)
     print_modules(install_missing, "Missing requirements")
 
-    test_missing = filter_missing(test_imports + zcml_test_imports,
-                                  install_required + test_required + stdlib)
+    test_missing = filter_missing(
+        test_imports + zcml_test_imports + doctest_imports,
+        install_required + test_required + stdlib)
     print_modules(test_missing, "Missing test requirements")
 
     install_unneeded = filter_unneeded(install_imports + zcml_imports,
                                        install_required)
     # See if one of ours is needed by the tests
-    really_unneeded = filter_unneeded(test_imports + zcml_test_imports,
-                                      install_unneeded)
+    really_unneeded = filter_unneeded(
+        test_imports + zcml_test_imports + doctest_imports,
+        install_unneeded)
     move_to_test = sorted(set(install_unneeded) - set(really_unneeded))
 
     print_modules(really_unneeded, "Unneeded requirements")
     print_modules(move_to_test,
                   "Requirements that should be test requirements")
 
-    test_unneeded = filter_unneeded(test_imports + zcml_test_imports,
-                                    test_required)
+    test_unneeded = filter_unneeded(
+        test_imports + zcml_test_imports + doctest_imports,
+        test_required)
     print_modules(test_unneeded, "Unneeded test requirements")
 
 

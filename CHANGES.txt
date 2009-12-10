@@ -4,7 +4,8 @@ Changelog of z3c.dependencychecker
 0.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Searching in doctests (.py, .txt, .rst) for imports, too.  Regex-based by
+  necessity, but it seems to catch what I can test it with.
 
 
 0.4 (2009-12-10)
