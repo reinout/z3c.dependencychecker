@@ -34,6 +34,14 @@ z3c.dependencychecker reports on:
   list of requirements that should be moved from the regular to the test
   requirements.
 
+It checks the following locations:
+
+- Python files for regular imports.
+
+- Zcml files for ``package="some.thing"`` attributes.
+
+- Python files, ``.txt`` and ``.rst`` files for imports in doctests.
+
 
 Credits
 -------
