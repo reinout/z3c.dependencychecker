@@ -29,9 +29,11 @@ z3c.dependencychecker reports on:
   everything needs to be imported.  It at least gives you a much smaller list
   to check by hand.
 
-  If something is only imported in a test file, it shouldn't be in the generic
-  defaults.  Currently you don't get a separate list of requirements that
-  should be moved from the regular to the test requirements.
+- **Requirements that should be test-only**: if something is only imported in
+  a test file, it shouldn't be in the generic defaults.  So you get a separate
+  list of requirements that should be moved from the regular to the test
+  requirements.
+
 
 Credits
 -------
