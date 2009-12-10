@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-0.5 (unreleased)
+0.5 (2009-12-10)
 ----------------
 
 - Searching in doctests (.py, .txt, .rst) for imports, too.  Regex-based by
