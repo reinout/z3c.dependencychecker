@@ -13,6 +13,7 @@
 ##############################################################################
 import commands
 import fnmatch
+import optparse
 import os
 import re
 import sys
@@ -258,9 +259,9 @@ def print_modules(modules, heading):
         print
 
 
-def determine_path():
-    if len(sys.argv) > 1:
-        path = sys.argv[1]
+def determine_path(args):
+    if len(args) > 0:
+        path = args[0]
     else:
         # Default
         path = os.path.join(os.getcwd(), 'src')
@@ -271,8 +272,17 @@ def determine_path():
     return path
 
 
+def _version():
+    ourselves = pkg_resources.require('z3c.dependencychecker')[0]
+    return ourselves.version
+
+
 def main():
-    path = determine_path()
+    usage = "Usage: %prog [path]\n  (path defaults to 'src')"
+    parser = optparse.OptionParser(usage=usage, version=_version())
+    (options, args) = parser.parse_args()
+    path = determine_path(args)
+
     db = importchecker.ImportDatabase(path)
     # TODO: find zcml files
     db.findModules()

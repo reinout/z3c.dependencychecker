@@ -215,27 +215,27 @@ Grab it and watch the fireworks:
 Determining the path
 --------------------
 
-The main test flow already finds the by-default src dir.  We test two corner
-cases here:
+The default case ("just pick src/ in the current dir") is tested by the main
+flow.  Here we test corner cases.
 
 Pass the path on the command line:
 
-    >>> sys.argv[1:] = [newtempdir]
-    >>> dependencychecker.determine_path() == newtempdir
+    >>> args = [newtempdir]
+    >>> dependencychecker.determine_path(args) == newtempdir
     True
 
 Pass a non-existing path:
 
-    >>> sys.argv[1:] = ['/does/not/exist']
-    >>> dependencychecker.determine_path()
+    >>> args = ['/does/not/exist']
+    >>> dependencychecker.determine_path(args)
     Traceback (most recent call last):
     ...
     MockExitException: 1
     
 Pass a file instead of a directory:
 
-    >>> sys.argv[1:] = [setup_py]
-    >>> dependencychecker.determine_path()
+    >>> args = [setup_py]
+    >>> dependencychecker.determine_path(args)
     Traceback (most recent call last):
     ...
     MockExitException: 1
