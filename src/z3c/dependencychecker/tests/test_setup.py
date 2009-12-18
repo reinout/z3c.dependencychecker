@@ -72,7 +72,7 @@ def setup(test):
     # tools, I'm postfixing them with ``_in``, now we get to rename them.
     # Same for zcml files.
     for (dirpath, dirnames, filenames) in os.walk(sample1_dir):
-        for filename in filenames:
+        for filename in (filenames + dirnames):
             if not filename.endswith('_in'):
                 continue
             new_filename = filename.replace('_in', '')
