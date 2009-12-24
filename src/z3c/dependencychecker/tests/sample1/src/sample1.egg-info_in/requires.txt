@@ -1,7 +1,7 @@
 setuptools
 zest.releaser
 unneeded.req
-needed.by.test
+Needed.By.Test
 needed.by.zcml
 
 [test]

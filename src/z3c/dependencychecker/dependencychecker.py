@@ -150,9 +150,9 @@ def filter_missing(imports, required):
     for needed in imports:
         found = False
         for req in required:
-            if req == needed:
+            if req.lower() == needed.lower():
                 found = True
-            if needed.startswith(req + '.'):
+            if needed.lower().startswith(req.lower() + '.'):
                 # 're' should not match 'reinout.something', that's why we
                 # check with an extra dot.
                 found = True
@@ -175,7 +175,7 @@ def filter_unneeded(imports, required):
     for req in required:
         found = False
         for module in imports:
-            if module.startswith(req):
+            if module.lower().startswith(req.lower()):
                 found = True
         if not found:
             unneeded.append(req)

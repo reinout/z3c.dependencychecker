@@ -46,6 +46,9 @@ A requirement for some.thing is assumed to be enough for some.thing.else:
     >>> required = ['some.thing']
     >>> dependencychecker.filter_missing(imports, required)
     []
+    >>> required = ['Some.Thing'] # case insensitive
+    >>> dependencychecker.filter_missing(imports, required)
+    []
 
 But a requirement that is more specific than the import fails:
 

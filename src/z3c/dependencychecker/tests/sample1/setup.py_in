@@ -21,7 +21,8 @@ setup(name='sample1',
           'setuptools',
           'zest.releaser',
           'unneeded.req',
-          'needed.by.test',
+          'Needed.By.Test',
+          # ^^^ Note: capitalized to test case-insensitive pypi
           'needed.by.zcml',
           ],
       extras_require = {

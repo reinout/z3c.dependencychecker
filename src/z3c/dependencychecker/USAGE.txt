@@ -58,7 +58,7 @@ script would.
     <BLANKLINE>
     Requirements that should be test requirements
     =============================================
-         needed.by.test
+         Needed.By.Test
     <BLANKLINE>
     Unneeded test requirements
     ==========================

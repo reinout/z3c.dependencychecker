@@ -4,6 +4,8 @@ Changelog of z3c.dependencychecker
 1.1 (unreleased)
 ----------------
 
+- Dependencychecker is now case insensitive as pypi is too.
+
 - Using optparse for parsing commandline now.  Added --help and --version.
 
 
