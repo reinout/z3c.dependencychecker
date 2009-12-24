@@ -3,6 +3,7 @@ zest.releaser
 unneeded.req
 Needed.By.Test
 needed.by.zcml
+also.needed.by.zcml
 
 [test]
 my.package

@@ -57,6 +57,13 @@ But a requirement that is more specific than the import fails:
     >>> dependencychecker.filter_missing(imports, required)
     ['some.thing']
 
+Watch out with similar names:
+
+    >>> imports = ['zope.app.securitypolicy']
+    >>> required = ['zope.app.security']
+    >>> dependencychecker.filter_missing(imports, required)
+    ['zope.app.securitypolicy']
+
 An oft-occurring example is a an import like ``from zope import interface``,
 and a requirement for ``zope.interface``.  zope is picked up by the
 importchecker mechanism (not zope.interface!), so we get the following problem:

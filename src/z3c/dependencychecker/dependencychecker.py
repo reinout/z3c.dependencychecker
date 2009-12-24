@@ -33,6 +33,15 @@ package=     #
 ['\"]        # Single or double quote.
 """, re.VERBOSE)
 
+ZCML_COMPONENT_PATTERN = re.compile(r"""
+\s           # Whitespace.
+component=   #
+['\"]        # Single or double quote.
+(?P<import>  # Start of 'import' variable.
+\S+          # Non-whitespace string.
+)            # End of 'import' variable.
+['\"]        # Single or double quote.
+""", re.VERBOSE)
 
 DOCTEST_IMPORT = re.compile(r"""
 ^            # From start of line
@@ -223,6 +232,9 @@ def includes_from_zcml(path):
             found = [module for module in
                      re.findall(ZCML_PACKAGE_PATTERN, contents)
                      if not module.startswith('.')]
+            found += [module for module in
+                      re.findall(ZCML_COMPONENT_PATTERN, contents)
+                      if not module.startswith('.')]
             if 'test' in zcml:
                 # ftesting.zcml, mostly.
                 test_modules += found

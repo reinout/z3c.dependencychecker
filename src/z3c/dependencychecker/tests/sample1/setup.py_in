@@ -24,6 +24,7 @@ setup(name='sample1',
           'Needed.By.Test',
           # ^^^ Note: capitalized to test case-insensitive pypi
           'needed.by.zcml',
+          'also.needed.by.zcml',
           ],
       extras_require = {
           'test': [

@@ -4,6 +4,9 @@ Changelog of z3c.dependencychecker
 1.1 (unreleased)
 ----------------
 
+- Zcml files are also searched for 'component=' patterns as that can be used
+  by securitypolicy declarations.
+
 - Dependencychecker is now case insensitive as pypi is too.
 
 - Using optparse for parsing commandline now.  Added --help and --version.
