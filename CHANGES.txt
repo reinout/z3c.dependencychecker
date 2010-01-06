@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-1.1 (unreleased)
+1.1 (2010-01-06)
 ----------------
 
 - Zcml files are also searched for 'component=' patterns as that can be used
