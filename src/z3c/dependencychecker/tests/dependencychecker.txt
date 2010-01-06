@@ -49,6 +49,9 @@ A requirement for some.thing is assumed to be enough for some.thing.else:
     >>> required = ['Some.Thing'] # case insensitive
     >>> dependencychecker.filter_missing(imports, required)
     []
+    >>> required = ['Some']
+    >>> dependencychecker.filter_missing(imports, required)
+    []
 
 But a requirement that is more specific than the import fails:
 
@@ -241,7 +244,7 @@ Pass a non-existing path:
     Traceback (most recent call last):
     ...
     MockExitException: 1
-    
+
 Pass a file instead of a directory:
 
     >>> args = [setup_py]
