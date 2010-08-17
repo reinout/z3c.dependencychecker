@@ -109,11 +109,19 @@ def name_from_setup():
 def existing_requirements():
     """Extract install and test requirements"""
     name = name_from_setup()
+    underscored_name = name.replace('-', '_')
+    egginfo_dir_name = name + '.egg-info'
+    egginfo_underscored_dir_name = underscored_name + '.egg-info'
     # Who on earth made it so earth-shattering impossible to get your hands on
     # the egg info stuff via an api?  We'll do it mostly by hand...
-    egginfo_dir_name = name + '.egg-info'
     if egginfo_dir_name in os.listdir(os.getcwd()):
         egginfo_dir = egginfo_dir_name
+    elif egginfo_underscored_dir_name in os.listdir(os.getcwd()):
+        # Django apps often have a name like 'django-something' and a package
+        # like 'django_something' as django doesn't like namespace packages in
+        # all places.  So we need to check for dashes that became underscores.
+        egginfo_dir = egginfo_underscored_dir_name
+        name = underscored_name
     else:
         egginfo_dir = os.path.join(os.getcwd(), 'src', egginfo_dir_name)
     requires_filename = os.path.join(egginfo_dir, 'requires.txt')
