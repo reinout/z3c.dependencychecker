@@ -4,7 +4,9 @@ Changelog of z3c.dependencychecker
 1.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- First attempt at compensating for django-style 'django-something' package
+  names with 'django_something' package directories.  Dash versus underscore.
+  Needs more work.
 
 
 1.1 (2010-01-06)
