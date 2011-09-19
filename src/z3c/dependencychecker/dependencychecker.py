@@ -181,7 +181,7 @@ def filter_missing(imports, required):
 
 def filter_unneeded(imports, required):
     name = name_from_setup()
-    imports.append(name) # We always use ourselves, obviously.
+    imports.append(name)  # We always use ourselves, obviously.
     imports = set(imports)
     required = set(required)
     setuptools_and_friends = set(
@@ -280,10 +280,16 @@ def print_modules(modules, heading):
 
 
 def determine_path(args):
+    path = None
     if len(args) > 0:
         path = args[0]
     else:
-        # Default
+        name = name_from_setup()
+        name = name.replace('-', '_')
+        if name in os.listdir('.'):
+            path = name
+    if path is None:
+        # Fallback.
         path = os.path.join(os.getcwd(), 'src')
     path = os.path.abspath(path)
     if not os.path.isdir(path):
@@ -298,13 +304,13 @@ def _version():
 
 
 def main():
-    usage = "Usage: %prog [path]\n  (path defaults to 'src')"
+    usage = ("Usage: %prog [path]\n" +
+             "(path defaults to package name, fallback is 'src/')")
     parser = optparse.OptionParser(usage=usage, version=_version())
     (options, args) = parser.parse_args()
     path = determine_path(args)
 
     db = importchecker.ImportDatabase(path)
-    # TODO: find zcml files
     db.findModules()
     unused_imports = db.getUnusedImports()
     test_imports = db.getImportedModuleNames(tests=True)
@@ -341,7 +347,6 @@ def main():
         test_imports + zcml_test_imports + doctest_imports,
         test_required)
     print_modules(test_unneeded, "Unneeded test requirements")
-
 
     if install_missing or test_missing or install_unneeded or test_unneeded:
         print "Note: requirements are taken from the egginfo dir, so you need"
