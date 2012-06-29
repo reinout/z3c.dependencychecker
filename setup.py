@@ -4,10 +4,10 @@ import os.path
 version = '1.3dev'
 
 long_description = '\n\n'.join([
-    open('README.txt').read(),
-    open(os.path.join('src', 'z3c', 'dependencychecker', 'USAGE.txt')).read(),
-    open('TODO.txt').read(),
-    open('CHANGES.txt').read(),
+    open('README.rst').read(),
+    open(os.path.join('src', 'z3c', 'dependencychecker', 'USAGE.rst')).read(),
+    open('TODO.rst').read(),
+    open('CHANGES.rst').read(),
     ])
 
 setup(name='z3c.dependencychecker',
