@@ -4,7 +4,8 @@ Changelog of z3c.dependencychecker
 1.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Documentation updates because we moved to github:
+  https://github.com/reinout/z3c.dependencychecker .
 
 
 1.3 (2012-06-29)

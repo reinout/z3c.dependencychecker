@@ -53,16 +53,16 @@ copy from `lovely.recipe's checkout
 
 - Martijn Faassen wrote the original importchecker script.
 
-- `Reinout van Rees <http://reinout.vanrees.org>`_ (`The Health Agency
-  <http://www.thehealthagency.com>`_) added the dependency checker
-  functionality and packaged it.
+- `Reinout van Rees <http://reinout.vanrees.org>`_ added the dependency
+  checker functionality and packaged it (mostly while working at `The Health
+  Agency <http://www.thehealthagency.com>`_).
 
 
-Source code
------------
+Source code, forking and reporting bugs
+---------------------------------------
 
-The source code can be found in zope's svn repository:
-http://svn.zope.org/repos/main/z3c.dependencychecker
+The source code can be found on github:
+https://github.com/reinout/z3c.dependencychecker
 
-At the moment, bugs and suggestions can be send to `Reinout
-<mailto:reinout@vanrees.org>`_.
+You can fork and fix it from there. And you can add issues and feature
+requests in the github issue tracker.
