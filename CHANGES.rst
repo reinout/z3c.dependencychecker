@@ -4,7 +4,10 @@ Changelog of z3c.dependencychecker
 1.3 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Added fix for standard library detection on OSX when using the python
+  buildout. (Patch by Jonas Baumann, as is the next item).
+
+- Supporting ``[tests]`` in addition to ``[test]`` for test requirements.
 
 
 1.2 (2011-09-19)
