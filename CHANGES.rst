@@ -1,8 +1,8 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-1.4 (unreleased)
-----------------
+1.3.2 (2012-06-29)
+------------------
 
 - Fixed broken 1.3.0 and 1.3.0 release: the ``MANIFEST.in`` was missing...
 
