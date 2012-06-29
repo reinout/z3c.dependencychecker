@@ -139,7 +139,7 @@ def existing_requirements():
         install_required.append(req.project_name)
     start = False
     for line in lines:
-        if line == '[test]':
+        if line in ('[test]', '[tests]'):
             start = True
             continue
         if not start:
@@ -224,7 +224,10 @@ def stdlib_modules():
     py_module = os
     import datetime
     dynload_module = datetime
-    modules = _detect_modules(py_module) + _detect_modules(dynload_module)
+    import urllib
+    modules = _detect_modules(py_module) + \
+        _detect_modules(dynload_module) + \
+        _detect_modules(urllib)
     modules.append('sys')
     return list(set(modules))
 
