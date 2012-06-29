@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-1.3 (unreleased)
+1.3 (2012-06-29)
 ----------------
 
 - Added fix for standard library detection on OSX when using the python
