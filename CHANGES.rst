@@ -1,8 +1,8 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-1.4 (unreleased)
-----------------
+1.3.1 (2012-06-29)
+------------------
 
 - Documentation updates because we moved to github:
   https://github.com/reinout/z3c.dependencychecker .
