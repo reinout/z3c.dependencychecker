@@ -23,6 +23,13 @@ import compiler
 import os
 import os.path
 
+try:
+    import runpy
+except:
+    RUNPY_AVAILABLE = False
+else:
+    RUNPY_AVAILABLE = True
+
 
 def _findDottedNamesHelper(node, result):
     more_node = node
@@ -214,6 +221,7 @@ class ImportDatabase:
         self._root_path = root_path
         self._modules = {}
         self._names = {}
+        self._pkgnamecache = {}
 
     def resolveDottedModuleName(self, dotted_name, module):
         """Return path to file representing module, or None if no such
@@ -221,10 +229,12 @@ class ImportDatabase:
         """
         dotted_path = dotted_name.replace('.', '/')
         # try relative import first
-        path = os.path.join(os.path.dirname(module.getPath()), dotted_path)
-        path = self._resolveHelper(path)
-        if path is not None:
-            return path
+        if module is not None:
+            path = os.path.join(os.path.dirname(module.getPath()),
+                                dotted_path)
+            path = self._resolveHelper(path)
+            if path is not None:
+                return path
         # absolute import (assumed to be from this tree)
         if os.path.isfile(os.path.join(self._root_path, '__init__.py')):
             startpath, dummy = os.path.split(self._root_path)
@@ -292,6 +302,24 @@ class ImportDatabase:
                 result.update(module.getImportedModuleNames())
         return sorted(result)
 
+    def getImportedPkgNames(self, tests=False):
+        """Returns all pkg names from which modules are imported.
+        """
+        modules = self.getImportedModuleNames(tests=tests)
+
+        if not RUNPY_AVAILABLE:
+            return modules
+
+        pkgnames = set()
+        for modulename in modules:
+            name = self.resolvePkgName(modulename)
+            if name:
+                pkgnames.add(name)
+            else:
+                pkgnames.add(modulename)
+
+        return sorted(pkgnames)
+
     def getUnusedImportsInModule(self, module):
         """Get all unused imports in a module.
         """
@@ -313,3 +341,77 @@ class ImportDatabase:
         for path in self._names.get((module.getPath(), name), {}).keys():
             result.append(self._modules[path])
         return result
+
+    def resolvePkgName(self, dottedname):
+        path = self._getPathByDottedname(dottedname)
+        if not path:
+            return None
+
+        if os.path.isfile(path):
+            path = os.path.dirname(path)
+        if not path.startswith('/'):
+            return None
+
+        while path is not '/':
+            if path in self._pkgnamecache:
+                return self._pkgnamecache[path]
+
+            pkgname = self._getPkgNameByPath(path)
+            if pkgname:
+                self._pkgnamecache[path] = pkgname
+                return pkgname
+            path = os.path.dirname(path)
+
+        return None
+
+    def _getPkgNameByPath(self, path):
+        """Looks for an pkg info in `path` and reads the pkg name.
+        """
+
+        pkginfo_path = os.path.join(path, 'EGG-INFO', 'PKG-INFO')
+
+        if not os.path.exists(pkginfo_path):
+            egginfo_names = filter(lambda n: n.endswith('.egg-info'),
+                                   os.listdir(path))
+            if len(egginfo_names) > 0:
+                pkginfo_path = os.path.join(
+                    path, egginfo_names[0], 'PKG-INFO')
+
+        if not os.path.exists(pkginfo_path):
+            return None
+
+        pkginfo = open(pkginfo_path, 'r')
+        for line in pkginfo.readlines():
+            if not line.startswith('Name: '):
+                continue
+            name = line.split('Name: ', 1)[1].strip()
+            self._pkgnamecache[path] = name
+            return name
+
+        return None
+
+    def _getPathByDottedname(self, dottedname):
+        """Returns the location of the definition of `dottedname`.
+        If it a package is imported, this is a directory, otherwise a file.
+        If nothing is found it returns None.
+        For some python standard modules (such as sys) None is returned if
+        they are defined in C or if there is another problem detecting the
+        filename.
+        """
+
+        try:
+            loader = runpy.get_loader(dottedname)
+        except ImportError:
+            loader = None
+
+        if not loader:
+            parent_dottedname = '.'.join(dottedname.split('.')[:-1])
+            try:
+                loader = runpy.get_loader(parent_dottedname)
+            except ImportError:
+                loader = None
+
+        if not loader:
+            return None
+
+        return loader.get_filename()
