@@ -57,6 +57,8 @@ copy from `lovely.recipe's checkout
   checker functionality and packaged it (mostly while working at `The Health
   Agency <http://www.thehealthagency.com>`_).
 
+- Quite some fixes from `Jonas Baumann <https://github.com/jone>`_.
+
 
 Source code, forking and reporting bugs
 ---------------------------------------
