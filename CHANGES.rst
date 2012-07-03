@@ -4,7 +4,7 @@ Changelog of z3c.dependencychecker
 1.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Add support for zipped dists when looking up pkg name.
 
 
 1.4 (2012-07-03)

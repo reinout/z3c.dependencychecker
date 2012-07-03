@@ -29,6 +29,8 @@ except:
     RUNPY_AVAILABLE = False
 else:
     RUNPY_AVAILABLE = True
+    from pkgutil import ImpLoader
+    from zipimport import zipimporter
 
 
 def _findDottedNamesHelper(node, result):
@@ -343,7 +345,16 @@ class ImportDatabase:
         return result
 
     def resolvePkgName(self, dottedname):
-        path = self._getPathByDottedname(dottedname)
+        loader = self._getLoader(dottedname)
+        if isinstance(loader, ImpLoader):
+            return self._getPkgNameInSourceDist(loader)
+        elif isinstance(loader, zipimporter):
+            return self._getPkgNameInZipDist(loader)
+        else:
+            return None
+
+    def _getPkgNameInSourceDist(self, loader):
+        path = loader.get_filename()
         if not path:
             return None
 
@@ -381,22 +392,32 @@ class ImportDatabase:
             return None
 
         pkginfo = open(pkginfo_path, 'r')
-        for line in pkginfo.readlines():
-            if not line.startswith('Name: '):
-                continue
-            name = line.split('Name: ', 1)[1].strip()
+        lines = pkginfo.readlines()
+        name = self._getPkgNameFromPkgInfo(lines)
+        if name:
             self._pkgnamecache[path] = name
             return name
 
         return None
 
-    def _getPathByDottedname(self, dottedname):
-        """Returns the location of the definition of `dottedname`.
-        If it a package is imported, this is a directory, otherwise a file.
-        If nothing is found it returns None.
-        For some python standard modules (such as sys) None is returned if
-        they are defined in C or if there is another problem detecting the
-        filename.
+    def _getPkgNameInZipDist(self, loader):
+        try:
+            lines = loader.get_data('EGG-INFO/PKG-INFO').split('\n')
+        except IOError:
+            return None
+
+        return self._getPkgNameFromPkgInfo(lines)
+
+    def _getPkgNameFromPkgInfo(self, lines):
+        for line in lines:
+            if not line.startswith('Name: '):
+                continue
+            name = line.split('Name: ', 1)[1].strip()
+            return name
+        return None
+
+    def _getLoader(self, dottedname):
+        """Returns a loader object.
         """
 
         try:
@@ -414,4 +435,4 @@ class ImportDatabase:
         if not loader:
             return None
 
-        return loader.get_filename()
+        return loader
