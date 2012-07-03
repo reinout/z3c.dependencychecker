@@ -4,7 +4,9 @@ Changelog of z3c.dependencychecker
 1.4 (unreleased)
 ----------------
 
-- Lookup pkg name from egg-infos if possible (python >= 2.5).
+- Lookup pkg name from egg-infos if possible (python >= 2.5). This helps for
+  instance with the PIL problem (which can be ``Imaging`` instead when you
+  import it).
 
 
 1.3.2 (2012-06-29)
