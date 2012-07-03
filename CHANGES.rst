@@ -4,7 +4,7 @@ Changelog of z3c.dependencychecker
 1.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Lookup pkg name from egg-infos if possible (python >= 2.5).
 
 
 1.3.2 (2012-06-29)
