@@ -316,7 +316,6 @@ class ImportDatabase:
         """Returns all pkg names from which modules are imported.
         """
         modules = self.getImportedModuleNames(tests=tests)
-
         if not RUNPY_AVAILABLE:
             return modules
 
@@ -325,6 +324,8 @@ class ImportDatabase:
             name = self.resolvePkgName(modulename)
             if name:
                 pkgnames.add(name)
+                logger.debug("Using package '%s' instead of module '%s'",
+                             name, modulename)
             else:
                 pkgnames.add(modulename)
 
@@ -363,6 +364,7 @@ class ImportDatabase:
 
     def _getPkgNameInSourceDist(self, loader):
         path = loader.get_filename()
+        logger.debug("Finding pkg name for %s", path)
         if not path:
             return None
 
@@ -427,7 +429,12 @@ class ImportDatabase:
     def _getLoader(self, dottedname):
         """Returns a loader object.
         """
-
+        # if dottedname == 'z3c.testsetup':
+        #     import pdb;pdb.set_trace()
+        # This goes wrong because z3c.testsetup cannot be found when running
+        # bin/dependencychecker because it isn't available. So the fallback to
+        # the module name would be better in this case!
+        # I need to review why this get_loader() stuff is used anyway.
         try:
             loader = runpy.get_loader(dottedname)
         except ImportError:
