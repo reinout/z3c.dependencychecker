@@ -229,6 +229,15 @@ def stdlib_modules():
         _detect_modules(dynload_module) + \
         _detect_modules(urllib)
     modules.append('sys')
+
+    # C level modules extracted from Python's ``config.c``.
+    modules.append('thread')
+    modules.append('signal')
+    modules.append('posix')
+    modules.append('errno')
+    modules.append('pwd')
+    modules.append('zipimport')
+
     return list(set(modules))
 
 
