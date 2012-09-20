@@ -17,7 +17,6 @@ This utility finds is based on the zope importchecker script, prints
 out unused imports, imports that are only for tests packages and
 runtime imports.
 
-$Id: importchecker.py 96082 2009-02-04 16:37:38Z adamg $
 """
 import compiler
 import os
