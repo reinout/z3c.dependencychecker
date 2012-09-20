@@ -19,6 +19,7 @@ runtime imports.
 
 """
 import compiler
+import logging
 import os
 import os.path
 
@@ -30,6 +31,8 @@ else:
     RUNPY_AVAILABLE = True
     from pkgutil import ImpLoader
     from zipimport import zipimporter
+
+logger = logging.getLogger(__name__)
 
 
 def _findDottedNamesHelper(node, result):
@@ -299,8 +302,14 @@ class ImportDatabase:
             parts = path[:-3].split(os.path.sep)
             isTest = 'tests' in parts or 'testing' in parts \
                      or 'ftests' in parts
-            if (tests and isTest) or (not tests and not isTest):
-                result.update(module.getImportedModuleNames())
+            if (tests and not isTest) or (not tests and isTest):
+                continue
+            module_names = module.getImportedModuleNames()
+            logger.debug("Modules found in %s (test-only: %s):\n    %s",
+                         path, isTest, sorted(module_names))
+            result.update(module_names)
+        logger.debug("All modules found (test-only: %s):\n    %s",
+                     isTest, sorted(result))
         return sorted(result)
 
     def getImportedPkgNames(self, tests=False):

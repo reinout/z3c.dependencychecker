@@ -30,7 +30,7 @@ We have a sample project in a temp directory:
     src
 
 For our test, we call the main() method, just like the ``dependencychecker``
-script would.
+script would:
 
     >>> import os
     >>> os.chdir(sample1_dir)
@@ -68,4 +68,3 @@ script would.
     to re-run buildout (or setup.py or whatever) for changes in
     setup.py to have effect.
     <BLANKLINE>
-

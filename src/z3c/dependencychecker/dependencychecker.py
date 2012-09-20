@@ -13,6 +13,7 @@
 ##############################################################################
 import commands
 import fnmatch
+import logging
 import optparse
 import os
 import re
@@ -22,6 +23,7 @@ import pkg_resources
 
 from z3c.dependencychecker import importchecker
 
+logger = logging.getLogger(__name__)
 
 ZCML_PACKAGE_PATTERN = re.compile(r"""
 \s           # Whitespace.
@@ -319,14 +321,27 @@ def main():
     usage = ("Usage: %prog [path]\n" +
              "(path defaults to package name, fallback is 'src/')")
     parser = optparse.OptionParser(usage=usage, version=_version())
+    parser.add_option("-v", "--verbose",
+                      action="store_true", dest="verbose", default=False,
+                      help="Show debug output")
     (options, args) = parser.parse_args()
-    path = determine_path(args)
+    if options.verbose:
+        loglevel = logging.DEBUG
+    else:
+        loglevel = logging.INFO
+    logging.basicConfig(level=loglevel, format="%(levelname)s: %(message)s")
 
+    path = determine_path(args)
+    # import pdb;pdb.set_trace()
     db = importchecker.ImportDatabase(path)
     db.findModules()
     unused_imports = db.getUnusedImports()
     test_imports = db.getImportedPkgNames(tests=True)
+    logger.debug("All found imported packages for tests: %s",
+                 sorted(test_imports))
     install_imports = db.getImportedPkgNames(tests=False)
+    logger.debug("All found regular imported packages: %s",
+                 sorted(install_imports))
     (install_required, test_required) = existing_requirements()
     stdlib = stdlib_modules()
     (zcml_imports, zcml_test_imports) = includes_from_zcml(path)
