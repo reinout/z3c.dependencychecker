@@ -4,7 +4,7 @@ Changelog of z3c.dependencychecker
 1.6 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Fix AttributeError when "magic modules" like email.Header are imported.
 
 
 1.5 (2012-07-03)
