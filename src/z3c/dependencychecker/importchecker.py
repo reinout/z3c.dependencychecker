@@ -444,7 +444,7 @@ class ImportDatabase:
             parent_dottedname = '.'.join(dottedname.split('.')[:-1])
             try:
                 loader = runpy.get_loader(parent_dottedname)
-            except ImportError:
+            except (ImportError, AttributeError):
                 loader = None
 
         if not loader:
