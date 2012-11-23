@@ -4,7 +4,7 @@ Changelog of z3c.dependencychecker
 1.7 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Detect generic setup dependencies in ``metadata.xml`` files.
 
 
 1.6 (2012-11-01)

@@ -82,6 +82,17 @@ import       # 'import' keyword
 """, re.VERBOSE)
 
 
+METADATA_DEPENDENCY_PATTERN = re.compile(r"""
+<dependency> #
+profile-     # Profile prefix
+(?P<import>  # Start of 'import' variable.
+\S+          # Non-whitespace string.
+)            # End of 'import' variable.
+:.*?         # Profile name postfix
+</dependency> #
+""", re.VERBOSE)
+
+
 def print_unused_imports(unused_imports):
     found = []
     for path in sorted(unused_imports.keys()):
@@ -265,6 +276,27 @@ def includes_from_zcml(path):
     return modules, test_modules
 
 
+def includes_from_generic_setup_metadata(path):
+    modules = []
+    test_modules = []
+    for path, dirs, files in os.walk(path):
+        for xmlfile in [os.path.abspath(os.path.join(path, filename))
+                     for filename in files
+                     if fnmatch.fnmatch(filename, 'metadata.xml')]:
+            contents = open(xmlfile).read()
+            found = [module for module in
+                     re.findall(METADATA_DEPENDENCY_PATTERN, contents)
+                     if not module.startswith('.')]
+            found += [module for module in
+                      re.findall(METADATA_DEPENDENCY_PATTERN, contents)
+                      if not module.startswith('.')]
+            if 'test' in xmlfile:
+                test_modules += found
+            else:
+                modules += found
+    return modules, test_modules
+
+
 def imports_from_doctests(path):
     test_modules = []
     for path, dirs, files in os.walk(path):
@@ -346,23 +378,29 @@ def main():
     stdlib = stdlib_modules()
     (zcml_imports, zcml_test_imports) = includes_from_zcml(path)
     doctest_imports = imports_from_doctests(path)
+    (generic_setup_required, generic_setup_test_required) = \
+        includes_from_generic_setup_metadata(path)
 
     print_unused_imports(unused_imports)
 
-    install_missing = filter_missing(install_imports + zcml_imports,
+    install_missing = filter_missing(install_imports + zcml_imports +
+                                     generic_setup_required,
                                      install_required + stdlib)
     print_modules(install_missing, "Missing requirements")
 
     test_missing = filter_missing(
-        test_imports + zcml_test_imports + doctest_imports,
+        test_imports + zcml_test_imports + doctest_imports +
+        generic_setup_test_required,
         install_required + test_required + stdlib)
     print_modules(test_missing, "Missing test requirements")
 
-    install_unneeded = filter_unneeded(install_imports + zcml_imports,
+    install_unneeded = filter_unneeded(install_imports + zcml_imports +
+                                       generic_setup_required,
                                        install_required)
     # See if one of ours is needed by the tests
     really_unneeded = filter_unneeded(
-        test_imports + zcml_test_imports + doctest_imports,
+        test_imports + zcml_test_imports + doctest_imports +
+        generic_setup_test_required,
         install_unneeded)
     move_to_test = sorted(set(install_unneeded) - set(really_unneeded))
 
@@ -371,7 +409,8 @@ def main():
                   "Requirements that should be test requirements")
 
     test_unneeded = filter_unneeded(
-        test_imports + zcml_test_imports + doctest_imports,
+        test_imports + zcml_test_imports + doctest_imports +
+        generic_setup_test_required,
         test_required)
     print_modules(test_unneeded, "Unneeded test requirements")
 
