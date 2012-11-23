@@ -362,6 +362,20 @@ class ImportDatabase:
         else:
             return None
 
+    def resolvePkgNames(self, modulenames):
+        pkgnames = set()
+
+        for modulename in modulenames:
+            name = self.resolvePkgName(modulename)
+            if name:
+                pkgnames.add(name)
+                logger.debug("Using package '%s' instead of module '%s'",
+                             name, modulename)
+            else:
+                pkgnames.add(modulename)
+
+        return sorted(pkgnames)
+
     def _getPkgNameInSourceDist(self, loader):
         path = loader.get_filename()
         logger.debug("Finding pkg name for %s", path)

@@ -4,5 +4,6 @@
   <securityPolicy
       component="also.needed.by.zcml.ZopeSecurityPolicy"
       />
+  <include package="zope.interface.verify"/>
 
 </zcml>
