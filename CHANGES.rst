@@ -4,7 +4,7 @@ Changelog of z3c.dependencychecker
 1.7 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Lookup package name for ZCML modules too, as it is done for python modules.
 
 
 1.6 (2012-11-01)

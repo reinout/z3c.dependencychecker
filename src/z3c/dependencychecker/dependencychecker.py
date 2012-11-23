@@ -344,7 +344,11 @@ def main():
                  sorted(install_imports))
     (install_required, test_required) = existing_requirements()
     stdlib = stdlib_modules()
+
     (zcml_imports, zcml_test_imports) = includes_from_zcml(path)
+    zcml_imports = db.resolvePkgNames(zcml_imports)
+    zcml_test_imports = db.resolvePkgNames(zcml_test_imports)
+
     doctest_imports = imports_from_doctests(path)
 
     print_unused_imports(unused_imports)
