@@ -44,6 +44,12 @@ It checks the following locations:
 - Python files, ``.txt`` and ``.rst`` files for imports in doctests.
 
 
+Note on running the tests
+--------------------------
+
+The tests are quite sensitive to other python packages being available. *If* the
+tests do not run, first wrap the buildout in a virtualenv to make double sure
+there are no interfering packages.
 
 
 Credits
