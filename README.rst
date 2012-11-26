@@ -38,9 +38,12 @@ It checks the following locations:
 
 - Python files for regular imports.
 
-- Zcml files for ``package="some.thing"`` attributes.
+- Zcml files for ``package="some.thing"`` attributes. It also supports Plone's
+  generic setup files.
 
 - Python files, ``.txt`` and ``.rst`` files for imports in doctests.
+
+
 
 
 Credits
