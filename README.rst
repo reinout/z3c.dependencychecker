@@ -4,6 +4,9 @@ z3c.dependencychecker
 Checks which imports are done and compares them to what's in ``setup.py`` and
 warn when discovering missing or unneeded dependencies.
 
+.. image:: https://secure.travis-ci.org/reinout/z3c.dependencychecker.png?branch=master
+   :target: https://travis-ci.org/#!/reinout/z3c.dependencychecker
+
 .. contents::
 
 
