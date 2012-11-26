@@ -1,8 +1,8 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-1.8 (unreleased)
-----------------
+1.7.1 (2012-11-26)
+------------------
 
 - Added travis.ci configuration. We're tested there, too, now!
 
