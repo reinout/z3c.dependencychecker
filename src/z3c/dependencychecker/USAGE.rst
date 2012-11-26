@@ -45,6 +45,7 @@ script would:
     Missing requirements
     ====================
          missing.req
+         other.generic.setup.dependency
          something.origname
          zope.interface
     <BLANKLINE>

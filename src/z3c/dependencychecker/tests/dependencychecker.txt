@@ -160,6 +160,16 @@ Finding from-imports in doctests:
     >>> re.findall(dependencychecker.DOCTEST_FROM_IMPORT, input)
     []
 
+Find dependencies in GenericSetup metadata.xml files:
+
+    >>> import re
+    >>> input = ''
+    >>> re.findall(dependencychecker.METADATA_DEPENDENCY_PATTERN, input)
+    []
+    >>> input = '<dependency>profile-package.name:default</dependency>'
+    >>> re.findall(dependencychecker.METADATA_DEPENDENCY_PATTERN, input)
+    ['package.name']
+
 
 Grabbing the name from setup.py
 -------------------------------

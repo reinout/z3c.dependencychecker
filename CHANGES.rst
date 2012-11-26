@@ -6,6 +6,8 @@ Changelog of z3c.dependencychecker
 
 - Lookup package name for ZCML modules too, as it is done for python modules.
 
+- Detect generic setup dependencies in ``metadata.xml`` files.
+
 
 1.6 (2012-11-01)
 ----------------
