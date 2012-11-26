@@ -30,7 +30,6 @@ nosetests.xml
 
 #Mr Developer
 .mr.developer.cfg
-src
 
 # Ignore generated apache config files
 etc/*.apache.conf
