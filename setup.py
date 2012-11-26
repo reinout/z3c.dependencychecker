@@ -12,7 +12,9 @@ long_description = '\n\n'.join([
 
 setup(name='z3c.dependencychecker',
       version=version,
-      description="",
+      description="""Checks which imports are done and compares them to what's
+      in setup.py and warns when discovering missing or unneeded
+      dependencies.""",
       long_description=long_description,
       # Get strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[],
