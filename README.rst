@@ -47,9 +47,10 @@ It checks the following locations:
 Note on running the tests
 --------------------------
 
-The tests are quite sensitive to other python packages being available. *If* the
-tests do not run, first wrap the buildout in a virtualenv to make double sure
-there are no interfering packages.
+The tests are quite sensitive to other python packages being available. *If*
+the tests do not run, first wrap the buildout in a virtualenv to make double
+sure there are no interfering packages. Or make sure you use a clean (system)
+python.
 
 
 Credits
