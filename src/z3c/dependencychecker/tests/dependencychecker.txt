@@ -280,3 +280,26 @@ Clean up the tempdir, btw:
     >>> shutil.rmtree(newtempdir)
 
 """
+
+
+Package/requirement normalization
+---------------------------------
+
+When comparing them, package names should be case-insensitive:
+
+    >>> dependencychecker.normalize('reinout')
+    'reinout'
+    >>> dependencychecker.normalize('Reinout')
+    'reinout'
+
+The should also normalize names with a dash in them to an underscore. Django
+doesn't deal well with namespaces, so you often see packages like
+``lizard-ui`` with a dash. The imports are with an underscore:
+``lizard_ui``. We normalize that:
+
+    >>> dependencychecker.normalize('package_with_underscores')
+    'package_with_underscores'
+    >>> dependencychecker.normalize('package-with-dashes')
+    'package_with_dashes'
+    >>> dependencychecker.normalize('package-with_a_MIX')
+    'package_with_a_mix'

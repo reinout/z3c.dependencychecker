@@ -67,7 +67,6 @@ import       # 'import' keyword
 )            # End of 'import' variable.
 """, re.VERBOSE)
 
-
 DOCTEST_FROM_IMPORT = re.compile(r"""
 ^            # From start of line
 \s+          # Whitespace.
@@ -91,7 +90,6 @@ import       # 'import' keyword
 )            # End of 'import' variable.
 """, re.VERBOSE)
 
-
 METADATA_DEPENDENCY_PATTERN = re.compile(r"""
 <dependency> #
 profile-     # Profile prefix
@@ -101,6 +99,16 @@ profile-     # Profile prefix
 :.*?         # Profile name postfix
 </dependency> #
 """, re.VERBOSE)
+
+
+def normalize(package_name):
+    """Return normalized package name.
+
+    Dashes to underscores (to help Django apps). And all-lowercase.
+    """
+    package_name = package_name.lower()
+    package_name = package_name.replace('-', '_')
+    return package_name
 
 
 def print_unused_imports(unused_imports):
@@ -174,6 +182,7 @@ def existing_requirements():
 
     # The project itself is of course both available and needed.
     install_required.append(name)
+    logger.debug("Appended ourselves (%s) to the required packages.", name)
 
     # Distribute says it is setuptools.  Setuptools also includes
     # pkg_resources.
@@ -190,9 +199,9 @@ def filter_missing(imports, required):
     for needed in imports:
         found = False
         for req in required:
-            if req.lower() == needed.lower():
+            if normalize(req) == normalize(needed):
                 found = True
-            if needed.lower().startswith(req.lower() + '.'):
+            if normalize(needed).startswith(normalize(req) + '.'):
                 # 're' should not match 'reinout.something', that's why we
                 # check with an extra dot.
                 found = True
@@ -215,7 +224,7 @@ def filter_unneeded(imports, required):
     for req in required:
         found = False
         for module in imports:
-            if module.lower().startswith(req.lower()):
+            if normalize(module).startswith(normalize(req)):
                 found = True
         if not found:
             unneeded.append(req)
