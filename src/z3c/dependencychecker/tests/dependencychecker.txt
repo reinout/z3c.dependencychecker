@@ -172,13 +172,37 @@ Finding from-imports in doctests:
 
 Find dependencies in GenericSetup metadata.xml files:
 
-    >>> import re
     >>> input = ''
     >>> re.findall(dependencychecker.METADATA_DEPENDENCY_PATTERN, input)
     []
     >>> input = '<dependency>profile-package.name:default</dependency>'
     >>> re.findall(dependencychecker.METADATA_DEPENDENCY_PATTERN, input)
     ['package.name']
+
+Detect proper package names (to detect whether strings in Django settings
+can be package names or something else):
+
+    >>> input = ''
+    >>> bool(re.match(dependencychecker.PACKAGE_NAME_PATTERN, input))
+    False
+    >>> input = 'compressor'
+    >>> bool(re.match(dependencychecker.PACKAGE_NAME_PATTERN, input))
+    True
+    >>> input = 'lizard-ui'
+    >>> bool(re.match(dependencychecker.PACKAGE_NAME_PATTERN, input))
+    True
+    >>> input = 'lizard_ui'
+    >>> bool(re.match(dependencychecker.PACKAGE_NAME_PATTERN, input))
+    True
+    >>> input = 'lizard_ui.something.else'
+    >>> bool(re.match(dependencychecker.PACKAGE_NAME_PATTERN, input))
+    True
+    >>> input = 'reinout@lizard_ui'
+    >>> bool(re.match(dependencychecker.PACKAGE_NAME_PATTERN, input))
+    False
+    >>> input = 'reinout with spaces'
+    >>> bool(re.match(dependencychecker.PACKAGE_NAME_PATTERN, input))
+    False
 
 
 Grabbing the name from setup.py
@@ -280,3 +304,26 @@ Clean up the tempdir, btw:
     >>> shutil.rmtree(newtempdir)
 
 """
+
+
+Package/requirement normalization
+---------------------------------
+
+When comparing them, package names should be case-insensitive:
+
+    >>> dependencychecker.normalize('reinout')
+    'reinout'
+    >>> dependencychecker.normalize('Reinout')
+    'reinout'
+
+The should also normalize names with a dash in them to an underscore. Django
+doesn't deal well with namespaces, so you often see packages like
+``lizard-ui`` with a dash. The imports are with an underscore:
+``lizard_ui``. We normalize that:
+
+    >>> dependencychecker.normalize('package_with_underscores')
+    'package_with_underscores'
+    >>> dependencychecker.normalize('package-with-dashes')
+    'package_with_dashes'
+    >>> dependencychecker.normalize('package-with_a_MIX')
+    'package_with_a_mix'
