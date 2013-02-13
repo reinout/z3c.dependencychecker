@@ -44,6 +44,7 @@ script would:
     <BLANKLINE>
     Missing requirements
     ====================
+         Products.GenericSetup.interfaces.EXTENSION
          missing.req
          other.generic.setup.dependency
          something.origname

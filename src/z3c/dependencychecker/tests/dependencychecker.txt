@@ -127,6 +127,16 @@ Finding package="" in zcml files:
     >>> re.findall(dependencychecker.ZCML_PACKAGE_PATTERN, input)
     ['zope.interface']
 
+Finding provides="" in zcml files:
+
+    >>> import re
+    >>> input = ''
+    >>> re.findall(dependencychecker.ZCML_PROVIDES_PATTERN, input)
+    []
+    >>> input = '<bla\nprovides="Products.GenericSetup.interfaces.EXTENSION"/>'
+    >>> re.findall(dependencychecker.ZCML_PROVIDES_PATTERN, input)
+    ['Products.GenericSetup.interfaces.EXTENSION']
+
 Finding imports in doctests:
 
     >>> input = ''

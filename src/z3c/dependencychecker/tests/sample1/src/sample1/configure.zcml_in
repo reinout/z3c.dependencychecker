@@ -6,4 +6,9 @@
       />
   <include package="zope.interface.verify"/>
 
+  <genericsetup:registerProfile
+      name="setup-language"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
 </zcml>
