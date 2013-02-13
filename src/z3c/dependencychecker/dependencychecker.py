@@ -35,6 +35,16 @@ package=     #
 ['\"]        # Single or double quote.
 """, re.VERBOSE)
 
+ZCML_PROVIDES_PATTERN = re.compile(r"""
+\s           # Whitespace.
+provides=    #
+['\"]        # Single or double quote.
+(?P<import>  # Start of 'import' variable.
+\S+          # Non-whitespace string.
+)            # End of 'import' variable.
+['\"]        # Single or double quote.
+""", re.VERBOSE)
+
 ZCML_COMPONENT_PATTERN = re.compile(r"""
 \s           # Whitespace.
 component=   #
@@ -267,6 +277,9 @@ def includes_from_zcml(path):
                      if not module.startswith('.')]
             found += [module for module in
                       re.findall(ZCML_COMPONENT_PATTERN, contents)
+                      if not module.startswith('.')]
+            found += [module for module in
+                      re.findall(ZCML_PROVIDES_PATTERN, contents)
                       if not module.startswith('.')]
             if 'test' in zcml:
                 # ftesting.zcml, mostly.
