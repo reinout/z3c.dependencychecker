@@ -4,7 +4,10 @@ Changelog of z3c.dependencychecker
 1.9 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Improved detection for "Django-style" package names with a dash in
+  them. Django doesn't deal well with namespace packages, so instead of
+  ``zc.something``, you'll see packages like ``zc-something``. The import then
+  uses an underscore, ``zc_something``.
 
 
 1.8 (2013-02-13)
