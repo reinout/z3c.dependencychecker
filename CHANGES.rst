@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-1.9 (unreleased)
+1.9 (2013-02-13)
 ----------------
 
 - Improved detection for "Django-style" package names with a dash in
