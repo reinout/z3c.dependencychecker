@@ -443,27 +443,43 @@ def main():
     db.findModules()
     unused_imports = db.getUnusedImports()
     test_imports = db.getImportedPkgNames(tests=True)
-    logger.debug("All found imported packages for tests: %s",
-                 sorted(test_imports))
     install_imports = db.getImportedPkgNames(tests=False)
     logger.debug("All found regular imported packages: %s",
                  sorted(install_imports))
+    logger.debug("All found regular imported test packages: %s",
+                 sorted(test_imports))
     (install_required, test_required) = existing_requirements()
     stdlib = stdlib_modules()
 
     (zcml_imports, zcml_test_imports) = includes_from_zcml(path)
     zcml_imports = db.resolvePkgNames(zcml_imports)
     zcml_test_imports = db.resolvePkgNames(zcml_test_imports)
+    logger.debug("All found zcml-related packages: %s",
+                 sorted(zcml_imports))
+    logger.debug("All found zcml-related test packages: %s",
+                 sorted(zcml_test_imports))
 
     (django_settings_imports,
      django_settings_test_imports) = includes_from_django_settings(path)
     django_settings_imports = db.resolvePkgNames(django_settings_imports)
     django_settings_test_imports = db.resolvePkgNames(
         django_settings_test_imports)
+    logger.debug("All found django_settings-related packages: %s",
+                 sorted(django_settings_imports))
+    logger.debug("All found django_settings-related test packages: %s",
+                 sorted(django_settings_test_imports))
 
     doctest_imports = imports_from_doctests(path)
-    (generic_setup_required, generic_setup_test_required) = \
-        includes_from_generic_setup_metadata(path)
+
+    (generic_setup_required,
+     generic_setup_test_required) = includes_from_generic_setup_metadata(path)
+    generic_setup_required = db.resolvePkgNames(generic_setup_required)
+    generic_setup_test_required = db.resolvePkgNames(
+        generic_setup_test_required)
+    logger.debug("All found generic_setup-related packages: %s",
+                 sorted(generic_setup_required))
+    logger.debug("All found generic_setup-related test packages: %s",
+                 sorted(generic_setup_test_required))
 
     print_unused_imports(unused_imports)
 
@@ -479,13 +495,14 @@ def main():
         install_required + test_required + stdlib)
     print_modules(test_missing, "Missing test requirements")
 
-    install_unneeded = filter_unneeded(install_imports + zcml_imports +
-                                       generic_setup_required,
-                                       install_required)
+    install_unneeded = filter_unneeded(
+        install_imports + zcml_imports + generic_setup_required +
+        django_settings_imports,
+        install_required)
     # See if one of ours is needed by the tests
     really_unneeded = filter_unneeded(
         test_imports + zcml_test_imports + doctest_imports +
-        generic_setup_test_required,
+        generic_setup_test_required + django_settings_test_imports,
         install_unneeded)
     move_to_test = sorted(set(install_unneeded) - set(really_unneeded))
 
@@ -495,7 +512,7 @@ def main():
 
     test_unneeded = filter_unneeded(
         test_imports + zcml_test_imports + doctest_imports +
-        generic_setup_test_required,
+        generic_setup_test_required + django_settings_test_imports,
         test_required)
     print_modules(test_unneeded, "Unneeded test requirements")
 
