@@ -9,6 +9,10 @@ Changelog of z3c.dependencychecker
   ``zc.something``, you'll see packages like ``zc-something``. The import then
   uses an underscore, ``zc_something``.
 
+- Added support for Django settings files. Anything that matches
+  ``*settings.py`` is searched for Django settings like ``INSTALLED_APPS =
+  [...]`` or ``MIDDLEWARE_CLASSES = (...)``.
+
 
 1.8 (2013-02-13)
 ----------------

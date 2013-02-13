@@ -1,0 +1,11 @@
+# We parse with ast, so we don't get importerrors.
+import something.origname
+
+
+something.origname  # Pyflakes
+
+# Django "installed apps"-like lists/tuples are detected.
+INSTALLED_APPS = [
+    'some_django_app',
+    'zope.interface',
+    ]
