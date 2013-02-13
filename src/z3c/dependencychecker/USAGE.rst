@@ -47,6 +47,7 @@ script would:
          Products.GenericSetup.interfaces.EXTENSION
          missing.req
          other.generic.setup.dependency
+         some_django_app
          something.origname
          zope.interface
     <BLANKLINE>

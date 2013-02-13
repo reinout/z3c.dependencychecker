@@ -1,7 +1,7 @@
 """
 .. :doctest:
 
-Sample test:
+Smoke test:
 
     >>> from z3c.dependencychecker import importchecker
 

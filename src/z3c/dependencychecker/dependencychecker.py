@@ -11,6 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+import _ast
+import ast
 import commands
 import fnmatch
 import logging
@@ -24,6 +26,13 @@ import pkg_resources
 from z3c.dependencychecker import importchecker
 
 logger = logging.getLogger(__name__)
+
+PACKAGE_NAME_PATTERN = re.compile(r"""
+^            # Start of string
+[\w\-\.]+    # \w is a-z, A-Z, underscore, numbers.
+             # Dash is also ok, as is a dot.
+$            # End of string
+""", re.VERBOSE)
 
 ZCML_PACKAGE_PATTERN = re.compile(r"""
 \s           # Whitespace.
@@ -67,7 +76,6 @@ import       # 'import' keyword
 )            # End of 'import' variable.
 """, re.VERBOSE)
 
-
 DOCTEST_FROM_IMPORT = re.compile(r"""
 ^            # From start of line
 \s+          # Whitespace.
@@ -91,7 +99,6 @@ import       # 'import' keyword
 )            # End of 'import' variable.
 """, re.VERBOSE)
 
-
 METADATA_DEPENDENCY_PATTERN = re.compile(r"""
 <dependency> #
 profile-     # Profile prefix
@@ -101,6 +108,16 @@ profile-     # Profile prefix
 :.*?         # Profile name postfix
 </dependency> #
 """, re.VERBOSE)
+
+
+def normalize(package_name):
+    """Return normalized package name.
+
+    Dashes to underscores (to help Django apps). And all-lowercase.
+    """
+    package_name = package_name.lower()
+    package_name = package_name.replace('-', '_')
+    return package_name
 
 
 def print_unused_imports(unused_imports):
@@ -174,6 +191,7 @@ def existing_requirements():
 
     # The project itself is of course both available and needed.
     install_required.append(name)
+    logger.debug("Appended ourselves (%s) to the required packages.", name)
 
     # Distribute says it is setuptools.  Setuptools also includes
     # pkg_resources.
@@ -190,9 +208,9 @@ def filter_missing(imports, required):
     for needed in imports:
         found = False
         for req in required:
-            if req.lower() == needed.lower():
+            if normalize(req) == normalize(needed):
                 found = True
-            if needed.lower().startswith(req.lower() + '.'):
+            if normalize(needed).startswith(normalize(req) + '.'):
                 # 're' should not match 'reinout.something', that's why we
                 # check with an extra dot.
                 found = True
@@ -215,7 +233,7 @@ def filter_unneeded(imports, required):
     for req in required:
         found = False
         for module in imports:
-            if module.lower().startswith(req.lower()):
+            if normalize(module).startswith(normalize(req)):
                 found = True
         if not found:
             unneeded.append(req)
@@ -310,6 +328,49 @@ def includes_from_generic_setup_metadata(path):
     return modules, test_modules
 
 
+def includes_from_django_settings(path):
+    modules = []
+    test_modules = []
+    for path, dirs, files in os.walk(path):
+        for settingsfile in [os.path.abspath(os.path.join(path, filename))
+                             for filename in files
+                             if fnmatch.fnmatch(filename, '*settings.py')]:
+            contents = open(settingsfile).read()
+            found = []
+            parsed = ast.parse(open(settingsfile).read())
+            # We're looking for assignments like ``INSTALLED_APPS = ``.
+            assignments = [obj for obj in parsed.body
+                           if isinstance(obj, _ast.Assign)]
+            # We're looking for assignments with lists/tuples like
+            # ``INSTALLED_APPS = [a, b, c]``.
+            lists_or_tuples = [assignment.value for assignment in assignments
+                               if isinstance(assignment.value, _ast.List)
+                               or isinstance(assignment.value, _ast.Tuple)]
+            for list_or_tuple in lists_or_tuples:
+                strings = [getattr(element, 's', None)
+                           for element in list_or_tuple.elts]
+                if None in strings:
+                    # A tuple of languages or so: that has no 's' attribute.
+                    continue
+                suspect_strings = [s for s in strings
+                                   if not re.match(PACKAGE_NAME_PATTERN, s)]
+                if suspect_strings:
+                    # Something doesn't look like a package name.
+                    continue
+                found += strings
+            logger.debug(
+                "Found possible packages in Django-like settings file %s:",
+                settingsfile)
+            logger.debug(found)
+            # import pdb;pdb.set_trace()
+            if 'test' in settingsfile:
+                # testsettings.py, for instance.
+                test_modules += found
+            else:
+                modules += found
+    return modules, test_modules
+
+
 def imports_from_doctests(path):
     test_modules = []
     for path, dirs, files in os.walk(path):
@@ -382,42 +443,66 @@ def main():
     db.findModules()
     unused_imports = db.getUnusedImports()
     test_imports = db.getImportedPkgNames(tests=True)
-    logger.debug("All found imported packages for tests: %s",
-                 sorted(test_imports))
     install_imports = db.getImportedPkgNames(tests=False)
     logger.debug("All found regular imported packages: %s",
                  sorted(install_imports))
+    logger.debug("All found regular imported test packages: %s",
+                 sorted(test_imports))
     (install_required, test_required) = existing_requirements()
     stdlib = stdlib_modules()
 
     (zcml_imports, zcml_test_imports) = includes_from_zcml(path)
     zcml_imports = db.resolvePkgNames(zcml_imports)
     zcml_test_imports = db.resolvePkgNames(zcml_test_imports)
+    logger.debug("All found zcml-related packages: %s",
+                 sorted(zcml_imports))
+    logger.debug("All found zcml-related test packages: %s",
+                 sorted(zcml_test_imports))
+
+    (django_settings_imports,
+     django_settings_test_imports) = includes_from_django_settings(path)
+    django_settings_imports = db.resolvePkgNames(django_settings_imports)
+    django_settings_test_imports = db.resolvePkgNames(
+        django_settings_test_imports)
+    logger.debug("All found django_settings-related packages: %s",
+                 sorted(django_settings_imports))
+    logger.debug("All found django_settings-related test packages: %s",
+                 sorted(django_settings_test_imports))
 
     doctest_imports = imports_from_doctests(path)
-    (generic_setup_required, generic_setup_test_required) = \
-        includes_from_generic_setup_metadata(path)
+
+    (generic_setup_required,
+     generic_setup_test_required) = includes_from_generic_setup_metadata(path)
+    generic_setup_required = db.resolvePkgNames(generic_setup_required)
+    generic_setup_test_required = db.resolvePkgNames(
+        generic_setup_test_required)
+    logger.debug("All found generic_setup-related packages: %s",
+                 sorted(generic_setup_required))
+    logger.debug("All found generic_setup-related test packages: %s",
+                 sorted(generic_setup_test_required))
 
     print_unused_imports(unused_imports)
 
-    install_missing = filter_missing(install_imports + zcml_imports +
-                                     generic_setup_required,
-                                     install_required + stdlib)
+    install_missing = filter_missing(
+        install_imports + zcml_imports + generic_setup_required +
+        django_settings_imports,
+        install_required + stdlib)
     print_modules(install_missing, "Missing requirements")
 
     test_missing = filter_missing(
         test_imports + zcml_test_imports + doctest_imports +
-        generic_setup_test_required,
+        generic_setup_test_required + django_settings_test_imports,
         install_required + test_required + stdlib)
     print_modules(test_missing, "Missing test requirements")
 
-    install_unneeded = filter_unneeded(install_imports + zcml_imports +
-                                       generic_setup_required,
-                                       install_required)
+    install_unneeded = filter_unneeded(
+        install_imports + zcml_imports + generic_setup_required +
+        django_settings_imports,
+        install_required)
     # See if one of ours is needed by the tests
     really_unneeded = filter_unneeded(
         test_imports + zcml_test_imports + doctest_imports +
-        generic_setup_test_required,
+        generic_setup_test_required + django_settings_test_imports,
         install_unneeded)
     move_to_test = sorted(set(install_unneeded) - set(really_unneeded))
 
@@ -427,12 +512,12 @@ def main():
 
     test_unneeded = filter_unneeded(
         test_imports + zcml_test_imports + doctest_imports +
-        generic_setup_test_required,
+        generic_setup_test_required + django_settings_test_imports,
         test_required)
     print_modules(test_unneeded, "Unneeded test requirements")
 
     if install_missing or test_missing or install_unneeded or test_unneeded:
         print "Note: requirements are taken from the egginfo dir, so you need"
-        print "to re-run buildout (or setup.py or whatever) for changes in "
+        print "to re-run buildout (or setup.py or whatever) for changes in"
         print "setup.py to have effect."
         print
