@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-1.8 (unreleased)
+1.8 (2013-02-13)
 ----------------
 
 - Detect ZCML "provides", as used for generic setup profile registration.
