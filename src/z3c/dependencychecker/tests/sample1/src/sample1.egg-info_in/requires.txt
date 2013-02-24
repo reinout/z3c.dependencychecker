@@ -14,4 +14,4 @@ zope.testbrowser
 zope.testing
 
 [someotherextension]
-we don't bother with this
+some.other.extension

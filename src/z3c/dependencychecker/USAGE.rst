@@ -57,6 +57,7 @@ script would:
     <BLANKLINE>
     Unneeded requirements
     =====================
+         some.other.extension
          unneeded.req
     <BLANKLINE>
     Requirements that should be test requirements
