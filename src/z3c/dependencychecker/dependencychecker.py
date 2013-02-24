@@ -172,22 +172,19 @@ def existing_requirements():
     lines = [line for line in lines if line]
     install_required = []
     test_required = []
-    for line in lines:
-        if line.startswith('['):
-            break
-        req = pkg_resources.Requirement.parse(line)
-        install_required.append(req.project_name)
-    start = False
+
+    current_section = install_required
     for line in lines:
         if line in ('[test]', '[tests]'):
-            start = True
+            current_section = test_required
             continue
-        if not start:
+
+        elif line.startswith('['):
+            current_section = install_required
             continue
-        if line.startswith('['):
-            break
+
         req = pkg_resources.Requirement.parse(line)
-        test_required.append(req.project_name)
+        current_section.append(req.project_name)
 
     # The project itself is of course both available and needed.
     install_required.append(name)
