@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-1.10 (unreleased)
+1.10 (2013-02-24)
 -----------------
 
 - Treat non-test extras_require like normal install_requires.
