@@ -204,6 +204,24 @@ can be package names or something else):
     >>> bool(re.match(dependencychecker.PACKAGE_NAME_PATTERN, input))
     False
 
+Name extraction regex:
+
+    >>> input = ''
+    >>> re.findall(dependencychecker.SETUP_PY_PACKAGE_NAME_PATTERN, input)
+    []
+    >>> input = 'my_package'
+    >>> re.findall(dependencychecker.SETUP_PY_PACKAGE_NAME_PATTERN, input)
+    []
+    >>> input = 'name="my_package"'
+    >>> re.findall(dependencychecker.SETUP_PY_PACKAGE_NAME_PATTERN, input)
+    ['my_package']
+    >>> input = 'setup(name="my_package"'
+    >>> re.findall(dependencychecker.SETUP_PY_PACKAGE_NAME_PATTERN, input)
+    ['my_package']
+    >>> input = "    name='my_package',"
+    >>> re.findall(dependencychecker.SETUP_PY_PACKAGE_NAME_PATTERN, input)
+    ['my_package']
+
 
 Grabbing the name from setup.py
 -------------------------------
@@ -237,6 +255,15 @@ Grab the name, which results in a (mocked) sys.exit():
     Traceback (most recent call last):
     ...
     MockExitException: 1
+
+Alternatively, the name is extracted from the ``setup.py`` with a regex:
+
+    >>> open(setup_py, 'w').write("raise UserError('raargh')\nname='my_package'\n")
+
+Grab the name, which results in a (mocked) sys.exit():
+
+    >>> dependencychecker.name_from_setup()
+    'my_package'
 
 
 Corner case: egg info contents and location
