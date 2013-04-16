@@ -4,7 +4,8 @@ Changelog of z3c.dependencychecker
 1.11 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Support python installations without global setuptools installed
+  by searching the name in the setup.py as fallback.
 
 
 1.10 (2013-02-24)
