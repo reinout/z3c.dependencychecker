@@ -110,6 +110,12 @@ profile-     # Profile prefix
 """, re.VERBOSE)
 
 
+SETUP_PY_PACKAGE_NAME_PATTERN = re.compile(r"""
+name\W*=\W*        # 'name =  ' with possible whitespace
+["']([\w.]*)["']   # A string containing the name
+""", re.VERBOSE)
+
+
 def normalize(package_name):
     """Return normalized package name.
 
@@ -137,6 +143,13 @@ def name_from_setup():
     cmd = "%s setup.py --name" % sys.executable
     name = commands.getoutput(cmd).strip()
     if 'traceback' in name.lower():
+
+        # Try to get the package name from setup.py
+        setup = open('setup.py').read()
+        match = SETUP_PY_PACKAGE_NAME_PATTERN.search(setup)
+        if match:
+            return match.groups()[0]
+
         print "You probably don't have setuptools installed globally"
         print "Or there's an error in your setup.py."
         print "Try running this by hand:"
