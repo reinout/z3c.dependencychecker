@@ -4,6 +4,7 @@
 Detailed tests for dependencychecker:
 
     >>> from z3c.dependencychecker import dependencychecker
+    >>> import re
 
 
 Filtering out missing requirements
@@ -119,7 +120,6 @@ Testing the regexes
 
 Finding package="" in zcml files:
 
-    >>> import re
     >>> input = ''
     >>> re.findall(dependencychecker.ZCML_PACKAGE_PATTERN, input)
     []
@@ -129,13 +129,39 @@ Finding package="" in zcml files:
 
 Finding provides="" in zcml files:
 
-    >>> import re
     >>> input = ''
     >>> re.findall(dependencychecker.ZCML_PROVIDES_PATTERN, input)
     []
     >>> input = '<bla\nprovides="Products.GenericSetup.interfaces.EXTENSION"/>'
     >>> re.findall(dependencychecker.ZCML_PROVIDES_PATTERN, input)
     ['Products.GenericSetup.interfaces.EXTENSION']
+
+Finding component="" in zcml files:
+
+    >>> input = ''
+    >>> re.findall(dependencychecker.ZCML_COMPONENT_PATTERN, input)
+    []
+    >>> input = '<bla\ncomponent="Products.CMFPlone.UTF8EncodingConflictResolver"/>'
+    >>> re.findall(dependencychecker.ZCML_COMPONENT_PATTERN, input)
+    ['Products.CMFPlone.UTF8EncodingConflictResolver']
+
+Finding class="" in zcml files:
+
+    >>> input = ''
+    >>> re.findall(dependencychecker.ZCML_CLASS_PATTERN, input)
+    []
+    >>> input = '<bla\nclass="Products.CMFPlone.browser.rss.RSSView"/>'
+    >>> re.findall(dependencychecker.ZCML_CLASS_PATTERN, input)
+    ['Products.CMFPlone.browser.rss.RSSView']
+
+Finding for="" in zcml files:
+
+    >>> input = ''
+    >>> re.findall(dependencychecker.ZCML_FOR_PATTERN, input)
+    []
+    >>> input = '<bla\nfor="Products.CMFPlone.interfaces.IPloneSiteroot"/>'
+    >>> re.findall(dependencychecker.ZCML_FOR_PATTERN, input)
+    ['Products.CMFPlone.interfaces.IPloneSiteroot']
 
 Finding imports in doctests:
 
