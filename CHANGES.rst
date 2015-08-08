@@ -4,8 +4,14 @@ Changelog of z3c.dependencychecker
 1.12 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Update bootstrap, zc.buildout and pinned versions.
+  [gforcada]
 
+- Fix tests with newer versions of setuptools.
+  [gforcada]
+
+- Improve ZCML imports coverage (look on ``for`` and ``class`` as well).
+  [gforcada]
 
 1.11 (2013-04-16)
 -----------------
