@@ -2,4 +2,15 @@
 
   <include package="needed.by.test.zcml"/>
 
+  <utility component="needed.by.test" />
+
+  <adapter provides="zope.filerepresentation.interfaces.IRawReadFile"" />
+
+  <browser:page
+      for="plone.dexterity.interfaces.IContentType"
+      class="plone.dexterity.browser.views.ContentTypeView"
+      />
+
+  <browser:page for="*" />
+
 </zcml>

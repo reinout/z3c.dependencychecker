@@ -334,7 +334,7 @@ def includes_from_zcml(path):
                       if not module.startswith('.')]
             found += [module for module in
                       re.findall(ZCML_FOR_PATTERN, contents)
-                      if not module.startswith('.')]
+                      if not module.startswith('.') and module.find('*') == -1]
             if 'test' in zcml:
                 # ftesting.zcml, mostly.
                 test_modules += found

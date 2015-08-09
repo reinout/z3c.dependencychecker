@@ -53,7 +53,10 @@ script would:
     <BLANKLINE>
     Missing test requirements
     =========================
+         plone.dexterity.browser.views.ContentTypeView
+         plone.dexterity.interfaces.IContentType
          reinout.hurray
+         zope.filerepresentation.interfaces.IRawReadFile"
     <BLANKLINE>
     Unneeded requirements
     =====================
