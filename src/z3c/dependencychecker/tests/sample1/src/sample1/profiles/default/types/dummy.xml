@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<object meta_type="Dexterity FTI">
+  <property name="schema">plone.random1.interfaces.IMySchema</property>
+  <property name="klass">plone.random2.content.MyType</property>
+  <property name="behaviors">
+    <element value="plone.app.content.interfaces.INameFromTitle"/>
+    <element value="plone.app.dexterity.behaviors.metadata.IBasic"/>
+  </property>
+
+  <property name="view_methods">
+    <element value="view" />
+  </property>
+</object>

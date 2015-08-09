@@ -84,6 +84,44 @@ for=         #
 ['\"]        # Single or double quote.
 """, re.VERBOSE)
 
+FTI_BEHAVIOR_PATTERN = re.compile(r"""
+\s           # Whitespace.
+<element     #
+\s+          #
+value=       #
+['\"]        # Single or double quote.
+(?P<import>  # Start of 'import' variable.
+\S+          # Non-whitespace string.
+)            # End of 'import' variable.
+['\"]        # Single or double quote.
+""", re.VERBOSE)
+
+FTI_SCHEMA_PATTERN = re.compile(r"""
+\s           # Whitespace.
+name=        #
+['\"]        # Single or double quote.
+schema       #
+['\"]        # Single or double quote.
+>            # End of opening tag
+(?P<import>  # Start of 'import' variable.
+\S+          # Non-whitespace string.
+)            # End of 'import' variable.
+<            # Start of closing tag
+""", re.VERBOSE)
+
+FTI_KLASS_PATTERN = re.compile(r"""
+\s           # Whitespace.
+name=        #
+['\"]        # Single or double quote.
+klass        #
+['\"]        # Single or double quote.
+>            # End of opening tag
+(?P<import>  # Start of 'import' variable.
+\S+          # Non-whitespace string.
+)            # End of 'import' variable.
+<            # Start of closing tag
+""", re.VERBOSE)
+
 DOCTEST_IMPORT = re.compile(r"""
 ^            # From start of line
 \s+          # Whitespace.
@@ -343,6 +381,33 @@ def includes_from_zcml(path):
     return modules, test_modules
 
 
+def includes_from_plone_fti(path):
+    modules = []
+    test_modules = []
+    for path, dirs, files in os.walk(path):
+        for fti in [os.path.abspath(os.path.join(path, filename))
+                    for filename in files
+                    if fnmatch.fnmatch(filename, '*.xml')]:
+            contents = open(fti).read()
+            # check that we are on a Dexterity FTI and
+            # not any other random XML file
+            if contents.find('meta_type="Dexterity FTI"') == -1:
+                continue
+
+            found = [module for module in
+                     re.findall(FTI_BEHAVIOR_PATTERN, contents)
+                     if module.find('.') != -1]
+            found += [module for module in
+                      re.findall(FTI_SCHEMA_PATTERN, contents)]
+            found += [module for module in
+                      re.findall(FTI_KLASS_PATTERN, contents)]
+            if 'tests' in fti:
+                test_modules += found
+            else:
+                modules += found
+    return modules, test_modules
+
+
 def includes_from_generic_setup_metadata(path):
     modules = []
     test_modules = []
@@ -495,6 +560,14 @@ def main():
     logger.debug("All found zcml-related test packages: %s",
                  sorted(zcml_test_imports))
 
+    (fti_imports, fti_test_imports) = includes_from_plone_fti(path)
+    fti_imports = db.resolvePkgNames(fti_imports)
+    fti_test_imports = db.resolvePkgNames(fti_test_imports)
+    logger.debug("All found FTI-related packages: %s",
+                 sorted(fti_imports))
+    logger.debug("All found FTI-related test packages: %s",
+                 sorted(fti_test_imports))
+
     (django_settings_imports,
      django_settings_test_imports) = includes_from_django_settings(path)
     django_settings_imports = db.resolvePkgNames(django_settings_imports)
@@ -521,24 +594,26 @@ def main():
 
     install_missing = filter_missing(
         install_imports + zcml_imports + generic_setup_required +
-        django_settings_imports,
+        django_settings_imports + fti_imports,
         install_required + stdlib)
     print_modules(install_missing, "Missing requirements")
 
     test_missing = filter_missing(
         test_imports + zcml_test_imports + doctest_imports +
-        generic_setup_test_required + django_settings_test_imports,
+        generic_setup_test_required + django_settings_test_imports +
+        fti_test_imports,
         install_required + test_required + stdlib)
     print_modules(test_missing, "Missing test requirements")
 
     install_unneeded = filter_unneeded(
         install_imports + zcml_imports + generic_setup_required +
-        django_settings_imports,
+        django_settings_imports + fti_imports,
         install_required)
     # See if one of ours is needed by the tests
     really_unneeded = filter_unneeded(
         test_imports + zcml_test_imports + doctest_imports +
-        generic_setup_test_required + django_settings_test_imports,
+        generic_setup_test_required + django_settings_test_imports +
+        fti_test_imports,
         install_unneeded)
     move_to_test = sorted(set(install_unneeded) - set(really_unneeded))
 
@@ -548,7 +623,8 @@ def main():
 
     test_unneeded = filter_unneeded(
         test_imports + zcml_test_imports + doctest_imports +
-        generic_setup_test_required + django_settings_test_imports,
+        generic_setup_test_required + django_settings_test_imports +
+        fti_test_imports,
         test_required)
     print_modules(test_unneeded, "Unneeded test requirements")
 
