@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-1.12 (unreleased)
+1.12 (2015-08-16)
 -----------------
 
 - Improve ZCML imports coverage (look on ``for`` and ``class`` as well).
