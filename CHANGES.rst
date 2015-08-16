@@ -10,6 +10,8 @@ Changelog of z3c.dependencychecker
 - Internal project updates (buildout version, test adjustments, etc).
   [gforcada]
 
+- Add support for FTI dependencies (behaviors, schema and class).
+  [gforcada]
 
 1.11 (2013-04-16)
 -----------------
