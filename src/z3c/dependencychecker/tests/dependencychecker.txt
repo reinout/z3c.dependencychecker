@@ -163,6 +163,33 @@ Finding for="" in zcml files:
     >>> re.findall(dependencychecker.ZCML_FOR_PATTERN, input)
     ['Products.CMFPlone.interfaces.IPloneSiteroot']
 
+Finding behaviors on plone FTI files:
+
+    >>> input = ''
+    >>> re.findall(dependencychecker.FTI_BEHAVIOR_PATTERN, input)
+    []
+    >>> input = '\n<element value="Products.CMFPlone.interfaces.IPloneSiteroot"/>'
+    >>> re.findall(dependencychecker.FTI_BEHAVIOR_PATTERN, input)
+    ['Products.CMFPlone.interfaces.IPloneSiteroot']
+
+Finding schema definitions on plone FTI files:
+
+    >>> input = ''
+    >>> re.findall(dependencychecker.FTI_SCHEMA_PATTERN, input)
+    []
+    >>> input = '\nname="schema">Products.CMFPlone.interfaces.IPloneSiteroot<'
+    >>> re.findall(dependencychecker.FTI_SCHEMA_PATTERN, input)
+    ['Products.CMFPlone.interfaces.IPloneSiteroot']
+
+Finding class definitions on plone FTI files:
+
+    >>> input = ''
+    >>> re.findall(dependencychecker.FTI_KLASS_PATTERN, input)
+    []
+    >>> input = '\nname="klass">Products.CMFPlone.interfaces.IPloneSiteroot<'
+    >>> re.findall(dependencychecker.FTI_KLASS_PATTERN, input)
+    ['Products.CMFPlone.interfaces.IPloneSiteroot']
+
 Finding imports in doctests:
 
     >>> input = ''
