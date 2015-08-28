@@ -16,6 +16,12 @@ Changelog of z3c.dependencychecker
   directory. Everything moved one level up.
   [reinout]
 
+- Dependencychecker doesn't descend anymore into directories without an
+  ``__init__.py``. This helps with website projects that sometimes have python
+  files buried deep in directories that aren't actually part of the project's
+  python code.
+  [reinout]
+
 
 1.12 (2015-08-16)
 -----------------
