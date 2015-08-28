@@ -140,7 +140,7 @@ DOCTEST_IMPORT = re.compile(r"""
 import       # 'import' keyword
 \s+          # Whitespace
 (?P<module>  # Start of 'module' variable.
-\S+          # Non-whitespace string.
+[\w.]+       # Alpha-numeric characters.
 )            # End of 'import' variable.
 """, re.VERBOSE)
 
