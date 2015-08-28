@@ -76,6 +76,9 @@ def setup(test):
             if not filename.endswith('_in'):
                 continue
             new_filename = filename.replace('_in', '')
+            if new_filename == '_it__.py':
+                # Oopsie :-) The replace works too well...
+                new_filename = '__init__.py'
             source = os.path.join(dirpath, filename)
             target = os.path.join(dirpath, new_filename)
             os.rename(source, target)
