@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-1.13 (unreleased)
+1.13 (2015-08-29)
 -----------------
 
 - Import + semicolon + statement (like ``import
