@@ -22,6 +22,11 @@ Changelog of z3c.dependencychecker
   python code.
   [reinout]
 
+- Multiple imports from similarly-named libraries on separate lines are now
+  handled correctly. An import of ``zope.interface`` on one line could
+  sometimes "hide" a ``zope.component`` import one line down.
+  [gforcada]
+
 
 1.12 (2015-08-16)
 -----------------
