@@ -286,16 +286,16 @@ class ImportDatabase:
         """returns all  names imported by modules"""
         result = set()
         import os
-        for path, module in self._modules.items():
+        for filepath, module in self._modules.items():
             # remove .py
-            parts = path[:-3].split(os.path.sep)
+            parts = filepath[:-3].split(os.path.sep)
             isTest = 'tests' in parts or 'testing' in parts \
                      or 'ftests' in parts
             if (tests and not isTest) or (not tests and isTest):
                 continue
             module_names = module.getImportedModuleNames()
             logger.debug("Modules found in %s (test-only: %s):\n    %s",
-                         path, isTest, sorted(module_names))
+                         filepath, isTest, sorted(module_names))
             result.update(module_names)
         logger.debug("All modules found (test-only: %s):\n    %s",
                      isTest, sorted(result))
