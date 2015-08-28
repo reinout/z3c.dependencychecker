@@ -7,6 +7,10 @@ Import from zope.testbrowser:
 
     >>> import zope.testbrowser
 
+Import with semicolon:
+
+    >>> import transaction; transaction.commit()
+
 From-style import:
 
     >>> from my.package import Party

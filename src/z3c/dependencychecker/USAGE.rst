@@ -60,6 +60,7 @@ script would:
          plone.dexterity.browser.views.ContentTypeView
          plone.dexterity.interfaces.IContentType
          reinout.hurray
+         transaction
          zope.filerepresentation.interfaces.IRawReadFile"
     <BLANKLINE>
     Unneeded requirements
