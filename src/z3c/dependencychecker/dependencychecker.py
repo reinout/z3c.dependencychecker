@@ -210,8 +210,8 @@ def print_unused_imports(unused_imports):
 def name_from_setup():
     cmd = "%s setup.py --name" % sys.executable
     name = commands.getoutput(cmd).strip()
-    if 'traceback' in name.lower():
 
+    if 'traceback' in name.lower():
         # Try to get the package name from setup.py
         setup = open('setup.py').read()
         match = SETUP_PY_PACKAGE_NAME_PATTERN.search(setup)
@@ -224,6 +224,15 @@ def name_from_setup():
         print cmd
         # Use buildout's setuptools_loc environ hack.
         sys.exit(1)
+
+    if '\n' in name:
+        logger.warn(
+            "setuptools printed a warning together with the package name: %s",
+            name)
+        name = name.split('\n')[-1].strip()
+        logger.info(
+            "Extracted '%s' as package name. Run with '-v' if incorrect.",
+            name)
     return name
 
 
@@ -517,22 +526,39 @@ def print_modules(modules, heading):
 
 
 def determine_path(args):
-    path = None
     if len(args) > 0:
         path = args[0]
-    else:
-        name = name_from_setup()
-        name = name.replace('-', '_')
-        if name in os.listdir('.'):
-            path = name
-    if path is None:
-        # Fallback.
-        path = os.path.join(os.getcwd(), 'src')
-    path = os.path.abspath(path)
-    if not os.path.isdir(path):
-        print "Unknown path:", path
-        sys.exit(1)
-    return path
+        logger.debug("Looking in directory %s, passed on the commmand line",
+                     path)
+        return path
+
+    name = name_from_setup()
+    logger.debug("The detected package name (from setup.py) is %s", name)
+    path = name
+    if '-' in path:
+        path = path.replace('-', '_')
+        logger.debug("Replaced dashes with underscores: %s", path)
+
+    if '.' in path:
+        path = os.path.join(*path.split('.'))
+        logger.debug("Treating periods as directories: %s", path)
+
+    if os.path.exists(path):
+        logger.debug("Found base directory at %s", path)
+        return path
+
+    logger.debug("Directory %s does not exist, trying with src/ prefix",
+                 path)
+    path = os.path.join('src', path)
+    if os.path.exists(path):
+        logger.debug("Found base directory at %s", path)
+        return path
+
+    logger.error(
+        "Couldn't find the base directory with your code. Either pass "
+        "a path as the first argument or re-run with the '-v' option "
+        "to get more debug information")
+    sys.exit(1)
 
 
 def _version():
