@@ -328,6 +328,9 @@ def _detect_modules(sample_module):
     for stdlib_file in stdlib_files:
         module, extension = os.path.splitext(stdlib_file)
         if extension == stdlib_extension:
+            if module.endswith('module'):
+                # See http://stackoverflow.com/q/6319379/27401
+                module = module[:-len('module')]
             modules.append(module)
     if 'py' in stdlib_extension:
         # Also check directories with __init__.py* in them.
