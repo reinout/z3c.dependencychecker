@@ -53,6 +53,7 @@ script would:
          plone.random2.content.MyType
          some_django_app
          something.origname
+         zope.exceptions
          zope.interface
     <BLANKLINE>
     Missing test requirements

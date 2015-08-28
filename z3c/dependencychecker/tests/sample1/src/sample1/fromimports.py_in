@@ -1,8 +1,10 @@
 """Test the from imports"""
 
 from zope import interface
+from zope import exceptions
 from something import origname as newname
 
 # Use it to prevent "unused!" warnings
 interface
 newname
+exceptions
