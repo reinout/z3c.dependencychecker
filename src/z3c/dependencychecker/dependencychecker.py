@@ -552,7 +552,6 @@ def main():
     logging.basicConfig(level=loglevel, format="%(levelname)s: %(message)s")
 
     path = determine_path(args)
-    # import pdb;pdb.set_trace()
     db = importchecker.ImportDatabase(path)
     db.findModules()
     unused_imports = db.getUnusedImports()
