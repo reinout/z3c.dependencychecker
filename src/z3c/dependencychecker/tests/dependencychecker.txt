@@ -163,6 +163,15 @@ Finding for="" in zcml files:
     >>> re.findall(dependencychecker.ZCML_FOR_PATTERN, input)
     ['Products.CMFPlone.interfaces.IPloneSiteroot']
 
+Finding handler="" in zcml files:
+
+    >>> input = ''
+    >>> re.findall(dependencychecker.ZCML_HANDLER_PATTERN, input)
+    []
+    >>> input = '<bla\nhandler="Products.CMFPlone.handler.do_something_useful"/>'
+    >>> re.findall(dependencychecker.ZCML_HANDLER_PATTERN, input)
+    ['Products.CMFPlone.handler.do_something_useful']
+
 Finding behaviors on plone FTI files:
 
     >>> input = ''
