@@ -226,7 +226,7 @@ def name_from_setup():
         sys.exit(1)
 
     if '\n' in name:
-        logger.warn(
+        logger.debug(
             "setuptools printed a warning together with the package name: %s",
             name)
         name = name.split('\n')[-1].strip()
@@ -236,9 +236,8 @@ def name_from_setup():
     return name
 
 
-def existing_requirements():
+def existing_requirements(name):
     """Extract install and test requirements"""
-    name = name_from_setup()
     underscored_name = name.replace('-', '_')
     egginfo_dir_name = name + '.egg-info'
     egginfo_underscored_dir_name = underscored_name + '.egg-info'
@@ -307,8 +306,7 @@ def filter_missing(imports, required):
     return missing
 
 
-def filter_unneeded(imports, required):
-    name = name_from_setup()
+def filter_unneeded(imports, required, name=None):
     imports.append(name)  # We always use ourselves, obviously.
     imports = set(imports)
     required = set(required)
@@ -525,14 +523,13 @@ def print_modules(modules, heading):
         print
 
 
-def determine_path(args):
+def determine_path(args, name=None):
     if len(args) > 0:
         path = args[0]
         logger.debug("Looking in directory %s, passed on the commmand line",
                      path)
         return path
 
-    name = name_from_setup()
     logger.debug("The detected package name (from setup.py) is %s", name)
     path = name
     if '-' in path:
@@ -580,7 +577,8 @@ def main():
         loglevel = logging.INFO
     logging.basicConfig(level=loglevel, format="%(levelname)s: %(message)s")
 
-    path = determine_path(args)
+    name = name_from_setup()
+    path = determine_path(args, name=name)
     db = importchecker.ImportDatabase(path)
     db.findModules()
     unused_imports = db.getUnusedImports()
@@ -590,7 +588,7 @@ def main():
                  sorted(install_imports))
     logger.debug("All found regular imported test packages: %s",
                  sorted(test_imports))
-    (install_required, test_required) = existing_requirements()
+    (install_required, test_required) = existing_requirements(name=name)
     stdlib = stdlib_modules()
 
     (zcml_imports, zcml_test_imports) = includes_from_zcml(path)
@@ -649,13 +647,15 @@ def main():
     install_unneeded = filter_unneeded(
         install_imports + zcml_imports + generic_setup_required +
         django_settings_imports + fti_imports,
-        install_required)
+        install_required,
+        name=name)
     # See if one of ours is needed by the tests
     really_unneeded = filter_unneeded(
         test_imports + zcml_test_imports + doctest_imports +
         generic_setup_test_required + django_settings_test_imports +
         fti_test_imports,
-        install_unneeded)
+        install_unneeded,
+        name=name)
     move_to_test = sorted(set(install_unneeded) - set(really_unneeded))
 
     print_modules(really_unneeded, "Unneeded requirements")
@@ -666,7 +666,8 @@ def main():
         test_imports + zcml_test_imports + doctest_imports +
         generic_setup_test_required + django_settings_test_imports +
         fti_test_imports,
-        test_required)
+        test_required,
+        name=name)
     print_modules(test_unneeded, "Unneeded test requirements")
 
     if install_missing or test_missing or install_unneeded or test_unneeded:
