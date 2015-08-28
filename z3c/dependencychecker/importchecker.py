@@ -297,8 +297,11 @@ class ImportDatabase:
             logger.debug("Modules found in %s (test-only: %s):\n    %s",
                          filepath, isTest, sorted(module_names))
             result.update(module_names)
-        logger.debug("All modules found (test-only: %s):\n    %s",
-                     isTest, sorted(result))
+        if result:
+            logger.debug("All modules found (test-only: %s):\n    %s",
+                         isTest, sorted(result))
+        else:
+            logger.debug("No imported modules found.")
         return sorted(result)
 
     def getImportedPkgNames(self, tests=False):
