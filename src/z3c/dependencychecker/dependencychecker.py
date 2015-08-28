@@ -436,8 +436,8 @@ def includes_from_generic_setup_metadata(path):
     test_modules = []
     for path, dirs, files in os.walk(path):
         for xmlfile in [os.path.abspath(os.path.join(path, filename))
-                     for filename in files
-                     if fnmatch.fnmatch(filename, 'metadata.xml')]:
+                        for filename in files
+                        if fnmatch.fnmatch(filename, 'metadata.xml')]:
             contents = open(xmlfile).read()
             found = [module for module in
                      re.findall(METADATA_DEPENDENCY_PATTERN, contents)
@@ -459,7 +459,6 @@ def includes_from_django_settings(path):
         for settingsfile in [os.path.abspath(os.path.join(path, filename))
                              for filename in files
                              if fnmatch.fnmatch(filename, '*settings.py')]:
-            contents = open(settingsfile).read()
             found = []
             parsed = ast.parse(open(settingsfile).read())
             # We're looking for assignments like ``INSTALLED_APPS = ``.
