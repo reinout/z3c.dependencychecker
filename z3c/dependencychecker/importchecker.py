@@ -187,31 +187,20 @@ class Module:
         return result
 
 
-class ModuleFinder:
-
-    def __init__(self):
-        self._files = []
-
-    def visit(self, arg, dirname, names):
-        """This method will be called when we walk the filesystem
-        tree. It looks for python modules and stored their filenames.
-        """
-        for name in names:
-            # get all .py files that aren't weirdo emacs droppings
-            if name.endswith('.py') and not name.startswith('.#'):
-                self._files.append(os.path.join(dirname, name))
-
-    def getModuleFilenames(self):
-        return self._files
-
-
 def findModules(path):
-    """Find python modules in the given path and return their absolute
-    filenames in a sequence.
+    """Return absolute filenames of all python modules in the given path.
     """
-    finder = ModuleFinder()
-    os.path.walk(path, finder.visit, ())
-    return finder.getModuleFilenames()
+    result = []
+    for dirpath, dirnames, filenames in os.walk(path):
+        if '__init__.py' not in filenames:
+            # Don't descend further into the tree. Clear dirnames in-place.
+            dirnames[:] = []
+            continue
+        result += [os.path.join(dirpath, filename)
+                   for filename in filenames
+                   if filename.endswith('.py')
+                   and not filename.startswith('.#')]
+    return result
 
 
 class ImportDatabase:
