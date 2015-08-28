@@ -4,7 +4,9 @@ Changelog of z3c.dependencychecker
 1.13 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Import + semicolon + statement (like ``import
+  transaction;transaction.commit()``) is now also detected correctly.
+  [gforcada]
 
 
 1.12 (2015-08-16)
@@ -18,6 +20,7 @@ Changelog of z3c.dependencychecker
 
 - Add support for FTI dependencies (behaviors, schema and class).
   [gforcada]
+
 
 1.11 (2013-04-16)
 -----------------
