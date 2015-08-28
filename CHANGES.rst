@@ -8,6 +8,14 @@ Changelog of z3c.dependencychecker
   transaction;transaction.commit()``) is now also detected correctly.
   [gforcada]
 
+- The starting directory for packages with a dotted name (like
+  ``zest.releaser``) is now also found automatically.
+  [reinout]
+
+- Internal code change: moved the code out of the ``src/``
+  directory. Everything moved one level up.
+  [reinout]
+
 
 1.12 (2015-08-16)
 -----------------
