@@ -96,9 +96,10 @@ class ImportFinder:
             else:
                 name = as_name
             names_dict[name] = orig_name
-        self._map.setdefault(module_name, {'names': names_dict,
-                                           'lineno': stmt.lineno,
-                                           'fromimport': True})
+        self._map.setdefault(module_name, [])
+        self._map[module_name].append({'names': names_dict,
+                                       'lineno': stmt.lineno,
+                                       'fromimport': True})
 
     def visitImport(self, stmt):
         """Will be called for 'import foo.bar' statements
@@ -108,9 +109,9 @@ class ImportFinder:
                 name = orig_name
             else:
                 name = as_name
-            self._map.setdefault(orig_name, {'names': {name: orig_name},
+            self._map.setdefault(orig_name, [{'names': {name: orig_name},
                                              'lineno': stmt.lineno,
-                                             'fromimport': False})
+                                             'fromimport': False}])
 
     def getMap(self):
         return self._map
@@ -144,19 +145,20 @@ class Module:
         """
         result = []
         for modulename in self._map.keys():
-            if not self._map[modulename]['fromimport']:
-                # Regular import
-                result.append(modulename)
-            else:
-                # from xyz import abc, return xyz.abc to help with detecting
-                # "from zope import interface"-style imports where
-                # zope.inteface is the real module and zope just a namespace
-                # package.  This is for the dependencychecker, btw.
-                if len(self._map[modulename]['names'].values()) == 0:
-                    # from xyz import *
+            for line in self._map[modulename]:
+                if not line['fromimport']:
+                    # Regular import
                     result.append(modulename)
-                for submodule in self._map[modulename]['names'].values():
-                    result.append('.'.join([modulename, submodule]))
+                else:
+                    # from xyz import abc, return xyz.abc to help with detecting
+                    # "from zope import interface"-style imports where
+                    # zope.inteface is the real module and zope just a namespace
+                    # package.  This is for the dependencychecker, btw.
+                    if len(line['names'].values()) == 0:
+                        # from xyz import *
+                        result.append(modulename)
+                    for submodule in line['names'].values():
+                        result.append('.'.join([modulename, submodule]))
         return result
 
     def getImportNames(self):
@@ -165,14 +167,15 @@ class Module:
         result = []
         map = self._map
         for module_name in map.keys():
-            for usedname, originalname in map[module_name]['names'].items():
-                result.append((originalname, module_name))
-                # add any other name that we could be using
-                for dottedname in self._dottednames:
-                    usednamedot = usedname + '.'
-                    if dottedname.startswith(usednamedot):
-                        attrname = dottedname[len(usednamedot):].split('.')[0]
-                        result.append((attrname, module_name))
+            for line in map[module_name]:
+                for usedname, originalname in line['names'].items():
+                    result.append((originalname, module_name))
+                    # add any other name that we could be using
+                    for dottedname in self._dottednames:
+                        usednamedot = usedname + '.'
+                        if dottedname.startswith(usednamedot):
+                            attrname = dottedname[len(usednamedot):].split('.')[0]
+                            result.append((attrname, module_name))
 
         return result
 
@@ -180,10 +183,11 @@ class Module:
         """Get unused imports of this module (the whole import info).
         """
         result = []
-        for value in self._map.values():
-            for usedname, originalname in value['names'].items():
-                if usedname not in self._dottednames:
-                    result.append((originalname, value['lineno']))
+        for key in self._map.keys():
+            for line in self._map[key]:
+                for usedname, originalname in line['names'].items():
+                    if usedname not in self._dottednames:
+                        result.append((originalname, line['lineno']))
         return result
 
 
