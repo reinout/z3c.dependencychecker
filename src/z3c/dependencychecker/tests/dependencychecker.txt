@@ -90,28 +90,28 @@ Exact matches are fine:
 
     >>> imports = ['zope.interface']
     >>> required = ['zope.interface']
-    >>> dependencychecker.filter_unneeded(imports, required)
+    >>> dependencychecker.filter_unneeded(imports, required, name='test')
     []
 
 Too-specific requirements are reported:
 
     >>> imports = ['zope']
     >>> required = ['zope.interface']
-    >>> dependencychecker.filter_unneeded(imports, required)
+    >>> dependencychecker.filter_unneeded(imports, required, name='test')
     ['zope.interface']
 
 There are no duplicates in the output:
 
     >>> imports = []
     >>> required = ['a', 'a']
-    >>> dependencychecker.filter_unneeded(imports, required)
+    >>> dependencychecker.filter_unneeded(imports, required, name='test')
     ['a']
 
 And the output is sorted:
 
     >>> imports = []
     >>> required = ['a', 'c', 'b']
-    >>> dependencychecker.filter_unneeded(imports, required)
+    >>> dependencychecker.filter_unneeded(imports, required, name='test')
     ['a', 'b', 'c']
 
 
@@ -352,7 +352,7 @@ If we grab the requirements now, we hit two corner cases:
 
 Grab it and watch the fireworks:
 
-    >>> dependencychecker.existing_requirements()
+    >>> dependencychecker.existing_requirements(name='test')
     Traceback (most recent call last):
     ...
     MockExitException: 1
@@ -373,7 +373,7 @@ Pass the path on the command line:
 Pass a non-existing path:
 
     >>> args = ['/does/not/exist']
-    >>> dependencychecker.determine_path(args)
+    >>> dependencychecker.determine_path(args, name='test')
     Traceback (most recent call last):
     ...
     MockExitException: 1
@@ -381,7 +381,7 @@ Pass a non-existing path:
 Pass a file instead of a directory:
 
     >>> args = [setup_py]
-    >>> dependencychecker.determine_path(args)
+    >>> dependencychecker.determine_path(args, name='test')
     Traceback (most recent call last):
     ...
     MockExitException: 1

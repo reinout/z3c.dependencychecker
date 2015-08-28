@@ -526,6 +526,10 @@ def print_modules(modules, heading):
 def determine_path(args, name=None):
     if len(args) > 0:
         path = args[0]
+        if not os.path.isdir(path):
+            logger.error("You passed %s as a path, but that is no directory!",
+                         path)
+            sys.exit(1)
         logger.debug("Looking in directory %s, passed on the commmand line",
                      path)
         return path
@@ -540,14 +544,14 @@ def determine_path(args, name=None):
         path = os.path.join(*path.split('.'))
         logger.debug("Treating periods as directories: %s", path)
 
-    if os.path.exists(path):
+    if os.path.isdir(path):
         logger.debug("Found base directory at %s", path)
         return path
 
     logger.debug("Directory %s does not exist, trying with src/ prefix",
                  path)
     path = os.path.join('src', path)
-    if os.path.exists(path):
+    if os.path.isdir(path):
         logger.debug("Found base directory at %s", path)
         return path
 
