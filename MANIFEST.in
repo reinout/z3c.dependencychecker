@@ -1,6 +1,7 @@
-recursive-include src *
+recursive-include z3c *
 include *.txt
 include *.rst
 global-exclude *.pyc
 global-exclude ._*
-global-exclude *.mo
+exclude bootstrap.py
+exclude buildout.cfg
