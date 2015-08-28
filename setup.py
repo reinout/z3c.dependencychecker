@@ -5,7 +5,7 @@ version = '1.13.dev0'
 
 long_description = '\n\n'.join([
     open('README.rst').read(),
-    open(os.path.join('src', 'z3c', 'dependencychecker', 'USAGE.rst')).read(),
+    open(os.path.join('z3c', 'dependencychecker', 'USAGE.rst')).read(),
     open('TODO.rst').read(),
     open('CHANGES.rst').read(),
     ])
@@ -23,8 +23,7 @@ setup(name='z3c.dependencychecker',
       author_email='reinout@vanrees.org',
       url='https://github.com/reinout/z3c.dependencychecker',
       license='ZPL',
-      package_dir={'': 'src'},
-      packages=find_packages('src'),
+      packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['z3c'],
       include_package_data=True,
       zip_safe=False,
