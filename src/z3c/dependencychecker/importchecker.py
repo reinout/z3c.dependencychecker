@@ -281,7 +281,7 @@ class ImportDatabase:
             path = self.resolveDottedModuleName(from_module_name, module)
             t = (path, name)
             modulepaths = names.get(t, {})
-            if not self_path in modulepaths:
+            if self_path not in modulepaths:
                 modulepaths[self_path] = 1
             names[t] = modulepaths
 
@@ -354,13 +354,16 @@ class ImportDatabase:
         return result
 
     def resolvePkgName(self, dottedname):
-        loader = self._getLoader(dottedname)
+        try:
+            loader = self._getLoader(dottedname)
+        except AttributeError:
+            # AttributeError: 'NoneType' object has no attribute 'startswith'
+            logger.warn("Module %s is not importable!", dottedname)
+            return
         if isinstance(loader, ImpLoader):
             return self._getPkgNameInSourceDist(loader)
         elif isinstance(loader, zipimporter):
             return self._getPkgNameInZipDist(loader)
-        else:
-            return None
 
     def resolvePkgNames(self, modulenames):
         pkgnames = set()

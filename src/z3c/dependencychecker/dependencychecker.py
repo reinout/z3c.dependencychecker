@@ -210,8 +210,8 @@ def print_unused_imports(unused_imports):
 def name_from_setup():
     cmd = "%s setup.py --name" % sys.executable
     name = commands.getoutput(cmd).strip()
-    if 'traceback' in name.lower():
 
+    if 'traceback' in name.lower():
         # Try to get the package name from setup.py
         setup = open('setup.py').read()
         match = SETUP_PY_PACKAGE_NAME_PATTERN.search(setup)
@@ -224,12 +224,20 @@ def name_from_setup():
         print cmd
         # Use buildout's setuptools_loc environ hack.
         sys.exit(1)
+
+    if '\n' in name:
+        logger.debug(
+            "setuptools printed a warning together with the package name: %s",
+            name)
+        name = name.split('\n')[-1].strip()
+        logger.info(
+            "Extracted '%s' as package name. Run with '-v' if incorrect.",
+            name)
     return name
 
 
-def existing_requirements():
+def existing_requirements(name):
     """Extract install and test requirements"""
-    name = name_from_setup()
     underscored_name = name.replace('-', '_')
     egginfo_dir_name = name + '.egg-info'
     egginfo_underscored_dir_name = underscored_name + '.egg-info'
@@ -298,8 +306,7 @@ def filter_missing(imports, required):
     return missing
 
 
-def filter_unneeded(imports, required):
-    name = name_from_setup()
+def filter_unneeded(imports, required, name=None):
     imports.append(name)  # We always use ourselves, obviously.
     imports = set(imports)
     required = set(required)
@@ -429,8 +436,8 @@ def includes_from_generic_setup_metadata(path):
     test_modules = []
     for path, dirs, files in os.walk(path):
         for xmlfile in [os.path.abspath(os.path.join(path, filename))
-                     for filename in files
-                     if fnmatch.fnmatch(filename, 'metadata.xml')]:
+                        for filename in files
+                        if fnmatch.fnmatch(filename, 'metadata.xml')]:
             contents = open(xmlfile).read()
             found = [module for module in
                      re.findall(METADATA_DEPENDENCY_PATTERN, contents)
@@ -452,7 +459,6 @@ def includes_from_django_settings(path):
         for settingsfile in [os.path.abspath(os.path.join(path, filename))
                              for filename in files
                              if fnmatch.fnmatch(filename, '*settings.py')]:
-            contents = open(settingsfile).read()
             found = []
             parsed = ast.parse(open(settingsfile).read())
             # We're looking for assignments like ``INSTALLED_APPS = ``.
@@ -516,23 +522,43 @@ def print_modules(modules, heading):
         print
 
 
-def determine_path(args):
-    path = None
+def determine_path(args, name=None):
     if len(args) > 0:
         path = args[0]
-    else:
-        name = name_from_setup()
-        name = name.replace('-', '_')
-        if name in os.listdir('.'):
-            path = name
-    if path is None:
-        # Fallback.
-        path = os.path.join(os.getcwd(), 'src')
-    path = os.path.abspath(path)
-    if not os.path.isdir(path):
-        print "Unknown path:", path
-        sys.exit(1)
-    return path
+        if not os.path.isdir(path):
+            logger.error("You passed %s as a path, but that is no directory!",
+                         path)
+            sys.exit(1)
+        logger.debug("Looking in directory %s, passed on the commmand line",
+                     path)
+        return path
+
+    logger.debug("The detected package name (from setup.py) is %s", name)
+    path = name
+    if '-' in path:
+        path = path.replace('-', '_')
+        logger.debug("Replaced dashes with underscores: %s", path)
+
+    if '.' in path:
+        path = os.path.join(*path.split('.'))
+        logger.debug("Treating periods as directories: %s", path)
+
+    if os.path.isdir(path):
+        logger.debug("Found base directory at %s", path)
+        return path
+
+    logger.debug("Directory %s does not exist, trying with src/ prefix",
+                 path)
+    path = os.path.join('src', path)
+    if os.path.isdir(path):
+        logger.debug("Found base directory at %s", path)
+        return path
+
+    logger.error(
+        "Couldn't find the base directory with your code. Either pass "
+        "a path as the first argument or re-run with the '-v' option "
+        "to get more debug information")
+    sys.exit(1)
 
 
 def _version():
@@ -554,8 +580,8 @@ def main():
         loglevel = logging.INFO
     logging.basicConfig(level=loglevel, format="%(levelname)s: %(message)s")
 
-    path = determine_path(args)
-    # import pdb;pdb.set_trace()
+    name = name_from_setup()
+    path = determine_path(args, name=name)
     db = importchecker.ImportDatabase(path)
     db.findModules()
     unused_imports = db.getUnusedImports()
@@ -565,7 +591,7 @@ def main():
                  sorted(install_imports))
     logger.debug("All found regular imported test packages: %s",
                  sorted(test_imports))
-    (install_required, test_required) = existing_requirements()
+    (install_required, test_required) = existing_requirements(name=name)
     stdlib = stdlib_modules()
 
     (zcml_imports, zcml_test_imports) = includes_from_zcml(path)
@@ -624,13 +650,15 @@ def main():
     install_unneeded = filter_unneeded(
         install_imports + zcml_imports + generic_setup_required +
         django_settings_imports + fti_imports,
-        install_required)
+        install_required,
+        name=name)
     # See if one of ours is needed by the tests
     really_unneeded = filter_unneeded(
         test_imports + zcml_test_imports + doctest_imports +
         generic_setup_test_required + django_settings_test_imports +
         fti_test_imports,
-        install_unneeded)
+        install_unneeded,
+        name=name)
     move_to_test = sorted(set(install_unneeded) - set(really_unneeded))
 
     print_modules(really_unneeded, "Unneeded requirements")
@@ -641,7 +669,8 @@ def main():
         test_imports + zcml_test_imports + doctest_imports +
         generic_setup_test_required + django_settings_test_imports +
         fti_test_imports,
-        test_required)
+        test_required,
+        name=name)
     print_modules(test_unneeded, "Unneeded test requirements")
 
     if install_missing or test_missing or install_unneeded or test_unneeded:

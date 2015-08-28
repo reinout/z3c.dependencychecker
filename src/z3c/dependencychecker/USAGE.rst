@@ -38,9 +38,9 @@ script would:
     >>> dependencychecker.main()
     Unused imports
     ==============
-    /TESTTEMP/sample1/src/sample1/unusedimports.py:7:  tempfile
-    /TESTTEMP/sample1/src/sample1/unusedimports.py:4:  zest.releaser
-    /TESTTEMP/sample1/src/sample1/unusedimports.py:6:  os
+    src/sample1/unusedimports.py:7:  tempfile
+    src/sample1/unusedimports.py:4:  zest.releaser
+    src/sample1/unusedimports.py:6:  os
     <BLANKLINE>
     Missing requirements
     ====================
