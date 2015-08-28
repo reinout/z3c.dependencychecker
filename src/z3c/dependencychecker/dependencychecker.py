@@ -84,6 +84,16 @@ for=         #
 ['\"]        # Single or double quote.
 """, re.VERBOSE)
 
+ZCML_HANDLER_PATTERN = re.compile(r"""
+\s           # Whitespace.
+handler=     #
+['\"]        # Single or double quote.
+(?P<import>  # Start of 'import' variable.
+\S+          # Non-whitespace string.
+)            # End of 'import' variable.
+['\"]        # Single or double quote.
+""", re.VERBOSE)
+
 FTI_BEHAVIOR_PATTERN = re.compile(r"""
 \s           # Whitespace.
 <element     #
@@ -373,6 +383,9 @@ def includes_from_zcml(path):
             found += [module for module in
                       re.findall(ZCML_FOR_PATTERN, contents)
                       if not module.startswith('.') and module.find('*') == -1]
+            found += [module for module in
+                      re.findall(ZCML_HANDLER_PATTERN, contents)
+                      if not module.startswith('.')]
             if 'test' in zcml:
                 # ftesting.zcml, mostly.
                 test_modules += found
