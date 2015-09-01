@@ -4,7 +4,12 @@ Changelog of z3c.dependencychecker
 1.15 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- The name of a wrong package was sometimes found in case of a directory with
+  multiple egg-info directories (like
+  ``/usr/lib/python2.7/dist-packages/*.egg-info/``...). Now the
+  ``top_level.txt`` file in the egg-info directories is checked if the
+  top-level directory matches.
+  [reinout]
 
 
 1.14 (2015-09-01)
