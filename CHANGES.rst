@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-1.14 (unreleased)
+1.14 (2015-09-01)
 -----------------
 
 - The debug logging (``-v``) is now printed to stdout instead of stderr. This
