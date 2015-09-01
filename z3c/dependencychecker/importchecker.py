@@ -377,6 +377,7 @@ class ImportDatabase:
 
     def _getPkgNameInSourceDist(self, loader):
         path = loader.get_filename()
+        first_path = path
         logger.debug("Finding pkg name for %s", path)
         if not path:
             return None
@@ -398,6 +399,7 @@ class ImportDatabase:
                 return pkgname
             path, basename = os.path.split(path)
 
+        logger.debug("Couldn't find a package name for %s", first_path)
         return None
 
     def _getPkgNameByPath(self, path, expected_top_level=None):
