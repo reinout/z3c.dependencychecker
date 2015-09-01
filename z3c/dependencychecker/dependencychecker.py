@@ -578,7 +578,9 @@ def main():
         loglevel = logging.DEBUG
     else:
         loglevel = logging.INFO
-    logging.basicConfig(level=loglevel, format="%(levelname)s: %(message)s")
+    logging.basicConfig(level=loglevel,
+                        stream=sys.stdout,
+                        format="%(levelname)s: %(message)s")
 
     name = name_from_setup()
     path = determine_path(args, name=name)
