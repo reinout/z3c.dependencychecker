@@ -377,6 +377,7 @@ class ImportDatabase:
 
     def _getPkgNameInSourceDist(self, loader):
         path = loader.get_filename()
+        first_path = path
         logger.debug("Finding pkg name for %s", path)
         if not path:
             return None
@@ -386,30 +387,39 @@ class ImportDatabase:
         if not path.startswith('/'):
             return None
 
+        basename = None
         while path is not '/':
             if path in self._pkgnamecache:
                 return self._pkgnamecache[path]
 
-            pkgname = self._getPkgNameByPath(path)
+            pkgname = self._getPkgNameByPath(path,
+                                             expected_top_level=basename)
             if pkgname:
                 self._pkgnamecache[path] = pkgname
                 return pkgname
-            path = os.path.dirname(path)
+            path, basename = os.path.split(path)
 
+        logger.debug("Couldn't find a package name for %s", first_path)
         return None
 
-    def _getPkgNameByPath(self, path):
+    def _getPkgNameByPath(self, path, expected_top_level=None):
         """Looks for an pkg info in `path` and reads the pkg name.
         """
 
         pkginfo_path = os.path.join(path, 'EGG-INFO', 'PKG-INFO')
 
         if not os.path.exists(pkginfo_path):
-            egginfo_names = filter(lambda n: n.endswith('.egg-info'),
-                                   os.listdir(path))
-            if len(egginfo_names) > 0:
-                pkginfo_path = os.path.join(
-                    path, egginfo_names[0], 'PKG-INFO')
+            egginfo_dirnames = [dirname for dirname in os.listdir(path)
+                                if dirname.endswith('.egg-info')]
+            for egginfo_dirname in egginfo_dirnames:
+                toplevel_filename = os.path.join(path, egginfo_dirname, 'top_level.txt')
+                if os.path.exists(toplevel_filename):
+                    if open(toplevel_filename).read() == expected_top_level:
+                        pkginfo_path = os.path.join(
+                            path, egginfo_dirname, 'PKG-INFO')
+                        logger.debug(
+                            "Found egginfo with correct toplevel (%s) at %s",
+                            expected_top_level, pkginfo_path)
 
         if not os.path.exists(pkginfo_path):
             return None
