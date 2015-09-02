@@ -17,9 +17,8 @@ import shutil
 import sys
 import tempfile
 
-import pkg_resources
-
 from zope.testing import renormalizing
+import pkg_resources
 import z3c.testsetup
 
 

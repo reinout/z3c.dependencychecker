@@ -25,6 +25,7 @@ import pkg_resources
 
 from z3c.dependencychecker import importchecker
 
+
 logger = logging.getLogger(__name__)
 
 PACKAGE_NAME_PATTERN = re.compile(r"""
