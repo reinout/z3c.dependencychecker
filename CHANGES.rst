@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-1.15 (unreleased)
+1.15 (2015-09-02)
 -----------------
 
 - The name of a wrong package was sometimes found in case of a directory with
