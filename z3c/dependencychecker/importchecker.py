@@ -25,7 +25,7 @@ import os.path
 
 try:
     import runpy
-except:
+except ImportError:
     RUNPY_AVAILABLE = False
 else:
     RUNPY_AVAILABLE = True
