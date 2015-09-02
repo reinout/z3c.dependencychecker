@@ -497,12 +497,11 @@ def includes_from_django_settings(path):
 def imports_from_doctests(path):
     test_modules = []
     for path, dirs, files in os.walk(path):
-        for filename in [
-            os.path.abspath(os.path.join(path, filename))
-            for filename in files
-            if fnmatch.fnmatch(filename, '*.txt')
-            or fnmatch.fnmatch(filename, '*.rst')
-            or fnmatch.fnmatch(filename, '*.py')]:
+        for filename in [os.path.abspath(os.path.join(path, filename))
+                         for filename in files
+                         if fnmatch.fnmatch(filename, '*.txt')
+                         or fnmatch.fnmatch(filename, '*.rst')
+                         or fnmatch.fnmatch(filename, '*.py')]:
             lines = open(filename).readlines()
             for line in lines:
                 test_modules += re.findall(DOCTEST_IMPORT, line)

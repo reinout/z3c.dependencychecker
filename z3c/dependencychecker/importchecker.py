@@ -109,9 +109,10 @@ class ImportFinder:
                 name = orig_name
             else:
                 name = as_name
-            self._map.setdefault(orig_name, [{'names': {name: orig_name},
-                                             'lineno': stmt.lineno,
-                                             'fromimport': False}])
+            self._map.setdefault(orig_name,
+                                 [{'names': {name: orig_name},
+                                   'lineno': stmt.lineno,
+                                   'fromimport': False}])
 
     def getMap(self):
         return self._map
@@ -150,10 +151,11 @@ class Module:
                     # Regular import
                     result.append(modulename)
                 else:
-                    # from xyz import abc, return xyz.abc to help with detecting
-                    # "from zope import interface"-style imports where
-                    # zope.inteface is the real module and zope just a namespace
-                    # package.  This is for the dependencychecker, btw.
+                    # from xyz import abc, return xyz.abc to help with
+                    # detecting "from zope import interface"-style imports
+                    # where zope.inteface is the real module and zope just a
+                    # namespace package.  This is for the dependencychecker,
+                    # btw.
                     if len(line['names'].values()) == 0:
                         # from xyz import *
                         result.append(modulename)
@@ -174,7 +176,8 @@ class Module:
                     for dottedname in self._dottednames:
                         usednamedot = usedname + '.'
                         if dottedname.startswith(usednamedot):
-                            attrname = dottedname[len(usednamedot):].split('.')[0]
+                            attrname = dottedname[
+                                len(usednamedot):].split('.')[0]
                             result.append((attrname, module_name))
 
         return result
@@ -412,7 +415,9 @@ class ImportDatabase:
             egginfo_dirnames = [dirname for dirname in os.listdir(path)
                                 if dirname.endswith('.egg-info')]
             for egginfo_dirname in egginfo_dirnames:
-                toplevel_filename = os.path.join(path, egginfo_dirname, 'top_level.txt')
+                toplevel_filename = os.path.join(path,
+                                                 egginfo_dirname,
+                                                 'top_level.txt')
                 if os.path.exists(toplevel_filename):
                     if open(toplevel_filename).read() == expected_top_level:
                         pkginfo_path = os.path.join(

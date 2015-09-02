@@ -86,7 +86,6 @@ def setup(test):
 
 def teardown(test):
     """Clean up"""
-    #print "Not zapping", test.tempdir
     shutil.rmtree(test.tempdir)
     sys.exit = test.orig_exit
     sys.argv[:] = test.orig_sysargv
