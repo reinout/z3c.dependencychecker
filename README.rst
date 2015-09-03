@@ -84,3 +84,7 @@ https://github.com/reinout/z3c.dependencychecker
 
 You can fork and fix it from there. And you can add issues and feature
 requests in the github issue tracker.
+
+Every time you commit something, ``bin/code-analysis`` is automatically
+run. Pay attention to the output and fix the problems that are reported. Or
+fix the setup so that inappropriate reports are filtered out.
