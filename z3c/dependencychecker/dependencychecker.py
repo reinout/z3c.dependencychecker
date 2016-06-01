@@ -501,7 +501,6 @@ def includes_from_django_settings(path):
                 "Found possible packages in Django-like settings file %s:",
                 settingsfile)
             logger.debug(found)
-            # import pdb;pdb.set_trace()
             if 'test' in settingsfile:
                 # testsettings.py, for instance.
                 test_modules += found
