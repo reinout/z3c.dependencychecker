@@ -637,29 +637,36 @@ def main():
 
     print_unused_imports(unused_imports)
 
+    all_install_imports = (
+        install_imports +
+        zcml_imports +
+        generic_setup_required +
+        django_settings_imports +
+        fti_imports)
     install_missing = filter_missing(
-        install_imports + zcml_imports + generic_setup_required +
-        django_settings_imports + fti_imports,
+        all_install_imports,
         install_required + stdlib)
     print_modules(install_missing, "Missing requirements")
 
+    all_test_imports = (
+        test_imports +
+        zcml_test_imports +
+        doctest_imports +
+        generic_setup_test_required +
+        django_settings_test_imports +
+        fti_test_imports)
     test_missing = filter_missing(
-        test_imports + zcml_test_imports + doctest_imports +
-        generic_setup_test_required + django_settings_test_imports +
-        fti_test_imports,
+        all_test_imports,
         install_required + test_required + stdlib)
     print_modules(test_missing, "Missing test requirements")
 
     install_unneeded = filter_unneeded(
-        install_imports + zcml_imports + generic_setup_required +
-        django_settings_imports + fti_imports,
+        all_install_imports,
         install_required,
         name=name)
     # See if one of ours is needed by the tests
     really_unneeded = filter_unneeded(
-        test_imports + zcml_test_imports + doctest_imports +
-        generic_setup_test_required + django_settings_test_imports +
-        fti_test_imports,
+        all_test_imports,
         install_unneeded,
         name=name)
     move_to_test = sorted(set(install_unneeded) - set(really_unneeded))
@@ -669,9 +676,7 @@ def main():
                   "Requirements that should be test requirements")
 
     test_unneeded = filter_unneeded(
-        test_imports + zcml_test_imports + doctest_imports +
-        generic_setup_test_required + django_settings_test_imports +
-        fti_test_imports,
+        all_test_imports,
         test_required,
         name=name)
     print_modules(test_unneeded, "Unneeded test requirements")
