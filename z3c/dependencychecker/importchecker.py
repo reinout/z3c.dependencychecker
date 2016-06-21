@@ -458,8 +458,6 @@ class ImportDatabase:
     def _getLoader(self, dottedname):
         """Returns a loader object.
         """
-        # if dottedname == 'z3c.testsetup':
-        #     import pdb;pdb.set_trace()
         # This goes wrong because z3c.testsetup cannot be found when running
         # bin/dependencychecker because it isn't available. So the fallback to
         # the module name would be better in this case!
