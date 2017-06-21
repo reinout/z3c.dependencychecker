@@ -466,6 +466,9 @@ class ImportDatabase:
             loader = runpy.get_loader(dottedname)
         except ImportError:
             loader = None
+        except Exception as e:
+            logger.warn("Error trying to load '%s': %s", dottedname, e)
+            loader = None
 
         if not loader:
             parent_dottedname = '.'.join(dottedname.split('.')[:-1])
