@@ -37,6 +37,16 @@ PACKAGE_NAME_PATTERN = re.compile(r"""
 $            # End of string
 """, re.VERBOSE)
 
+DOTTED_PATH_PATTERN = re.compile(r"""
+^            # Start of string
+[a-zA-Z]     # Some character at the beginning.
+\w*          # \w is a-z, A-Z, underscore, numbers.
+\.           # At least one dot
+[\w\.]+      # \w is a-z, A-Z, underscore, numbers.
+             # more dots are OK.
+$            # End of string
+""", re.VERBOSE)
+
 ZCML_PACKAGE_PATTERN = re.compile(r"""
 \s           # Whitespace.
 package=     #
@@ -516,6 +526,15 @@ def includes_from_django_settings(path):
                     # Something doesn't look like a package name.
                     continue
                 found += strings
+
+            # Next look for items like:
+            # "TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'"
+            assigned_strings = [assignment.value for assignment in assignments
+                                if isinstance(assignment.value, _ast.Str)]
+            for assigned_string in assigned_strings:
+                if re.match(DOTTED_PATH_PATTERN, assigned_string.s):
+                    found.append(assigned_string.s)
+
             logger.debug(
                 "Found possible packages in Django-like settings file %s:",
                 settingsfile)
