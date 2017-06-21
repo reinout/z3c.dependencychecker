@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-1.16 (unreleased)
+1.16 (2017-06-21)
 -----------------
 
 - Don't crash anymore on, for instance, django code that needs a django
