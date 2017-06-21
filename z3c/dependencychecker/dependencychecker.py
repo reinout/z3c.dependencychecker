@@ -31,8 +31,19 @@ logger = logging.getLogger(__name__)
 
 PACKAGE_NAME_PATTERN = re.compile(r"""
 ^            # Start of string
+[a-zA-Z]     # Some character at the beginning.
 [\w\-\.]+    # \w is a-z, A-Z, underscore, numbers.
              # Dash is also ok, as is a dot.
+$            # End of string
+""", re.VERBOSE)
+
+DOTTED_PATH_PATTERN = re.compile(r"""
+^            # Start of string
+[a-zA-Z]     # Some character at the beginning.
+\w*          # \w is a-z, A-Z, underscore, numbers.
+\.           # At least one dot
+[\w\.]+      # \w is a-z, A-Z, underscore, numbers.
+             # more dots are OK.
 $            # End of string
 """, re.VERBOSE)
 
@@ -344,24 +355,36 @@ def filter_unneeded(imports, required, name=None):
 
 def _detect_modules(sample_module):
     sample_file = os.path.realpath(sample_module.__file__)
+    modules = []
+    if '__init__.py' in sample_file:
+        # Directory inside python dir, for instance logging/__init__.py
+        parent_dir = os.path.join(os.path.dirname(sample_file), '..')
+        for filename in os.listdir(parent_dir):
+            if '.' in filename:
+                continue  # . and .. dirs... :-)
+            possible_dir = os.path.abspath(os.path.join(parent_dir, filename))
+            if os.path.isdir(possible_dir):
+                modules.append(filename)
+        return modules
+
     stdlib_dir = os.path.dirname(sample_file)
-    stdlib_extension = os.path.splitext(sample_file)[1]
+    # Linux now can have 'datetime.x86_64-linux-gnu.so', so the regular
+    # os.path.splitext won't work.
+    parts = os.path.basename(sample_file).split('.')
+    stdlib_extension = '.'.join(parts[1:])
     stdlib_files = os.listdir(stdlib_dir)
     modules = []
     for stdlib_file in stdlib_files:
-        module, extension = os.path.splitext(stdlib_file)
+        if '.' not in stdlib_file:
+            continue
+        parts = stdlib_file.split('.')
+        module = parts[0]
+        extension = '.'.join(parts[1:])
         if extension == stdlib_extension:
             if module.endswith('module'):
                 # See http://stackoverflow.com/q/6319379/27401
                 module = module[:-len('module')]
             modules.append(module)
-    if 'py' in stdlib_extension:
-        # Also check directories with __init__.py* in them.
-        init_file = '__init__' + stdlib_extension
-        extra_modules = [name for name in os.listdir(stdlib_dir)
-                         if os.path.exists(os.path.join(
-                             stdlib_dir, name, init_file))]
-        modules += extra_modules
     return modules
 
 
@@ -370,10 +393,16 @@ def stdlib_modules():
     import datetime
     dynload_module = datetime
     import urllib
+    import logging
+    module_with_init_in_subdir = logging
     modules = _detect_modules(py_module) + \
         _detect_modules(dynload_module) + \
-        _detect_modules(urllib)
+        _detect_modules(urllib) + \
+        _detect_modules(module_with_init_in_subdir)
     modules.append('sys')
+    modules.append('itertools')
+    modules.append('time')
+    modules.append('math')
 
     # C level modules extracted from Python's ``config.c``.
     modules.append('thread')
@@ -497,6 +526,15 @@ def includes_from_django_settings(path):
                     # Something doesn't look like a package name.
                     continue
                 found += strings
+
+            # Next look for items like:
+            # "TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'"
+            assigned_strings = [assignment.value for assignment in assignments
+                                if isinstance(assignment.value, _ast.Str)]
+            for assigned_string in assigned_strings:
+                if re.match(DOTTED_PATH_PATTERN, assigned_string.s):
+                    found.append(assigned_string.s)
+
             logger.debug(
                 "Found possible packages in Django-like settings file %s:",
                 settingsfile)

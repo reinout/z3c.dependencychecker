@@ -4,7 +4,17 @@ Changelog of z3c.dependencychecker
 1.16 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Don't crash anymore on, for instance, django code that needs a django
+  settings file to be available or that needs the django app config step to be
+  finished.
+  [reinout]
+
+- Improved Django settings extraction.
+  [reinout]
+
+- Better detection of python build-in modules. ``logging/__init__.py`` style
+  modules were previously missed.
+  [reinout]
 
 
 1.15 (2015-09-02)
