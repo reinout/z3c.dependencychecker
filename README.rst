@@ -7,6 +7,9 @@ warn when discovering missing or unneeded dependencies.
 .. image:: https://secure.travis-ci.org/reinout/z3c.dependencychecker.png?branch=master
    :target: https://travis-ci.org/#!/reinout/z3c.dependencychecker
 
+.. image:: https://coveralls.io/repos/github/reinout/z3c.dependencychecker/badge.svg?branch=master
+   :target: https://coveralls.io/github/reinout/z3c.dependencychecker?branch=master
+
 .. contents::
 
 
