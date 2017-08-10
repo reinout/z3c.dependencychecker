@@ -1,7 +1,9 @@
+[run]
+branch = True
+
 [report]
 omit =
     */migrations/*
-    */test*
     /Library/*
     *buildout/eggs/*
     /usr/*
@@ -10,5 +12,7 @@ omit =
     eggs/*
     local_checkouts/*
     parts/*
+    bin/*
+    */site-packages/*
 
 ignore_errors = true
