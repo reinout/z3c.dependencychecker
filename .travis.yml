@@ -3,7 +3,11 @@ sudo: false
 python:
   - 2.7
 install:
-  - python bootstrap.py
-  - bin/buildout
+  - pip install -r requirements.txt
+  - buildout
 script:
   - bin/test
+after_success:
+  - bin/createcoverage
+  - pip install coveralls
+  - coveralls
