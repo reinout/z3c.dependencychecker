@@ -84,6 +84,7 @@ Missing requirements
      something.origname
      zope.exceptions
      zope.interface
+     zope.interface.verify
 
 Missing test requirements
 =========================
