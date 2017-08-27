@@ -62,7 +62,7 @@ script would:
          plone.dexterity.interfaces.IContentType
          reinout.hurray
          transaction
-         zope.filerepresentation.interfaces.IRawReadFile"
+         zope.filerepresentation.interfaces.IRawReadFile
     <BLANKLINE>
     Unneeded requirements
     =====================
