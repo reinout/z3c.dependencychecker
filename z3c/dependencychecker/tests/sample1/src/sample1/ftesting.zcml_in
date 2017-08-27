@@ -4,7 +4,7 @@
 
   <utility component="needed.by.test" />
 
-  <adapter provides="zope.filerepresentation.interfaces.IRawReadFile"" />
+  <adapter provides="zope.filerepresentation.interfaces.IRawReadFile" />
 
   <browser:page
       for="plone.dexterity.interfaces.IContentType"
