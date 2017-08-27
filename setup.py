@@ -32,8 +32,7 @@ setup(name='z3c.dependencychecker',
           ],
       extras_require = {
           'test': [
-              'z3c.testsetup>=0.3',
-              'zope.testing',
+              'pytest',
               ],
           },
       entry_points={
