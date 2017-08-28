@@ -23,15 +23,11 @@ import compiler
 import logging
 import os
 import os.path
+import runpy
 
-try:
-    import runpy
-except ImportError:
-    RUNPY_AVAILABLE = False
-else:
-    RUNPY_AVAILABLE = True
-    from pkgutil import ImpLoader
-    from zipimport import zipimporter
+from pkgutil import ImpLoader
+from zipimport import zipimporter
+
 
 logger = logging.getLogger(__name__)
 
@@ -316,8 +312,6 @@ class ImportDatabase:
         """Returns all pkg names from which modules are imported.
         """
         modules = self.getImportedModuleNames(tests=tests)
-        if not RUNPY_AVAILABLE:
-            return modules
 
         pkgnames = set()
         for modulename in modules:

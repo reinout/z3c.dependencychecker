@@ -1,0 +1,5 @@
+"""Test that attribute assignment is tested"""
+
+bla = object()
+
+bla.x = 3

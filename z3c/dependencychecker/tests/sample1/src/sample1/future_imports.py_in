@@ -1,0 +1,4 @@
+"""Test the __future__ imports"""
+from __future__ import division
+
+b = 3 / 4

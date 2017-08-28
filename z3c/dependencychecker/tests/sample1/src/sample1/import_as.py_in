@@ -1,0 +1,4 @@
+"""Check that import as is tested"""
+import os as boss
+
+boss()

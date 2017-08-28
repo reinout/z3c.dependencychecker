@@ -1,0 +1,2 @@
+"""Check that import * is tested"""
+from os import *
