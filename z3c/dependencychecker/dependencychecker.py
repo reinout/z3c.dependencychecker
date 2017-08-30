@@ -581,7 +581,7 @@ def determine_path(args, name=None):
             logger.error("You passed %s as a path, but that is no directory!",
                          path)
             sys.exit(1)
-        logger.debug("Looking in directory %s, passed on the commmand line",
+        logger.debug("Looking in directory %s, passed on the command line",
                      path)
         return path
 
