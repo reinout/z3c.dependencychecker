@@ -14,7 +14,7 @@ from z3c.dependencychecker.dependencychecker import DOCTEST_FROM_IMPORT
 from z3c.dependencychecker.dependencychecker import DOCTEST_IMPORT
 from z3c.dependencychecker.dependencychecker import METADATA_DEPENDENCY_PATTERN
 from z3c.dependencychecker.dependencychecker import PACKAGE_NAME_PATTERN
-from z3c.dependencychecker.dependencychecker import SETUP_PY_PACKAGE_NAME_PATTERN  # noqa: F501
+from z3c.dependencychecker.dependencychecker import SETUP_PY_PACKAGE_NAME_PATTERN  # noqa: E501
 from z3c.dependencychecker.dependencychecker import name_from_setup
 from z3c.dependencychecker.dependencychecker import existing_requirements
 from z3c.dependencychecker.dependencychecker import determine_path

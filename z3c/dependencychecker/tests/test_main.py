@@ -11,7 +11,7 @@ import pytest
 class change_dir(object):
     """Step into a directory temporarily
 
-    Copied from https://pythonadventures.wordpress.com/2013/12/15/chdir-a-context-manager-for-switching-working-directories/  # noqa: F501
+    Copied from https://pythonadventures.wordpress.com/2013/12/15/chdir-a-context-manager-for-switching-working-directories/  # noqa: E501
     """
 
     def __init__(self, path):
