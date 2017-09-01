@@ -17,7 +17,6 @@ import ast
 import commands
 import fnmatch
 import logging
-import optparse
 import os
 import re
 import sys
@@ -613,27 +612,7 @@ def determine_path(args, name=None):
     sys.exit(1)
 
 
-def _version():
-    ourselves = pkg_resources.require('z3c.dependencychecker')[0]
-    return ourselves.version
-
-
-def main():
-    usage = ("Usage: %prog [path]\n" +
-             "(path defaults to package name, fallback is 'src/')")
-    parser = optparse.OptionParser(usage=usage, version=_version())
-    parser.add_option("-v", "--verbose",
-                      action="store_true", dest="verbose", default=False,
-                      help="Show debug output")
-    (options, args) = parser.parse_args()
-    if options.verbose:
-        loglevel = logging.DEBUG
-    else:
-        loglevel = logging.INFO
-    logging.basicConfig(level=loglevel,
-                        stream=sys.stdout,
-                        format="%(levelname)s: %(message)s")
-
+def main(args):
     name = name_from_setup()
     path = determine_path(args, name=name)
     db = importchecker.ImportDatabase(path)
