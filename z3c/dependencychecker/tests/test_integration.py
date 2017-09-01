@@ -54,7 +54,7 @@ setup.py to have effect.
 """
 
 
-def test_main(capsys, fake_project):
+def test_highlevel_integration(capsys, fake_project):
     with change_dir(fake_project):
         arguments = ['dependencychecker']
         with mock.patch.object(sys, 'argv', arguments):
