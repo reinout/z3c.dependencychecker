@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from z3c.dependencychecker.dependencychecker import main
+import mock
 import os
 import pkg_resources
 import shutil
@@ -23,18 +24,6 @@ class change_dir(object):
 
     def __exit__(self, *args):
         os.chdir(self.old_dir)
-
-
-class fake_sys_argv(object):
-
-    def __init__(self):
-        self.old_sys_argv = sys.argv[:]
-
-    def __enter__(self):
-        sys.argv[1:] = []
-
-    def __exit__(self, *args):
-        sys.argv[:] = self.old_sys_argv
 
 
 @pytest.fixture(scope='module')
@@ -116,7 +105,8 @@ setup.py to have effect.
 
 def test_main(capsys, fake_project):
     with change_dir(fake_project):
-        with fake_sys_argv():
+        arguments = ['dependencychecker']
+        with mock.patch.object(sys, 'argv', arguments):
             main()
             out, err = capsys.readouterr()
             assert out == MAIN_OUTPUT
