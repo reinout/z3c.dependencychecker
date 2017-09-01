@@ -39,6 +39,6 @@ setup(name='z3c.dependencychecker',
           },
       entry_points={
           'console_scripts':
-          ['dependencychecker = z3c.dependencychecker.dependencychecker:main'
+          ['dependencychecker = z3c.dependencychecker.main:main'
            ]},
       )
