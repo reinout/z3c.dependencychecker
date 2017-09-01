@@ -19,7 +19,7 @@ from z3c.dependencychecker.dependencychecker import name_from_setup
 from z3c.dependencychecker.dependencychecker import existing_requirements
 from z3c.dependencychecker.dependencychecker import determine_path
 from z3c.dependencychecker.dependencychecker import normalize
-from z3c.dependencychecker.tests.utils import change_dir
+from z3c.dependencychecker.utils import change_dir
 import os
 import re
 import shutil

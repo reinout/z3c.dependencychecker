@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from z3c.dependencychecker.dependencychecker import main
-from z3c.dependencychecker.tests.utils import change_dir
+from z3c.dependencychecker.utils import change_dir
 import mock
 import sys
 
