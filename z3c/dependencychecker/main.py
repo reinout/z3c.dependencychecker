@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 import logging
 import optparse
+import os
 import pkg_resources
 import sys
+
+
+logger = logging.getLogger(__name__)
 
 
 def main():
@@ -46,3 +50,25 @@ def set_log_level(verbose):
         level=level,
         stream=sys.stdout,
     )
+
+
+def get_path(args):
+    """Get path to the python source distribution that will be checked for
+    dependencies
+
+    If no path is given on the command line arguments, the current working
+    directory is used instead.
+    """
+    path = os.getcwd()
+
+    if len(args) < 1:
+        logger.debug('path used: %s', path)
+        return path
+
+    path = os.path.abspath(args[0])
+    if os.path.isdir(path):
+        logger.debug('path used: %s', path)
+        return path
+
+    logger.error('Given path does is not a folder: %s', args[0])
+    sys.exit(1)
