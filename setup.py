@@ -33,6 +33,7 @@ setup(name='z3c.dependencychecker',
       extras_require = {
           'test': [
               'pytest',
+              'mock',
               ],
           },
       entry_points={

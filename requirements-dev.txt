@@ -10,8 +10,11 @@ coveralls==1.2.0
 cryptography==2.0.3
 docopt==0.6.2
 enum34==1.1.6
+funcsigs==1.0.2
 idna==2.6
 ipaddress==1.0.18
+mock==2.0.0
+pbr==3.1.1
 py==1.4.34
 pycparser==2.18
 pyOpenSSL==17.2.0
