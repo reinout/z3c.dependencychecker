@@ -60,4 +60,4 @@ def test_highlevel_integration(capsys, fake_project):
         with mock.patch.object(sys, 'argv', arguments):
             main()
             out, err = capsys.readouterr()
-            assert out == MAIN_OUTPUT
+            assert MAIN_OUTPUT in out
