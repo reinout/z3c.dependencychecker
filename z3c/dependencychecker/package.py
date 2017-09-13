@@ -176,3 +176,14 @@ class PackageMetadata(object):
             os.sep,
         )
         sys.exit(1)
+
+
+class Package(object):
+    """The python package that is being analyzed
+
+    This class itself does not much per se, but connects the PackageMetadata
+    with the ImportsDatabase, where the important bits are.
+    """
+
+    def __init__(self, path):
+        self.metadata = PackageMetadata(path)
