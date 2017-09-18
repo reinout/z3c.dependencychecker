@@ -3,6 +3,7 @@ from z3c.dependencychecker.utils import change_dir
 import glob
 import logging
 import os
+import pkg_resources
 import sys
 
 
@@ -21,6 +22,7 @@ class PackageMetadata(object):
         self.package_dir = self._get_package_dir()
         self.egg_info_dir = self._get_egg_info_dir()
         self.name = self._get_package_name()
+        self._working_set = self._generate_working_set_with_ourselves()
 
     @staticmethod
     def _get_distribution_root(path):
@@ -87,3 +89,30 @@ class PackageMetadata(object):
         )
 
         return name
+
+    def _generate_working_set_with_ourselves(self):
+        """Use pkg_resources API to enable the package being analyzed
+
+        This, enabling the package in pkg_resources, allows to extract
+        information from .egg-info folders, for example, its requirements.
+        """
+        working_set = pkg_resources.WorkingSet()
+        working_set.add_entry(self.package_dir)
+        return working_set
+
+    def _get_ourselves_from_working_set(self):
+        """Use pkg_resources API to get a Requirement (in pkg_resources
+        parlance) of the package being analyzed
+        """
+        ourselves = pkg_resources.Requirement.parse(self.name)
+        try:
+            package = self._working_set.find(ourselves)
+            return package
+        except ValueError:
+            logger.error(
+                'Package %s could not be found.\n'
+                'You might need to put it in development mode,\n'
+                'i.e. python setup.py develop',
+                self.name,
+            )
+            sys.exit(1)

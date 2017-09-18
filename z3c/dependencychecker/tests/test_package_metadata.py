@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from z3c.dependencychecker.package import PackageMetadata
 import os
+import pkg_resources
 import shutil
 import tempfile
 
@@ -91,3 +92,63 @@ def test_package_name(minimal_structure):
     metadata = PackageMetadata(path)
 
     assert metadata.name == package_name
+
+
+def test_working_set(minimal_structure):
+    path, package_name = minimal_structure
+    metadata = PackageMetadata(path)
+
+    assert isinstance(metadata._working_set, pkg_resources.WorkingSet)
+
+
+def test_package_in_working_set(minimal_structure):
+    path, package_name = minimal_structure
+    metadata = PackageMetadata(path)
+
+    ourselves = metadata._get_ourselves_from_working_set()
+    assert ourselves.project_name == package_name
+
+
+def test_package_missing_pkg_info_file(minimal_structure):
+    path, package_name = minimal_structure
+
+    pkg_info = os.path.join(
+        path,
+        '{0}.egg-info'.format(package_name),
+        'PKG-INFO',
+    )
+    os.remove(pkg_info)
+
+    metadata = PackageMetadata(path)
+
+    sys_exit = False
+    try:
+        metadata._get_ourselves_from_working_set()
+    except SystemExit:
+        sys_exit = True
+
+    assert sys_exit
+
+
+def test_package_broken_pkg_info_file(minimal_structure):
+    path, package_name = minimal_structure
+
+    pkg_info_path = os.path.join(
+        path,
+        '{0}.egg-info'.format(package_name),
+        'PKG-INFO',
+    )
+    os.remove(pkg_info_path)
+    with open(pkg_info_path, 'w') as pkg_info_file:
+        pkg_info_file.write('\n'.join([
+            'Name: bla',
+        ]))
+
+    metadata = PackageMetadata(path)
+    sys_exit = False
+    try:
+        metadata._get_ourselves_from_working_set()
+    except SystemExit:
+        sys_exit = True
+
+    assert sys_exit

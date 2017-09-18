@@ -78,4 +78,26 @@ def _add_egg_info(folder):
     )
     os.makedirs(egg_info_folder_path)
 
+    _write_pkg_info_file(egg_info_folder_path)
+    _write_requires_file(egg_info_folder_path)
+
     return package_name
+
+
+def _write_pkg_info_file(folder):
+    with open(os.path.join(folder, 'PKG-INFO'), 'w') as pkg_info:
+        lines = '\n'.join([
+            'Metadata-Version: 1.0',
+            'Name: testpackage',
+            'Version: 1.0.dev0',
+        ])
+        pkg_info.write(lines)
+
+
+def _write_requires_file(folder):
+    with open(os.path.join(folder, 'requires.txt'), 'w') as requires_file:
+        lines = '\n'.join([
+            'one',
+            'two',
+        ])
+        requires_file.write(lines)
