@@ -152,3 +152,77 @@ def test_package_broken_pkg_info_file(minimal_structure):
         sys_exit = True
 
     assert sys_exit
+
+
+def test_get_dependencies(minimal_structure):
+    path, package_name = minimal_structure
+    metadata = PackageMetadata(path)
+
+    names = [x.name for x in metadata.get_required_dependencies()]
+    assert 'one' in names
+    assert 'two' in names
+
+
+def test_get_no_dependencies(minimal_structure):
+    path, package_name = minimal_structure
+
+    requires_file_path = os.path.join(
+        path,
+        '{0}.egg-info'.format(package_name),
+        'requires.txt',
+    )
+    os.remove(requires_file_path)
+
+    metadata = PackageMetadata(path)
+
+    requirements = [x for x in metadata.get_required_dependencies()]
+    assert len(requirements) == 0
+
+
+def test_dependencies_with_extras(minimal_structure):
+    path, package_name = minimal_structure
+    requires_file_path = os.path.join(
+        path,
+        '{0}.egg-info'.format(package_name),
+        'requires.txt',
+    )
+    with open(requires_file_path, 'w') as requires:
+        requires.write('\n'.join([
+            'one [with_extra]',
+            'another[with_extra]',
+            'yet[one,two,three,extras]',
+            'something[only, two, with, spaces]',
+        ]))
+
+    metadata = PackageMetadata(path)
+    names = [x.name for x in metadata.get_required_dependencies()]
+
+    assert len(names) == 4
+    assert 'one' in names
+    assert 'another' in names
+    assert 'yet' in names
+    assert 'something' in names
+
+
+def test_dependencies_with_version_specifiers(minimal_structure):
+    path, package_name = minimal_structure
+    requires_file_path = os.path.join(
+        path,
+        '{0}.egg-info'.format(package_name),
+        'requires.txt',
+    )
+    with open(requires_file_path, 'w') as requires:
+        requires.write('\n'.join([
+            'one > 8.5',
+            'another<=3.4',
+            'yet==5.2',
+            'something >=2.2.1,<2.3dev'
+        ]))
+
+    metadata = PackageMetadata(path)
+    names = [x.name for x in metadata.get_required_dependencies()]
+
+    assert len(names) == 4
+    assert 'one' in names
+    assert 'another' in names
+    assert 'yet' in names

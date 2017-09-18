@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from z3c.dependencychecker.dotted_name import DottedName
 from z3c.dependencychecker.utils import change_dir
 import glob
 import logging
@@ -116,3 +117,12 @@ class PackageMetadata(object):
                 self.name,
             )
             sys.exit(1)
+
+    def get_required_dependencies(self):
+        this_package = self._get_ourselves_from_working_set()
+        requirements = this_package.requires()
+        for requirement in requirements:
+            yield DottedName.from_requirement(
+                requirement,
+                file_path=self.setup_py_path,
+            )
