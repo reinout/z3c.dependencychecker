@@ -72,3 +72,15 @@ def test_no_package_dir_and_no_src_folder(minimal_structure):
         sys_exit = True
 
     assert sys_exit
+
+
+def test_egg_info_dir_path(minimal_structure):
+    path, package_name = minimal_structure
+    metadata = PackageMetadata(path)
+
+    egg_info_path = os.path.join(
+        path,
+        '{0}.egg-info'.format(package_name)
+    )
+
+    assert metadata.egg_info_dir == egg_info_path

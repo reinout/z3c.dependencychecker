@@ -19,6 +19,7 @@ class PackageMetadata(object):
         self.distribution_root = self._get_distribution_root(path)
         self.setup_py_path = self._get_setup_py_path()
         self.package_dir = self._get_package_dir()
+        self.egg_info_dir = self._get_egg_info_dir()
 
     @staticmethod
     def _get_distribution_root(path):
@@ -68,3 +69,10 @@ class PackageMetadata(object):
             results = glob.glob('*.egg-info')
 
         return results
+
+    def _get_egg_info_dir(self):
+        results = self._find_egg_info_in_folder(self.package_dir)
+        return os.path.join(
+            self.package_dir,
+            results[0],
+        )
