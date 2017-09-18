@@ -84,3 +84,10 @@ def test_egg_info_dir_path(minimal_structure):
     )
 
     assert metadata.egg_info_dir == egg_info_path
+
+
+def test_package_name(minimal_structure):
+    path, package_name = minimal_structure
+    metadata = PackageMetadata(path)
+
+    assert metadata.name == package_name
