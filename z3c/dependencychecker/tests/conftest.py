@@ -10,7 +10,9 @@ reusability.
 import os
 import pkg_resources
 import pytest
+import random
 import shutil
+import string
 import tempfile
 
 
@@ -40,3 +42,40 @@ def fake_project():
 
     yield package_folder
     shutil.rmtree(temp_folder)
+
+
+@pytest.fixture
+def minimal_structure():
+    """Creates a folder structure that contains the minimal files needed
+    to make Package class be able to initialize without errors
+    """
+    folder = tempfile.mkdtemp()
+    _add_setup_py(folder)
+    package_name = _add_egg_info(folder)
+
+    src_folder = os.path.join(folder, 'src', )
+    os.makedirs(src_folder)
+
+    yield folder, package_name
+
+    shutil.rmtree(folder)
+
+
+def _add_setup_py(folder):
+    with open(os.path.join(folder, 'setup.py'), 'w') as setup_py_file:
+        setup_py_file.write('hi')
+
+
+def _add_egg_info(folder):
+    package_name = ''.join(
+        random.choice(string.ascii_lowercase)
+        for _ in range(10)
+    )
+
+    egg_info_folder_path = os.path.join(
+        folder,
+        '{0}.egg-info'.format(package_name),
+    )
+    os.makedirs(egg_info_folder_path)
+
+    return package_name
