@@ -126,3 +126,15 @@ class PackageMetadata(object):
                 requirement,
                 file_path=self.setup_py_path,
             )
+
+    def get_extras_dependencies(self):
+        """Get this packages' extras dependencies defined in setup.py"""
+        this_package = self._get_ourselves_from_working_set()
+
+        for extra_name in this_package.extras:
+            extra_requirements = this_package.requires(extras=(extra_name, ))
+            dotted_names = (
+                DottedName.from_requirement(req, file_path=self.setup_py_path)
+                for req in extra_requirements
+            )
+            yield extra_name, dotted_names

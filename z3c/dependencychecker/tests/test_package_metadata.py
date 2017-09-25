@@ -226,3 +226,37 @@ def test_dependencies_with_version_specifiers(minimal_structure):
     assert 'one' in names
     assert 'another' in names
     assert 'yet' in names
+
+
+def test_get_extra_dependencies(minimal_structure):
+    path, package_name = minimal_structure
+
+    requires_file_path = os.path.join(
+        path,
+        '{0}.egg-info'.format(package_name),
+        'requires.txt',
+    )
+    with open(requires_file_path, 'w') as requires_file:
+        requires_file.write('\n'.join([
+            'one',
+            '',
+            '[test]',
+            'pytest',
+            'mock',
+        ]))
+
+    metadata = PackageMetadata(path)
+    extras = [x for x in metadata.get_extras_dependencies()]
+    extra_packages = [x.name for x in extras[0][1]]
+    assert len(extras) == 1
+    assert 'pytest' in extra_packages
+    assert 'mock' in extra_packages
+
+
+def test_no_extras(minimal_structure):
+    path, package_name = minimal_structure
+
+    metadata = PackageMetadata(path)
+
+    extras = [x for x in metadata.get_extras_dependencies()]
+    assert len(extras) == 0
