@@ -19,3 +19,10 @@ def write_source_file_at(
         new_file.write(source_code)
 
     return file_path
+
+
+def get_requirements_names(database):
+    return [
+        requirement.name
+        for requirement in database._requirements
+    ]
