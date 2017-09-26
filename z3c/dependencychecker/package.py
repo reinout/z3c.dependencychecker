@@ -196,3 +196,10 @@ class Package(object):
         self.imports.add_requirements(
             self.metadata.get_required_dependencies()
         )
+
+    def set_declared_extras_dependencies(self):
+        """Add this packages' extras dependencies defined in setup.py to the
+        database
+        """
+        for extra, dotted_names in self.metadata.get_extras_dependencies():
+            self.imports.add_extra_requirements(extra, dotted_names)
