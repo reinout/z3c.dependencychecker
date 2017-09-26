@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from z3c.dependencychecker.db import ImportsDatabase
 from z3c.dependencychecker.dotted_name import DottedName
 from z3c.dependencychecker.utils import change_dir
 import glob
@@ -187,3 +188,11 @@ class Package(object):
 
     def __init__(self, path):
         self.metadata = PackageMetadata(path)
+        self.imports = ImportsDatabase()
+
+    def set_declared_dependencies(self):
+        """Add this packages' dependencies defined in setup.py to the database
+        """
+        self.imports.add_requirements(
+            self.metadata.get_required_dependencies()
+        )
