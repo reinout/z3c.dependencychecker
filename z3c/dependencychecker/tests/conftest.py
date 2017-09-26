@@ -80,6 +80,7 @@ def _add_egg_info(folder):
 
     _write_pkg_info_file(egg_info_folder_path)
     _write_requires_file(egg_info_folder_path)
+    _write_top_level_file(egg_info_folder_path, package_name)
 
     return package_name
 
@@ -101,3 +102,19 @@ def _write_requires_file(folder):
             'two',
         ])
         requires_file.write(lines)
+
+
+def _write_top_level_file(folder_path, package_name):
+    file_path = os.path.join(folder_path, 'top_level.txt')
+    with open(file_path, 'w') as top_level_file:
+        lines = '\n'.join([
+            package_name,
+        ])
+        top_level_file.write(lines)
+
+    sources_top_folder = os.path.join(
+        folder_path,
+        '..',
+        package_name,
+    )
+    os.makedirs(sources_top_folder)

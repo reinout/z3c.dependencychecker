@@ -39,10 +39,26 @@ def test_package_dir_on_distribution_root(minimal_structure):
 
 
 def test_package_dir_on_src_folder(minimal_structure):
+    def move_top_level_to_src(package_path, egg_folder, src_path):
+        top_level_file_path = os.path.join(
+            egg_folder,
+            'top_level.txt'
+        )
+        with open(top_level_file_path) as top_level_file:
+            top_level_folder = top_level_file.read().strip()
+
+        top_level_sources = os.path.join(package_path, top_level_folder)
+
+        shutil.move(top_level_sources, src_path)
+        shutil.move(egg_folder, src_path)
+
     path, package_name = minimal_structure
+
     egg_info_folder = os.path.join(path, '{0}.egg-info'.format(package_name))
     src_folder = os.path.join(path, 'src')
-    shutil.move(egg_info_folder, src_folder)
+
+    move_top_level_to_src(path, egg_info_folder, src_folder)
+
     metadata = PackageMetadata(path)
 
     assert metadata.package_dir == src_folder
@@ -260,3 +276,63 @@ def test_no_extras(minimal_structure):
 
     extras = [x for x in metadata.get_extras_dependencies()]
     assert len(extras) == 0
+
+
+def test_top_level_txt_file_found(minimal_structure):
+    path, package_name = minimal_structure
+    metadata = PackageMetadata(path)
+
+    assert metadata.top_level == os.path.join(path, package_name)
+
+
+def test_no_top_level_txt_file_found(minimal_structure):
+    path, package_name = minimal_structure
+    os.remove(
+        os.path.join(
+            path,
+            '{0}.egg-info'.format(package_name),
+            'top_level.txt'
+        )
+    )
+
+    sys_exit = False
+    try:
+        PackageMetadata(path)
+    except SystemExit:
+        sys_exit = True
+
+    assert sys_exit
+
+
+def test_no_sources_top_level_folder_found(minimal_structure):
+    path, package_name = minimal_structure
+    os.removedirs(
+        os.path.join(
+            path,
+            package_name
+        )
+    )
+
+    sys_exit = False
+    try:
+        PackageMetadata(path)
+    except SystemExit:
+        sys_exit = True
+
+    assert sys_exit
+
+
+def test_top_level_is_module(minimal_structure):
+    path, package_name = minimal_structure
+    top_level_path = os.path.join(
+        path,
+        package_name
+    )
+    os.removedirs(top_level_path)
+    top_level_module_path = '{0}.py'.format(top_level_path)
+    with open(top_level_module_path, 'w') as top_level_file:
+        top_level_file.write('Does not matter')
+
+    metadata = PackageMetadata(path)
+
+    assert metadata.top_level == top_level_module_path

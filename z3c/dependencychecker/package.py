@@ -24,6 +24,7 @@ class PackageMetadata(object):
         self.egg_info_dir = self._get_egg_info_dir()
         self.name = self._get_package_name()
         self._working_set = self._generate_working_set_with_ourselves()
+        self.top_level = self._get_sources_top_level()
 
     @staticmethod
     def _get_distribution_root(path):
@@ -138,3 +139,40 @@ class PackageMetadata(object):
                 for req in extra_requirements
             )
             yield extra_name, dotted_names
+
+    def _get_sources_top_level(self):
+        path = os.path.join(
+            self.egg_info_dir,
+            'top_level.txt',
+        )
+        if not os.path.exists(path):
+            logger.error(
+                'top_level.txt could not be found on %s.\n'
+                'It is needed for dependencychecker to work properly.',
+                self.egg_info_dir,
+            )
+            sys.exit(1)
+
+        with open(path) as top_level_file:
+            content = top_level_file.read().strip()
+
+        sources_top_level = os.path.join(
+            self.package_dir,
+            content,
+        )
+
+        if os.path.exists(sources_top_level):
+            return sources_top_level
+
+        single_module_top_level = '{0}.py'.format(sources_top_level)
+        if os.path.exists(single_module_top_level):
+            return single_module_top_level
+
+        logger.error(
+            '%s does not exist but %s%stop_level.txt points there.\n'
+            'Maybe you need to put the package in development again?',
+            sources_top_level,
+            self.egg_info_dir,
+            os.sep,
+        )
+        sys.exit(1)
