@@ -1,8 +1,10 @@
 language: python
 sudo: false
+cache: pip
 python:
   - 2.7
 install:
+  - rm -rf /home/travis/virtualenv/python2.7.13/lib/python2.7/site-packages/setuptools-36.0.1.dist-info
   - pip install -r requirements-dev.txt
 # force failure of code analysis
   - buildout code-analysis:return-status-codes=True
