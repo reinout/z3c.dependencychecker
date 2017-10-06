@@ -4,6 +4,8 @@ from z3c.dependencychecker.package import PackageMetadata
 from z3c.dependencychecker.tests.utils import get_extras_requirements_names
 from z3c.dependencychecker.tests.utils import get_requirements_names
 from z3c.dependencychecker.tests.utils import get_requirements_names_for_extra
+from z3c.dependencychecker.tests.utils import get_sorted_imports_paths
+from z3c.dependencychecker.tests.utils import write_source_file_at
 import os
 
 
@@ -118,3 +120,59 @@ def test_multiple_extras(minimal_structure):
     assert len(extras_names) == 2
     assert 'second' in extras_names
     assert 'extra' in extras_names
+
+
+def test_no_python_modules_found(minimal_structure):
+    path, package_name = minimal_structure
+    package = Package(path)
+    package.analyze_package()
+    assert len(package.imports.imports_used) == 0
+
+
+def test_python_modules_on_top_level_sources(minimal_structure):
+    path, package_name = minimal_structure
+    write_source_file_at((path, package_name), '__init__.py', )
+    package = Package(path)
+    package.analyze_package()
+
+    assert len(package.imports.imports_used) == 1
+    paths = get_sorted_imports_paths(package.imports)
+    assert paths[0].endswith('__init__.py')
+
+
+def test_python_modules_found_inner_folders(minimal_structure):
+    path, package_name = minimal_structure
+    write_source_file_at((path, package_name), '__init__.py', )
+    write_source_file_at((path, package_name, 'test'), '__init__.py', )
+    write_source_file_at((path, package_name, 'test'), 'test.py', )
+
+    package = Package(path)
+    package.analyze_package()
+    paths = get_sorted_imports_paths(package.imports)
+    assert len(paths) == 3
+    assert paths[0].endswith('__init__.py')
+    assert paths[1].endswith('__init__.py')
+    assert paths[2].endswith('test.py')
+
+
+def test_top_level_is_a_file(minimal_structure):
+    path, package_name = minimal_structure
+
+    egg_info_folder = os.path.join(path, '{0}.egg-info'.format(package_name))
+    top_level_file_path = os.path.join(
+        egg_info_folder,
+        'top_level.txt'
+    )
+    with open(top_level_file_path) as top_level_file:
+        top_level_folder = top_level_file.read().strip()
+
+    top_level_sources = os.path.join(path, top_level_folder)
+    os.removedirs(top_level_sources)
+    with open('{0}.py'.format(top_level_sources), 'w') as top_level_file:
+        top_level_file.write('import one')
+
+    package = Package(path)
+    package.analyze_package()
+    paths = get_sorted_imports_paths(package.imports)
+    assert len(paths) == 1
+    assert paths[0].endswith('{0}.py'.format(top_level_folder))

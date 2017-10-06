@@ -114,3 +114,17 @@ def test_filter_duplicate_extra_requirements():
     assert 'one' in test_extras
     assert 'two' in test_extras
     assert 'three' in test_extras
+
+
+def test_no_used_imports():
+    database = ImportsDatabase()
+    assert len(database.imports_used) == 0
+
+
+def test_add_used_imports():
+    database = ImportsDatabase()
+    database.add_imports([
+        DottedName('one'),
+        DottedName('two'),
+    ])
+    assert len(database.imports_used) == 2

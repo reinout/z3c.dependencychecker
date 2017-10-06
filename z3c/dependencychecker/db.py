@@ -15,6 +15,7 @@ class ImportsDatabase(object):
     def __init__(self):
         self._requirements = set()
         self._extras_requirements = {}
+        self.imports_used = []
 
     def add_requirements(self, requirements):
         self._requirements = set([
@@ -43,3 +44,7 @@ class ImportsDatabase(object):
         all_imports = set([dotted_name for dotted_name in imports])
         filtered = all_imports - self._requirements
         return filtered
+
+    def add_imports(self, imports):
+        for single_import in imports:
+            self.imports_used.append(single_import)
