@@ -7,6 +7,8 @@ our test suite.
 Keeping it here ensures that pytest finds it without extra setup and eases
 reusability.
 """
+from z3c.dependencychecker.package import ImportsDatabase
+from z3c.dependencychecker.dotted_name import DottedName
 import os
 import pkg_resources
 import pytest
@@ -118,3 +120,10 @@ def _write_top_level_file(folder_path, package_name):
         package_name,
     )
     os.makedirs(sources_top_folder)
+
+
+@pytest.fixture
+def minimal_database():
+    database = ImportsDatabase()
+    database.own_dotted_name = DottedName('fake')
+    return database
