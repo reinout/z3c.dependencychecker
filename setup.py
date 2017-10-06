@@ -29,6 +29,7 @@ setup(name='z3c.dependencychecker',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'stdlib-list',
           ],
       extras_require = {
           'test': [
