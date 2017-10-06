@@ -190,6 +190,7 @@ class Package(object):
     def __init__(self, path):
         self.metadata = PackageMetadata(path)
         self.imports = ImportsDatabase()
+        self.imports.own_dotted_name = DottedName(self.metadata.name)
 
     def set_declared_dependencies(self):
         """Add this packages' dependencies defined in setup.py to the database
