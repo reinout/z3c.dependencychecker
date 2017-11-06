@@ -245,6 +245,26 @@ def test_filter_out_requirements_keep_other(minimal_database):
     assert pkg2 is dotted_names[0]
 
 
+def test_filter_out_test_requirements_in_extra(minimal_database):
+    dotted_name = DottedName('bli.blu.bla')
+    minimal_database.add_extra_requirements(
+        'test',
+        (DottedName('bla'), DottedName('bli'), ),
+    )
+    result = minimal_database._filter_out_test_requirements(dotted_name)
+    assert result is False
+
+
+def test_filter_out_test_requirements_in_extra_variant(minimal_database):
+    dotted_name = DottedName('bli.blu.bla')
+    minimal_database.add_extra_requirements(
+        'tests',
+        (DottedName('bla'), DottedName('bli'), ),
+    )
+    result = minimal_database._filter_out_test_requirements(dotted_name)
+    assert result is False
+
+
 def test_get_imports_used_filter_subpackage(minimal_database):
     subpkg1 = DottedName('zope.component.adapter')
     subpkg2 = DottedName('zope.component.another.one')
@@ -270,3 +290,55 @@ def test_get_imports_used_filter_std_library(minimal_database):
 
     assert len(dotted_names) == 1
     assert dotted_names[0].name == 'zope.component'
+
+
+def test_get_missing_testing_imports(minimal_database):
+    test_import = DottedName('zope.component', is_test=True)
+    regular_import = DottedName('zope.interface', is_test=False)
+    minimal_database.add_imports([
+        test_import,
+        regular_import,
+    ])
+
+    dotted_names = minimal_database.get_missing_test_imports()
+
+    assert len(dotted_names) == 1
+    assert dotted_names[0] is test_import
+
+
+def test_get_missing_testing_imports_filter_test_extras(minimal_database):
+    test_import1 = DottedName('zope.component', is_test=True)
+    test_import2 = DottedName('zope.interface', is_test=True)
+    minimal_database.add_imports([
+        test_import1,
+        test_import2,
+    ])
+    minimal_database.add_extra_requirements('test', (test_import1, ))
+
+    dotted_names = minimal_database.get_missing_test_imports()
+
+    assert len(dotted_names) == 1
+    assert dotted_names[0] is test_import2
+
+
+def test_get_test_extra(minimal_database):
+    dotted_name = DottedName('bla')
+    minimal_database.add_extra_requirements('test', (dotted_name, ))
+    result = minimal_database._get_test_extra()
+    assert len(result) == 1
+    assert dotted_name in result
+
+
+def test_get_test_extra_plural(minimal_database):
+    dotted_name = DottedName('bla')
+    minimal_database.add_extra_requirements('tests', (dotted_name, ))
+    result = minimal_database._get_test_extra()
+    assert len(result) == 1
+    assert dotted_name in result
+
+
+def test_get_test_extra_no_extra(minimal_database):
+    dotted_name = DottedName('bla')
+    minimal_database.add_extra_requirements('other', (dotted_name, ))
+    result = minimal_database._get_test_extra()
+    assert result is False

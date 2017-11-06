@@ -49,3 +49,27 @@ def test_missing_requirements(capsys, minimal_structure):
     assert 'Missing requirements\n' \
            '====================' in out
     assert 'this.package' in out
+
+
+def test_missing_test_requirements(capsys, minimal_structure):
+    path, package_name = minimal_structure
+    write_source_file_at(
+        (path, package_name),
+        '__init__.py',
+        '',
+    )
+    write_source_file_at(
+        (path, package_name, 'tests'),
+        '__init__.py',
+        'import this.package',
+    )
+
+    package = Package(path)
+    package.analyze_package()
+    report = Report(package)
+    report.missing_test_requirements()
+    out, err = capsys.readouterr()
+
+    assert 'Missing test requirements\n' \
+           '=========================' in out
+    assert 'this.package' in out

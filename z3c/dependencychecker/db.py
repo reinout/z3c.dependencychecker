@@ -65,6 +65,19 @@ class ImportsDatabase(object):
         unique_imports = self._get_unique_imports(imports_list=missing)
         return unique_imports
 
+    def get_missing_test_imports(self):
+        filters = (
+            self._filter_out_known_packages,
+            self._filter_out_only_testing_imports,
+            self._filter_out_own_package,
+            self._filter_out_requirements,
+            self._filter_out_test_requirements,
+            self._filter_out_python_standard_library,
+        )
+        missing = self._process_pipeline(self.imports_used, filters)
+        unique_imports = self._get_unique_imports(imports_list=missing)
+        return unique_imports
+
     @staticmethod
     def _process_pipeline(objects, filters):
         """Filter a list of given objects through a list of given filters
@@ -111,6 +124,10 @@ class ImportsDatabase(object):
     def _filter_out_testing_imports(dotted_name):
         return not dotted_name.is_test
 
+    @staticmethod
+    def _filter_out_only_testing_imports(dotted_name):
+        return dotted_name.is_test
+
     def _filter_out_own_package(self, dotted_name):
         return dotted_name not in self.own_dotted_name
 
@@ -118,6 +135,16 @@ class ImportsDatabase(object):
         return self._discard_if_found_obj_in_list(
             dotted_name,
             self._requirements,
+        )
+
+    def _filter_out_test_requirements(self, dotted_name):
+        test_requirements = self._get_test_extra()
+        if not test_requirements:
+            return True
+
+        return self._discard_if_found_obj_in_list(
+            dotted_name,
+            test_requirements,
         )
 
     def _filter_out_python_standard_library(self, dotted_name):
@@ -163,3 +190,11 @@ class ImportsDatabase(object):
 
         fake_std_libraries = [DottedName(x) for x in libraries]
         return fake_std_libraries
+
+    def _get_test_extra(self):
+        candidates = ('test', 'tests', )
+        for candidate in candidates:
+            if candidate in self._extras_requirements:
+                return self._extras_requirements[candidate]
+
+        return False
