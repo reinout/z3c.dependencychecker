@@ -149,3 +149,17 @@ def test_comparison_equality_fallback():
 def test_repr():
     obj = DottedName('z3c.dependencychecker')
     assert repr(obj) == '<DottedName z3c.dependencychecker>'
+
+
+def test_hash():
+    obj1 = DottedName('bla')
+    assert isinstance(hash(obj1), int)
+
+
+def test_hash_in_use():
+    obj1 = DottedName('one')
+    obj2 = DottedName('two')
+    obj3 = DottedName('three')
+    obj4 = DottedName('one')
+    uniques = {obj1, obj2, obj3, obj4, }
+    assert len(uniques) == 3

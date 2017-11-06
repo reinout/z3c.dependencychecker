@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import hashlib
 from functools import total_ordering
 
 
@@ -56,3 +57,7 @@ class DottedName(object):
 
     def __repr__(self):
         return '<DottedName {0}>'.format(self.name)
+
+    def __hash__(self):
+        digest = hashlib.sha256(self.safe_name).hexdigest()
+        return int(digest, 16) % 10**8
