@@ -8,11 +8,18 @@ class Report(object):
 
     def print_report(self):
         self.missing_requirements()
+        self.missing_test_requirements()
 
     def missing_requirements(self):
         self._print_metric(
             'Missing requirements',
             self._database.get_missing_imports,
+        )
+
+    def missing_test_requirements(self):
+        self._print_metric(
+            'Missing test requirements',
+            self._database.get_missing_test_imports,
         )
 
     def _print_metric(self, title, method):
