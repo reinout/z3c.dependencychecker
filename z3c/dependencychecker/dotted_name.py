@@ -61,3 +61,28 @@ class DottedName(object):
     def __hash__(self):
         digest = hashlib.sha256(self.safe_name).hexdigest()
         return int(digest, 16) % 10**8
+
+    def __contains__(self, item):
+        """Check if self is in item or the other way around
+
+        As we can never know which one is actually the requirement/pypi name
+        and which one the import, check if one fits inside the other.
+
+        So ``x in s`` and ``s in x`` should return the same in this
+        implementation.
+        """
+        if not isinstance(item, DottedName):
+            return False
+
+        if self.safe_name == item.safe_name:
+            return True
+
+        # note that zip makes two different sized iterables have the same size
+        # i.e. [1,2,3] and [4,5,6,7,8] will only loop through [1,4] [2,5]
+        # and [3,6]. The other elements (7 and 8) will be totally ignored.
+        # That's a nice trick to ensure that all the namespace is shared.
+        for part1, part2 in zip(self.namespaces, item.namespaces):
+            if part1 != part2:
+                return False
+
+        return True
