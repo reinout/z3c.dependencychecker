@@ -53,3 +53,6 @@ class DottedName(object):
             return NotImplemented
 
         return self.safe_name == other.safe_name
+
+    def __repr__(self):
+        return '<DottedName {0}>'.format(self.name)

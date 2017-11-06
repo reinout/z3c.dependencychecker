@@ -144,3 +144,8 @@ def test_comparison_equality_fallback():
     obj1 = DottedName('plone.app.dexterity')
     result = obj1 == object()
     assert not result
+
+
+def test_repr():
+    obj = DottedName('z3c.dependencychecker')
+    assert repr(obj) == '<DottedName z3c.dependencychecker>'
