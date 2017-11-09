@@ -94,3 +94,44 @@ def test_unneeded_requirements(capsys, minimal_structure):
            '=====================' in out
     assert 'one' in out
     assert 'two' in out
+
+
+def test_unneeded_test_requirements(capsys, minimal_structure):
+    path, package_name = minimal_structure
+    write_source_file_at(
+        (path, package_name + '.egg-info'),
+        'requires.txt',
+        '\n'.join([
+            '[test]',
+            'pytest',
+            'mock',
+        ]),
+    )
+
+    package = Package(path)
+    package.set_declared_extras_dependencies()
+    package.analyze_package()
+    report = Report(package)
+    report.unneeded_test_requirements()
+    out, err = capsys.readouterr()
+
+    assert 'Unneeded test requirements\n' \
+           '==========================' in out
+    assert 'pytest' in out
+    assert 'mock' in out
+
+
+def test_unneeded_test_requirements_no_tests_requirements(
+    capsys,
+    minimal_structure,
+):
+    path, package_name = minimal_structure
+
+    package = Package(path)
+    package.set_declared_extras_dependencies()
+    package.analyze_package()
+    report = Report(package)
+    report.unneeded_test_requirements()
+    out, err = capsys.readouterr()
+
+    assert '' == out

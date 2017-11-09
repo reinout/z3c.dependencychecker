@@ -95,6 +95,20 @@ class ImportsDatabase(object):
         unique_imports = self._get_unique_imports(imports_list=unneeded)
         return unique_imports
 
+    def get_unneeded_test_requirements(self):
+        test_requirements = self._get_test_extra()
+        if not test_requirements:
+            return []
+
+        filters = (
+            self._filter_out_known_packages,
+            self._filter_out_python_standard_library,
+            self._filter_out_used_imports,
+        )
+        unneeded = self._process_pipeline(test_requirements, filters)
+        unique_imports = self._get_unique_imports(imports_list=unneeded)
+        return unique_imports
+
     @staticmethod
     def _process_pipeline(objects, filters):
         """Filter a list of given objects through a list of given filters
