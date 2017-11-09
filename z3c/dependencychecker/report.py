@@ -10,6 +10,7 @@ class Report(object):
         self.missing_requirements()
         self.missing_test_requirements()
         self.unneeded_requirements()
+        self.unneeded_test_requirements()
 
     def missing_requirements(self):
         self._print_metric(
@@ -27,6 +28,12 @@ class Report(object):
         self._print_metric(
             'Unneeded requirements',
             self._database.get_unneeded_requirements,
+        )
+
+    def unneeded_test_requirements(self):
+        self._print_metric(
+            'Unneeded test requirements',
+            self._database.get_unneeded_test_requirements,
         )
 
     def _print_metric(self, title, method):
