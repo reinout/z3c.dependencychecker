@@ -78,6 +78,23 @@ class ImportsDatabase(object):
         unique_imports = self._get_unique_imports(imports_list=missing)
         return unique_imports
 
+    def get_unneeded_requirements(self):
+        all_but_test_requirements = self._requirements.copy()
+        for extra in self._extras_requirements:
+            all_but_test_requirements.update(self._extras_requirements[extra])
+        test_requirements = self._get_test_extra()
+        if test_requirements:
+            for dotted_name in test_requirements:
+                all_but_test_requirements.remove(dotted_name)
+        filters = (
+            self._filter_out_known_packages,
+            self._filter_out_python_standard_library,
+            self._filter_out_used_imports,
+        )
+        unneeded = self._process_pipeline(all_but_test_requirements, filters)
+        unique_imports = self._get_unique_imports(imports_list=unneeded)
+        return unique_imports
+
     @staticmethod
     def _process_pipeline(objects, filters):
         """Filter a list of given objects through a list of given filters
@@ -111,6 +128,12 @@ class ImportsDatabase(object):
         unique_dotted_names = list(set(imports_list))
         sorted_unique_dotted_names = sorted(unique_dotted_names)
         return sorted_unique_dotted_names
+
+    def _filter_out_used_imports(self, dotted_name):
+        return self._discard_if_found_obj_in_list(
+            dotted_name,
+            self.imports_used,
+        )
 
     def _filter_out_known_packages(self, dotted_name):
         to_ignore = (
