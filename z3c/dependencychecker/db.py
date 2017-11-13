@@ -95,6 +95,46 @@ class ImportsDatabase(object):
         unique_imports = self._get_unique_imports(imports_list=unneeded)
         return unique_imports
 
+    def requirements_that_should_be_test_requirements(self):
+        non_testing_filters = (
+            self._filter_out_testing_imports,
+            self._filter_out_python_standard_library,
+            self._filter_out_own_package,
+        )
+        non_testing_imports = self._process_pipeline(
+            self.imports_used,
+            non_testing_filters,
+        )
+        requirements_not_used = [
+            requirement
+            for requirement in self._requirements
+            if self._discard_if_found_obj_in_list(
+                requirement,
+                non_testing_imports,
+            )
+        ]
+        testing_filters = (
+            self._filter_out_only_testing_imports,
+            self._filter_out_python_standard_library,
+            self._filter_out_own_package,
+        )
+        testing_imports = self._process_pipeline(
+            self.imports_used,
+            testing_filters,
+        )
+        should_be_test_requirements = [
+            requirement
+            for requirement in requirements_not_used
+            if not self._discard_if_found_obj_in_list(
+                requirement,
+                testing_imports,
+            )
+        ]
+        unique = self._get_unique_imports(
+            imports_list=should_be_test_requirements,
+        )
+        return unique
+
     def get_unneeded_test_requirements(self):
         test_requirements = self._get_test_extra()
         if not test_requirements:

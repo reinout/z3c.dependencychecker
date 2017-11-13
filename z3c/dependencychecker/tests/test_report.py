@@ -135,3 +135,43 @@ def test_unneeded_test_requirements_no_tests_requirements(
     out, err = capsys.readouterr()
 
     assert '' == out
+
+
+def test_requirements_that_should_be_test_requirements(
+    capsys,
+    minimal_structure,
+):
+    path, package_name = minimal_structure
+    write_source_file_at(
+        (path, package_name),
+        '__init__.py',
+        'import one',
+    )
+    write_source_file_at(
+        (path, package_name, 'tests'),
+        '__init__.py',
+        'import two',
+    )
+    write_source_file_at(
+        (path, package_name + '.egg-info'),
+        'requires.txt',
+        '\n'.join([
+            'one',
+            'two',
+            '[test]',
+            'pytest',
+            'mock',
+        ]),
+    )
+
+    package = Package(path)
+    package.set_declared_dependencies()
+    package.set_declared_extras_dependencies()
+    package.analyze_package()
+    report = Report(package)
+    report.requirements_that_should_be_test_requirements()
+    out, err = capsys.readouterr()
+
+    assert 'Requirements that should be test requirements\n' \
+           '=============================================' in out
+    assert 'two' in out
