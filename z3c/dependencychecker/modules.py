@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from xml.etree import ElementTree
 from z3c.dependencychecker.dotted_name import DottedName
 import ast
 import os
@@ -110,6 +111,80 @@ class PythonModule(BaseModule):
                 )
 
 
+class ZCMLFile(BaseModule):
+    """Extract imports from .zcml files
+
+    These files are in common use in Zope/Plone based projects to define its
+    components and more.
+    """
+
+    ELEMENTS = {
+        'include': ('package', ),
+        'adapter': ('for', 'factory', 'provides', ),
+        'utility': ('provides', 'component', ),
+        'browser:page': ('class', 'for', 'layer', ),
+        'subscriber': ('handler', 'for', ),
+        'securityPolicy': ('component', ),
+        'genericsetup:registerProfile': ('provides', ),
+    }
+
+    @classmethod
+    def create_from_files(cls, top_dir):
+        """Find all ZCML files in the package
+
+        Return this very same class, which would allow to call the scan()
+        method to get an iterator over all this file's imports.
+        """
+        if top_dir.endswith('.py'):
+            return
+
+        for path, folders, filenames in os.walk(top_dir):
+            for filename in filenames:
+                if filename.endswith('.zcml'):
+                    yield cls(
+                        top_dir,
+                        os.path.join(path, filename),
+                    )
+
+    def scan(self):
+        tree = ElementTree.parse(self.path).getroot()
+
+        for element in self.ELEMENTS:
+            element_namespaced = self._build_namespaced_element(element)
+            for node in tree.iter(element_namespaced):
+                for attrib in self.ELEMENTS[element]:
+                    dotted_name = self._extract_dotted_name(node, attrib)
+                    if dotted_name:
+                        yield dotted_name
+
+    def _extract_dotted_name(self, node, attr):
+        if attr in node.keys():
+            dotted_name = node.get(attr)
+            if dotted_name.startswith('.'):
+                return
+
+            if dotted_name == '*':
+                return
+
+            return DottedName(
+                dotted_name,
+                file_path=self.path,
+                is_test=self.testing,
+            )
+
+    @staticmethod
+    def _build_namespaced_element(element):
+        if ':' in element:
+            namespace, name = element.split(':')
+            return '{{http://namespaces.zope.org/{0}}}{1}'.format(
+                namespace,
+                name,
+            )
+
+        return '{{http://namespaces.zope.org/zope}}{0}'.format(element)
+
+
 MODULES = (
     PythonModule,
+    ZCMLFile,
 )
