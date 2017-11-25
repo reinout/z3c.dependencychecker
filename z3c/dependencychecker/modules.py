@@ -184,7 +184,58 @@ class ZCMLFile(BaseModule):
         return '{{http://namespaces.zope.org/zope}}{0}'.format(element)
 
 
+class FTIFile(BaseModule):
+    """Extract imports from Factory Type Information files
+
+    These are xml files, usually located inside a types folder and used by
+    Zope/Plone based projects to define its content types.
+    """
+
+    TYPES_FOLDER = '{0}types'.format(os.sep)
+
+    @classmethod
+    def create_from_files(cls, top_dir):
+        """Find all FTI files, which are xml, in the package
+
+        Return this very same class, which would allow to call the scan()
+        method to get an iterator over all this file's imports.
+        """
+        if top_dir.endswith('.py'):
+            return
+
+        for path, folders, filenames in os.walk(top_dir):
+            for filename in filenames:
+                if filename.endswith('.xml') and cls.TYPES_FOLDER in path:
+                    yield cls(
+                        top_dir,
+                        os.path.join(path, filename),
+                    )
+
+    def scan(self):
+        tree = ElementTree.parse(self.path).getroot()
+
+        for node in tree.iter('property'):
+            if 'name' in node.keys():
+                name = node.get('name')
+                if name == 'behaviors':
+                    for subnode in node.iter('element'):
+                        if 'value' in subnode.keys():
+                            yield DottedName(
+                                subnode.get('value'),
+                                file_path=self.path,
+                                is_test=self.testing,
+                            )
+                elif name in ('klass', 'schema'):
+                    if node.text:
+                        yield DottedName(
+                            node.text.strip(),
+                            file_path=self.path,
+                            is_test=self.testing,
+                        )
+
+
 MODULES = (
     PythonModule,
     ZCMLFile,
+    FTIFile,
 )
