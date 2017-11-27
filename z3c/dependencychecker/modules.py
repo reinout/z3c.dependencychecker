@@ -234,8 +234,51 @@ class FTIFile(BaseModule):
                         )
 
 
+class GSMetadata(BaseModule):
+    """Extract imports from Generic Setup metadata.xml files
+
+    These files are in common use in Zope/Plone to define Generic Setup
+    profile dependencies between projects.
+    """
+
+    PROFILE_RE = re.compile(r'profile-(?P<dotted_name>[\w.]+):[\w\W]+')
+
+    @classmethod
+    def create_from_files(cls, top_dir):
+        """Find all metadata.xml files in the package
+
+        Return this very same class, which would allow to call the scan()
+        method to get an iterator over all this file's imports.
+        """
+        if top_dir.endswith('.py'):
+            return
+
+        for path, folders, filenames in os.walk(top_dir):
+            for filename in filenames:
+                if filename == 'metadata.xml':
+                    yield cls(
+                        top_dir,
+                        os.path.join(path, filename),
+                    )
+
+    def scan(self):
+        tree = ElementTree.parse(self.path).getroot()
+
+        for node in tree.iter('dependency'):
+            if not node.text:
+                continue
+            result = self.PROFILE_RE.search(node.text.strip())
+            if result:
+                yield DottedName(
+                    result.group('dotted_name'),
+                    file_path=self.path,
+                    is_test=self.testing,
+                )
+
+
 MODULES = (
     PythonModule,
     ZCMLFile,
     FTIFile,
+    GSMetadata,
 )
