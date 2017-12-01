@@ -276,9 +276,54 @@ class GSMetadata(BaseModule):
                 )
 
 
+class PythonDocstrings(PythonModule):
+    """Extract imports from docstrings found inside python modules
+
+    There are some projects that rather than having separate files to keep the
+    tests, they add the inline with the code as docstrings,
+    either at class or method/function level.
+    """
+
+    NODES_WITH_DOCSTRINGS = (
+        ast.Module,
+        ast.ClassDef,
+        ast.FunctionDef,
+    )
+
+    def scan(self):
+        for node in ast.walk(self._get_tree()):
+            if isinstance(node, self.NODES_WITH_DOCSTRINGS):
+                docstring = ast.get_docstring(node)
+                for dotted_name in self._parse_docstring(docstring):
+                    yield dotted_name
+
+    def _parse_docstring(self, docstring):
+        if not docstring:
+            return
+
+        for line in docstring.split('\n'):
+            code = self._extract_code(line)
+            if code:
+                try:
+                    tree = ast.parse(code)
+                except SyntaxError:
+                    return
+
+                for node in ast.walk(tree):
+                    for dotted_name in self._process_ast_node(node):
+                        yield dotted_name
+
+    @staticmethod
+    def _extract_code(line):
+        if '>>>' in line:
+            position = line.find('>>>') + 3
+            return line[position:].strip()
+
+
 MODULES = (
     PythonModule,
     ZCMLFile,
     FTIFile,
     GSMetadata,
+    PythonDocstrings,
 )
