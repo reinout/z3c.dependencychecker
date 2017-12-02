@@ -320,10 +320,57 @@ class PythonDocstrings(PythonModule):
             return line[position:].strip()
 
 
+class DocFiles(PythonDocstrings):
+    """Extract imports from documentation-like documents
+
+    One extended testing pattern (at least in Zope/Plone based projects) is to
+    write documentation in txt/rst files that contain tests to assert that
+    documentation.
+    """
+
+    @classmethod
+    def create_from_files(cls, top_dir):
+        """Find all documentation files in the package
+
+        For that it gets the path to where top_level.txt points to,
+        which is not always a folder:
+        - folder example: z3c.dependencychecker itself
+        - file example: flake8-isort or any other single file distribution
+
+        Return this very same class, which would allow to call the scan()
+        method to get an iterator over all this file's imports.
+        """
+        if top_dir.endswith('.py'):
+            return
+
+        for path, folders, filenames in os.walk(top_dir):
+            for filename in filenames:
+                if filename.endswith('.txt') or filename.endswith('.rst'):
+                    yield cls(
+                        top_dir,
+                        os.path.join(path, filename),
+                    )
+
+    def scan(self):
+        with open(self.path) as doc_file:
+            for line in doc_file:
+                code = self._extract_code(line)
+                if code:
+                    try:
+                        tree = ast.parse(code)
+                    except SyntaxError:
+                        return
+
+                    for node in ast.walk(tree):
+                        for dotted_name in self._process_ast_node(node):
+                            yield dotted_name
+
+
 MODULES = (
     PythonModule,
     ZCMLFile,
     FTIFile,
     GSMetadata,
     PythonDocstrings,
+    DocFiles,
 )
