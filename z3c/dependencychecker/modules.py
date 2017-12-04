@@ -2,6 +2,7 @@
 from xml.etree import ElementTree
 from z3c.dependencychecker.dotted_name import DottedName
 import ast
+import fnmatch
 import os
 import re
 
@@ -366,6 +367,75 @@ class DocFiles(PythonDocstrings):
                             yield dotted_name
 
 
+class DjangoSettings(PythonModule):
+    """Extract imports from Django settings.py
+
+    These files are used to enable Django components.
+    """
+
+    @classmethod
+    def create_from_files(cls, top_dir):
+        """Find all settings.py files in the package
+
+        For that it gets the path to where top_level.txt points to,
+        which is not always a folder:
+        - folder example: z3c.dependencychecker itself
+        - file example: flake8-isort or any other single file distribution
+
+        Return this very same class, which would allow to call the scan()
+        method to get an iterator over all this file's imports.
+        """
+        if top_dir.endswith('.py'):
+            return
+
+        for path, folders, filenames in os.walk(top_dir):
+            for filename in filenames:
+                if fnmatch.fnmatch(filename, '*settings.py'):
+                    yield cls(
+                        top_dir,
+                        os.path.join(path, filename),
+                    )
+
+    def scan(self):
+        for node in ast.walk(self._get_tree()):
+            if isinstance(node, ast.Assign):
+                if self._is_installed_apps_assignment(node):
+                    if isinstance(node.value, (ast.Tuple, ast.List)):
+                        for element in node.value.elts:
+                            if isinstance(element, ast.Str):
+                                yield DottedName(
+                                    element.s,
+                                    file_path=self.path,
+                                    is_test=self.testing,
+                                )
+
+                if self._is_test_runner_assignment(node):
+                    if isinstance(node.value, ast.Str):
+                        yield DottedName(
+                            node.value.s,
+                            file_path=self.path,
+                            is_test=True,
+                        )
+
+    @staticmethod
+    def _is_installed_apps_assignment(node):
+        if len(node.targets) == 1 and \
+                isinstance(node.targets[0], ast.Name) and \
+                node.targets[0].id == 'INSTALLED_APPS':
+            return True
+
+        return False
+
+    @staticmethod
+    def _is_test_runner_assignment(node):
+        if len(node.targets) == 1 and \
+                isinstance(node.targets[0], ast.Name) and \
+                node.targets[0].id == 'TEST_RUNNER':
+            return True
+
+        return False
+
+
 MODULES = (
     PythonModule,
     ZCMLFile,
@@ -373,4 +443,5 @@ MODULES = (
     GSMetadata,
     PythonDocstrings,
     DocFiles,
+    DjangoSettings,
 )
