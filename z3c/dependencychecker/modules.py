@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from z3c.dependencychecker.dotted_name import DottedName
+import ast
 import os
 import re
 
@@ -73,6 +75,39 @@ class PythonModule(BaseModule):
                         top_dir,
                         os.path.join(path, filename),
                     )
+
+    def scan(self):
+        for node in ast.walk(self._get_tree()):
+            for dotted_name in self._process_ast_node(node):
+                yield dotted_name
+
+    def _get_tree(self):
+        with open(self.path) as module_file:
+            source_text = module_file.read()
+        tree = ast.parse(source_text)
+        return tree
+
+    def _process_ast_node(self, node):
+        if isinstance(node, ast.Import):
+            for name in node.names:
+                dotted_name = name.name
+                yield DottedName(
+                    dotted_name,
+                    file_path=self.path,
+                    is_test=self.testing,
+                )
+
+        elif isinstance(node, ast.ImportFrom):
+            for name in node.names:
+                if name.name == '*':
+                    dotted_name = node.module
+                else:
+                    dotted_name = '{0}.{1}'.format(node.module, name.name)
+                yield DottedName(
+                    dotted_name,
+                    file_path=self.path,
+                    is_test=self.testing,
+                )
 
 
 MODULES = (

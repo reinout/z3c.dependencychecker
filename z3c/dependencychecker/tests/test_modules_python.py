@@ -5,6 +5,29 @@ import os
 import tempfile
 
 
+IMPORT = 'import foo'
+IMPORT_MULTIPLE = 'import foo, bar'
+IMPORT_AS = 'import foo as bar'
+IMPORT_AS_MULTIPLE = 'import foo as bar, boo as bla'
+
+FROM_IMPORT = 'from foo import bar'
+FROM_IMPORT_MULTIPLE = 'from foo import bar, ber'
+FROM_IMPORT_AS = 'from foo import bar as ber'
+FROM_IMPORT_AS_MULTIPLE = 'from foo import bar as ber, boo as bla'
+FROM_IMPORT_ASTERISK = 'from os import *'
+
+
+def _get_imports_of_python_module(folder, source):
+    temporal_file = write_source_file_at(
+        (folder.strpath, ),
+        source_code=source,
+    )
+
+    python_module = PythonModule(folder.strpath, temporal_file)
+    dotted_names = [x.name for x in python_module.scan()]
+    return dotted_names
+
+
 def test_create_from_files_nothing(minimal_structure):
     path, package_name = minimal_structure
     modules_found = [x for x in PythonModule.create_from_files(path)]
@@ -62,3 +85,107 @@ def test_create_from_files_deep_nested(minimal_structure):
 
     modules_found = [x for x in PythonModule.create_from_files(src_path)]
     assert len(modules_found) == 6
+
+
+def test_import(tmpdir):
+    dotted_names = _get_imports_of_python_module(tmpdir, IMPORT)
+    assert len(dotted_names) == 1
+
+
+def test_import_details(tmpdir):
+    dotted_names = _get_imports_of_python_module(tmpdir, IMPORT)
+    assert dotted_names == ['foo', ]
+
+
+def test_import_multiple(tmpdir):
+    dotted_names = _get_imports_of_python_module(tmpdir, IMPORT_MULTIPLE)
+    assert len(dotted_names) == 2
+
+
+def test_import_multiple_details(tmpdir):
+    dotted_names = _get_imports_of_python_module(tmpdir, IMPORT_MULTIPLE)
+    assert sorted(dotted_names) == ['bar', 'foo', ]
+
+
+def test_import_as(tmpdir):
+    dotted_names = _get_imports_of_python_module(tmpdir, IMPORT_AS)
+    assert len(dotted_names) == 1
+
+
+def test_import_as_details(tmpdir):
+    dotted_names = _get_imports_of_python_module(tmpdir, IMPORT_AS)
+    assert dotted_names == ['foo', ]
+
+
+def test_import_as_multiple(tmpdir):
+    dotted_names = _get_imports_of_python_module(tmpdir, IMPORT_AS_MULTIPLE)
+    assert len(dotted_names) == 2
+
+
+def test_import_as_multiple_details(tmpdir):
+    dotted_names = _get_imports_of_python_module(tmpdir, IMPORT_AS_MULTIPLE)
+    assert sorted(dotted_names) == ['boo', 'foo', ]
+
+
+def test_from_import(tmpdir):
+    dotted_names = _get_imports_of_python_module(tmpdir, FROM_IMPORT)
+    assert len(dotted_names) == 1
+
+
+def test_from_import_details(tmpdir):
+    dotted_names = _get_imports_of_python_module(tmpdir, FROM_IMPORT)
+    assert dotted_names == ['foo.bar', ]
+
+
+def test_from_import_multiple(tmpdir):
+    dotted_names = _get_imports_of_python_module(tmpdir, FROM_IMPORT_MULTIPLE)
+    assert len(dotted_names) == 2
+
+
+def test_from_import_multiple_details(tmpdir):
+    dotted_names = _get_imports_of_python_module(tmpdir, FROM_IMPORT_MULTIPLE)
+    assert sorted(dotted_names) == ['foo.bar', 'foo.ber', ]
+
+
+def test_from_import_as(tmpdir):
+    dotted_names = _get_imports_of_python_module(tmpdir, FROM_IMPORT_AS)
+    assert len(dotted_names) == 1
+
+
+def test_from_import_as_details(tmpdir):
+    dotted_names = _get_imports_of_python_module(tmpdir, FROM_IMPORT_AS)
+    assert dotted_names == ['foo.bar', ]
+
+
+def test_import_asterisk(tmpdir):
+    dotted_names = _get_imports_of_python_module(tmpdir, FROM_IMPORT_ASTERISK)
+    assert len(dotted_names) == 1
+
+
+def test_import_asterisk_details(tmpdir):
+    dotted_names = _get_imports_of_python_module(tmpdir, FROM_IMPORT_ASTERISK)
+    assert dotted_names == ['os', ]
+
+
+def test_from_import_as_multiple(tmpdir):
+    dotted_names = _get_imports_of_python_module(
+        tmpdir,
+        FROM_IMPORT_AS_MULTIPLE,
+    )
+    assert len(dotted_names) == 2
+
+
+def test_from_import_as_multiple_details(tmpdir):
+    dotted_names = _get_imports_of_python_module(
+        tmpdir,
+        FROM_IMPORT_AS_MULTIPLE,
+    )
+    assert sorted(dotted_names) == ['foo.bar', 'foo.boo', ]
+
+
+def test_imports_multiple_lines(tmpdir):
+    dotted_names = _get_imports_of_python_module(
+        tmpdir,
+        'import foo\nimport bar',
+    )
+    assert sorted(dotted_names) == ['bar', 'foo', ]
