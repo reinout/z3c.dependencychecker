@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 class Report(object):
@@ -7,6 +11,8 @@ class Report(object):
         self._database = package.imports
 
     def __call__(self):
+        logger.debug('Package requirements: %s', self._database._requirements)
+        logger.debug('Package extras: %s', self._database._extras_requirements)
         self.missing_requirements()
         self.missing_test_requirements()
         self.unneeded_requirements()

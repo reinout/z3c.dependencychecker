@@ -51,6 +51,7 @@ class ImportsDatabase(object):
 
     def add_imports(self, imports):
         for single_import in imports:
+            logger.debug('Import found %s', single_import.name)
             self.imports_used.append(single_import)
 
     def get_missing_imports(self):
