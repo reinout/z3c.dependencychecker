@@ -12,6 +12,7 @@ class Report(object):
         self.unneeded_requirements()
         self.requirements_that_should_be_test_requirements()
         self.unneeded_test_requirements()
+        self.print_notice()
 
     def missing_requirements(self):
         self._print_metric(
@@ -42,6 +43,14 @@ class Report(object):
             'Unneeded test requirements',
             self._database.get_unneeded_test_requirements,
         )
+
+    @staticmethod
+    def print_notice():
+        print('')
+        print('Note: requirements are taken from the egginfo dir, so you need')
+        print('to re-run buildout (or setup.py or whatever) for changes in')
+        print('setup.py to have effect.')
+        print('')
 
     def _print_metric(self, title, method):
         missed = method()

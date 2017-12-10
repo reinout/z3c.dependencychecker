@@ -185,3 +185,13 @@ def test_requirements_that_should_be_test_requirements(
     assert 'Requirements that should be test requirements\n' \
            '=============================================' in out
     assert 'two' in out
+
+
+def test_print_notice(capsys, minimal_structure):
+    path, package_name = minimal_structure
+    package = Package(path)
+    report = Report(package)
+    report.print_notice()
+    out, err = capsys.readouterr()
+    assert 'Note: ' in out
+    assert '' == err
