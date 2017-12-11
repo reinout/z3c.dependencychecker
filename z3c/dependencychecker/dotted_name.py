@@ -11,6 +11,9 @@ class DottedName(object):
         is_test=False,
     ):
         self.name = name
+        self.safe_name = self._get_safe_name(name)
+        self.namespaces = self._get_namespaces(self.safe_name)
+        self.is_namespaced = self._is_namespaced(self.namespaces)
         self.file_path = file_path
         self.is_test = is_test
 
@@ -23,3 +26,17 @@ class DottedName(object):
             requirement.project_name,
             file_path=file_path,
         )
+
+    @staticmethod
+    def _get_safe_name(name):
+        safe_name = name.lower().replace('-', '_')
+        return safe_name
+
+    @staticmethod
+    def _get_namespaces(safe_name):
+        parts = safe_name.split('.')
+        return parts
+
+    @staticmethod
+    def _is_namespaced(namespaces):
+        return bool(len(namespaces) - 1)
