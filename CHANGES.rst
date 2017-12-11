@@ -1,10 +1,13 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-1.17 (unreleased)
------------------
+2.0 (unreleased)
+----------------
 
-- Nothing changed yet.
+- Complete rewrite: code does no longer use deprecated functionality,
+  is more modular, more pythonic, easier to extend and hack, and above all,
+  has a 100% test coverage to ensure that it works as expected.
+  [gforcada]
 
 
 1.16 (2017-06-21)
