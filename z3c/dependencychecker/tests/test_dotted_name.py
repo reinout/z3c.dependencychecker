@@ -101,3 +101,46 @@ def test_is_namespaced_not():
 def test_is_namespaced():
     obj = DottedName('plone.app.dexterity')
     assert obj.is_namespaced
+
+
+def test_comparison_fallback():
+    obj1 = DottedName('plone.app.dexterity')
+    result = obj1 < object()
+    assert result
+
+
+def test_comparison_bigger_than():
+    obj1 = DottedName('plone.app.ldap')
+    obj2 = DottedName('plone.app.dexterity')
+    assert obj1 > obj2
+
+
+def test_comparison_bigger_or_equal_than():
+    obj1 = DottedName('plone.app.ldap')
+    obj2 = DottedName('plone.app.dexterity')
+    assert obj1 >= obj2
+    assert obj1 >= obj1
+
+
+def test_comparison_smaller_than():
+    obj1 = DottedName('plone.app.dexterity')
+    obj2 = DottedName('plone.app.ldap')
+    assert obj1 < obj2
+
+
+def test_comparison_smaller_or_equal_than():
+    obj1 = DottedName('plone.app.dexterity')
+    obj2 = DottedName('plone.app.ldap')
+    assert obj1 <= obj2
+    assert obj1 <= obj1
+
+
+def test_comparison_equality():
+    obj1 = DottedName('plone.app.dexterity')
+    assert obj1 == obj1
+
+
+def test_comparison_equality_fallback():
+    obj1 = DottedName('plone.app.dexterity')
+    result = obj1 == object()
+    assert not result

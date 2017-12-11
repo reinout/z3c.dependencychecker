@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+from functools import total_ordering
 
 
+@total_ordering
 class DottedName(object):
 
     def __init__(
@@ -40,3 +42,14 @@ class DottedName(object):
     @staticmethod
     def _is_namespaced(namespaces):
         return bool(len(namespaces) - 1)
+
+    def __lt__(self, other):
+        if not isinstance(other, DottedName):
+            return NotImplemented
+        return self.name < other.name
+
+    def __eq__(self, other):
+        if not isinstance(other, DottedName):
+            return NotImplemented
+
+        return self.safe_name == other.safe_name
