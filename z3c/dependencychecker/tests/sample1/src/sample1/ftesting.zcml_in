@@ -1,4 +1,6 @@
-<zcml>
+<zcml
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser">
 
   <include package="needed.by.test.zcml"/>
 
