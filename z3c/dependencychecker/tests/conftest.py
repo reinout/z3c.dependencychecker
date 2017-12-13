@@ -10,7 +10,9 @@ reusability.
 import os
 import pkg_resources
 import pytest
+import random
 import shutil
+import string
 import tempfile
 
 
@@ -40,3 +42,79 @@ def fake_project():
 
     yield package_folder
     shutil.rmtree(temp_folder)
+
+
+@pytest.fixture
+def minimal_structure():
+    """Creates a folder structure that contains the minimal files needed
+    to make Package class be able to initialize without errors
+    """
+    folder = tempfile.mkdtemp()
+    _add_setup_py(folder)
+    package_name = _add_egg_info(folder)
+
+    src_folder = os.path.join(folder, 'src', )
+    os.makedirs(src_folder)
+
+    yield folder, package_name
+
+    shutil.rmtree(folder)
+
+
+def _add_setup_py(folder):
+    with open(os.path.join(folder, 'setup.py'), 'w') as setup_py_file:
+        setup_py_file.write('hi')
+
+
+def _add_egg_info(folder):
+    package_name = ''.join(
+        random.choice(string.ascii_lowercase)
+        for _ in range(10)
+    )
+
+    egg_info_folder_path = os.path.join(
+        folder,
+        '{0}.egg-info'.format(package_name),
+    )
+    os.makedirs(egg_info_folder_path)
+
+    _write_pkg_info_file(egg_info_folder_path)
+    _write_requires_file(egg_info_folder_path)
+    _write_top_level_file(egg_info_folder_path, package_name)
+
+    return package_name
+
+
+def _write_pkg_info_file(folder):
+    with open(os.path.join(folder, 'PKG-INFO'), 'w') as pkg_info:
+        lines = '\n'.join([
+            'Metadata-Version: 1.0',
+            'Name: testpackage',
+            'Version: 1.0.dev0',
+        ])
+        pkg_info.write(lines)
+
+
+def _write_requires_file(folder):
+    with open(os.path.join(folder, 'requires.txt'), 'w') as requires_file:
+        lines = '\n'.join([
+            'one',
+            'two',
+        ])
+        requires_file.write(lines)
+
+
+def _write_top_level_file(folder_path, package_name):
+    file_path = os.path.join(folder_path, 'top_level.txt')
+    with open(file_path, 'w') as top_level_file:
+        lines = '\n'.join([
+            package_name,
+        ])
+        top_level_file.write(lines)
+
+    sources_top_folder = os.path.join(
+        folder_path,
+        '..',
+        package_name,
+    )
+    os.makedirs(sources_top_folder)
