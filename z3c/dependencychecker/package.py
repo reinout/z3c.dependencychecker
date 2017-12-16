@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from z3c.dependencychecker.db import ImportsDatabase
 from z3c.dependencychecker.dotted_name import DottedName
 from z3c.dependencychecker.utils import change_dir
 import glob
@@ -176,3 +177,29 @@ class PackageMetadata(object):
             os.sep,
         )
         sys.exit(1)
+
+
+class Package(object):
+    """The python package that is being analyzed
+
+    This class itself does not much per se, but connects the PackageMetadata
+    with the ImportsDatabase, where the important bits are.
+    """
+
+    def __init__(self, path):
+        self.metadata = PackageMetadata(path)
+        self.imports = ImportsDatabase()
+
+    def set_declared_dependencies(self):
+        """Add this packages' dependencies defined in setup.py to the database
+        """
+        self.imports.add_requirements(
+            self.metadata.get_required_dependencies()
+        )
+
+    def set_declared_extras_dependencies(self):
+        """Add this packages' extras dependencies defined in setup.py to the
+        database
+        """
+        for extra, dotted_names in self.metadata.get_extras_dependencies():
+            self.imports.add_extra_requirements(extra, dotted_names)

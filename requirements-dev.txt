@@ -19,6 +19,7 @@ py==1.4.34
 pycparser==2.18
 pyOpenSSL==17.2.0
 pytest==3.2.1
+pytest-catchlog==1.2.2
 pytest-cov==2.5.1
 requests==2.18.4
 six==1.10.0
