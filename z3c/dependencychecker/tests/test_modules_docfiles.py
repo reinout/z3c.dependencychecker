@@ -115,6 +115,19 @@ def test_code_found_details(tmpdir):
     assert dotted_names == ['zope.annotation', ]
 
 
+def test_always_testing(tmpdir):
+    temporal_file = write_source_file_at(
+        (tmpdir.strpath, ),
+        source_code='>>> import foo',
+        filename='file.rst'
+    )
+
+    doc_file = DocFiles(tmpdir.strpath, temporal_file)
+    dotted_names = [x for x in doc_file.scan()]
+    assert len(dotted_names) == 1
+    assert dotted_names[0].is_test
+
+
 def test_multiple_imports_same_line(tmpdir):
     dotted_names = _get_dependencies_on_file(
         tmpdir,
