@@ -10,7 +10,6 @@ class DottedName(object):
         self,
         name,
         file_path=None,
-        line_number=None,
         is_test=False,
     ):
         self.name = name
