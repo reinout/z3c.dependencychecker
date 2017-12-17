@@ -62,7 +62,9 @@ def test_declared_extras_dependencies_one_extra(minimal_structure):
     package.set_declared_dependencies()
     package.set_declared_extras_dependencies()
 
-    assert get_extras_requirements_names(package.imports) == ['extra', ]
+    extras_names = get_extras_requirements_names(package.imports)
+    assert len(extras_names) == 1
+    assert 'extra' in extras_names
     names = get_requirements_names_for_extra(package.imports, extra='extra')
     assert 'another.package' in names
     assert 'my.package' in names
