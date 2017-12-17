@@ -29,6 +29,36 @@ def test_requirement_constructor():
     assert obj.name == 'my.dotted.name'
 
 
+def test_requirement_constructor_python_prefix():
+    mock_object = mock.MagicMock()
+    mock_property = mock.PropertyMock(return_value='python-dateutil')
+    type(mock_object).project_name = mock_property
+
+    obj = DottedName.from_requirement(mock_object)
+
+    assert obj.name == 'dateutil'
+
+
+def test_requirement_constructor_keep_python_if_no_prefix():
+    mock_object = mock.MagicMock()
+    mock_property = mock.PropertyMock(return_value='one-python-dateutil')
+    type(mock_object).project_name = mock_property
+
+    obj = DottedName.from_requirement(mock_object)
+
+    assert obj.name == 'one_python_dateutil'
+
+
+def test_requirement_constructor_change_to_underscores():
+    mock_object = mock.MagicMock()
+    mock_property = mock.PropertyMock(return_value='my-fancy-package')
+    type(mock_object).project_name = mock_property
+
+    obj = DottedName.from_requirement(mock_object)
+
+    assert obj.name == 'my_fancy_package'
+
+
 def test_requirement_constructor_with_path():
     mock_object = mock.MagicMock()
     mock_property = mock.PropertyMock(return_value='my.dotted.name')

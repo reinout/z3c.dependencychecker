@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import hashlib
+import re
 from functools import total_ordering
 
 
@@ -25,8 +26,12 @@ class DottedName(object):
         """A requirement in this method's context is a
         pkg_resources.Requirement
         """
+        # some pypi packages have a python- prefix that is not part of the
+        # package namespace, or they use dashes rather than underscores
+        dotted_name = re.sub(r'^python-', '', requirement.project_name)
+        dotted_name = dotted_name.replace('-', '_')
         return cls(
-            requirement.project_name,
+            dotted_name,
             file_path=file_path,
         )
 
