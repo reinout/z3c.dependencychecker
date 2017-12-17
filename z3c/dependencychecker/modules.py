@@ -316,7 +316,7 @@ class PythonDocstrings(PythonModule):
                         line,
                         self.path,
                     )
-                    return
+                    continue
 
                 for node in ast.walk(tree):
                     for dotted_name in self._process_ast_node(node):
@@ -373,7 +373,7 @@ class DocFiles(PythonDocstrings):
                             line,
                             self.path,
                         )
-                        return
+                        continue
 
                     for node in ast.walk(tree):
                         for dotted_name in self._process_ast_node(node):
