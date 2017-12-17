@@ -192,6 +192,11 @@ class Package(object):
         self.imports = ImportsDatabase()
         self.imports.own_dotted_name = DottedName(self.metadata.name)
 
+    def inspect(self):
+        self.set_declared_dependencies()
+        self.set_declared_extras_dependencies()
+        self.analyze_package()
+
     def set_declared_dependencies(self):
         """Add this packages' dependencies defined in setup.py to the database
         """

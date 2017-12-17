@@ -5,13 +5,7 @@ from z3c.dependencychecker.utils import change_dir
 import mock
 import sys
 
-
-MAIN_OUTPUT = """Unused imports
-==============
-src/sample1/unusedimports.py:7:  tempfile
-src/sample1/unusedimports.py:4:  zest.releaser
-src/sample1/unusedimports.py:6:  os
-
+MAIN_OUTPUT = """
 Missing requirements
 ====================
      Products.GenericSetup.interfaces.EXTENSION
@@ -57,7 +51,7 @@ setup.py to have effect.
 
 def test_highlevel_integration(capsys, fake_project):
     with change_dir(fake_project):
-        arguments = ['dependencychecker']
+        arguments = ['dependencychecker', ]
         with mock.patch.object(sys, 'argv', arguments):
             main()
             out, err = capsys.readouterr()
