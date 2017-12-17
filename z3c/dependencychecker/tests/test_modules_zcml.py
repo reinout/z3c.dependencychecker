@@ -18,6 +18,7 @@ ZCML_TEMPLATE = """
 INCLUDE = '<include package="my.package.include" />'
 ADAPTER_FACTORY = '<adapter factory="my.package.factory" />'
 ADAPTER_FOR = '<adapter for="my.package.for" />'
+ADAPTER_FOR_MULTIPLE = '<adapter for="my.package.for another.package.foo yet.another.one" />'  # noqa
 ADAPTER_PROVIDES = '<adapter provides="my.package.provides" />'
 UTILITY_COMPONENT = '<utility component="my.package.component" />'
 UTILITY_PROVIDES = '<utility provides="my.package.provides" />'
@@ -88,6 +89,18 @@ def test_adapter_for(tmpdir):
 def test_adapter_for_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, ADAPTER_FOR)
     assert dotted_names == ['my.package.for', ]
+
+
+def test_adapter_for_multiple(tmpdir):
+    dotted_names = _get_zcml_imports_on_file(tmpdir, ADAPTER_FOR_MULTIPLE)
+    assert len(dotted_names) == 3
+
+
+def test_adapter_for_multiple_details(tmpdir):
+    dotted_names = _get_zcml_imports_on_file(tmpdir, ADAPTER_FOR_MULTIPLE)
+    assert 'my.package.for' in dotted_names
+    assert 'another.package.foo' in dotted_names
+    assert 'yet.another.one' in dotted_names
 
 
 def test_adapter_provides(tmpdir):

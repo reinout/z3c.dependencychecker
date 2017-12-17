@@ -157,24 +157,24 @@ class ZCMLFile(BaseModule):
             element_namespaced = self._build_namespaced_element(element)
             for node in tree.iter(element_namespaced):
                 for attrib in self.ELEMENTS[element]:
-                    dotted_name = self._extract_dotted_name(node, attrib)
-                    if dotted_name:
+                    for dotted_name in self._extract_dotted_name(node, attrib):
                         yield dotted_name
 
     def _extract_dotted_name(self, node, attr):
         if attr in node.keys():
-            dotted_name = node.get(attr)
-            if dotted_name.startswith('.'):
-                return
+            candidate_text = node.get(attr)
+            for dotted_name in candidate_text.split(' '):
+                if dotted_name.startswith('.'):
+                    continue
 
-            if dotted_name == '*':
-                return
+                if dotted_name == '*':
+                    continue
 
-            return DottedName(
-                dotted_name,
-                file_path=self.path,
-                is_test=self.testing,
-            )
+                yield DottedName(
+                    dotted_name,
+                    file_path=self.path,
+                    is_test=self.testing,
+                )
 
     @staticmethod
     def _build_namespaced_element(element):
