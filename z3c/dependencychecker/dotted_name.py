@@ -1,6 +1,16 @@
 # -*- coding: utf-8 -*-
 import hashlib
+import re
 from functools import total_ordering
+
+
+# some pypi packages' names have a prefix that is not part of the package
+# namespace
+# They can be safely removed
+PREFIXES = (
+    'python-',
+    'django-',
+)
 
 
 @total_ordering
@@ -24,8 +34,12 @@ class DottedName(object):
         """A requirement in this method's context is a
         pkg_resources.Requirement
         """
+        dotted_name = requirement.project_name
+        for prefix in PREFIXES:
+            dotted_name = re.sub(r'^{0}'.format(prefix), '', dotted_name)
+        dotted_name = dotted_name.replace('-', '_')
         return cls(
-            requirement.project_name,
+            dotted_name,
             file_path=file_path,
         )
 
