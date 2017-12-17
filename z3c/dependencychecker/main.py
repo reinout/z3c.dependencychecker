@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from z3c.dependencychecker.package import Package
+from z3c.dependencychecker.report import Report
 import logging
 import optparse
 import os
@@ -12,9 +14,13 @@ logger = logging.getLogger(__name__)
 def main():
     options, args = parse_command_line()
     set_log_level(options.verbose)
+    path = get_path(args)
 
-    from z3c.dependencychecker.dependencychecker import main as old_main
-    old_main(args)
+    package_analyzed = Package(path)
+    package_analyzed.inspect()
+
+    report = Report(package_analyzed)
+    report.print_report()
 
 
 def parse_command_line():
