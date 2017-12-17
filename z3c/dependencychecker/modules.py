@@ -308,7 +308,7 @@ class PythonDocstrings(PythonModule):
                 try:
                     tree = ast.parse(code)
                 except SyntaxError:
-                    return
+                    continue
 
                 for node in ast.walk(tree):
                     for dotted_name in self._process_ast_node(node):
@@ -360,7 +360,7 @@ class DocFiles(PythonDocstrings):
                     try:
                         tree = ast.parse(code)
                     except SyntaxError:
-                        return
+                        continue
 
                     for node in ast.walk(tree):
                         for dotted_name in self._process_ast_node(node):
