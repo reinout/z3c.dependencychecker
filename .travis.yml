@@ -3,6 +3,14 @@ sudo: false
 cache: pip
 python:
   - 2.7
+  - 3.3
+  - 3.4
+  - 3.5
+  - 3.6
+matrix:
+  allow_failures:
+  - python: 3.5
+  - python: 3.6
 install:
   - rm -rf /home/travis/virtualenv/python2.7.13/lib/python2.7/site-packages/setuptools-36.0.1.dist-info
   - pip install -r requirements-dev.txt

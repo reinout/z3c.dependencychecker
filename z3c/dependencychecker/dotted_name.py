@@ -63,7 +63,7 @@ class DottedName(object):
         return '<DottedName {0}>'.format(self.name)
 
     def __hash__(self):
-        digest = hashlib.sha256(self.safe_name).hexdigest()
+        digest = hashlib.sha256(self.safe_name.encode()).hexdigest()
         return int(digest, 16) % 10**8
 
     def __contains__(self, item):

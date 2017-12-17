@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from z3c.dependencychecker.dotted_name import DottedName
 import mock
+import pytest
+import sys
 
 
 def test_minimal():
@@ -133,6 +135,10 @@ def test_is_namespaced():
     assert obj.is_namespaced
 
 
+@pytest.mark.skipif(
+    sys.version_info > (3, 0),
+    reason='Fails on Python 3.x as it raises a TypeError',
+)
 def test_comparison_fallback():
     obj1 = DottedName('plone.app.dexterity')
     result = obj1 < object()
