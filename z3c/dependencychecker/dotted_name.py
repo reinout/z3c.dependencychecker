@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import hashlib
 from functools import total_ordering
+from cached_property import cached_property
 
 
 @total_ordering
@@ -13,9 +14,8 @@ class DottedName(object):
         is_test=False,
     ):
         self.name = name
-        self.safe_name = self._get_safe_name(name)
-        self.namespaces = self._get_namespaces(self.safe_name)
-        self.is_namespaced = self._is_namespaced(self.namespaces)
+        self.safe_name = name.lower().replace('-', '_')
+
         self.file_path = file_path
         self.is_test = is_test
 
@@ -29,19 +29,13 @@ class DottedName(object):
             file_path=file_path,
         )
 
-    @staticmethod
-    def _get_safe_name(name):
-        safe_name = name.lower().replace('-', '_')
-        return safe_name
+    @cached_property
+    def namespaces(self):
+        return self.safe_name.split('.')
 
-    @staticmethod
-    def _get_namespaces(safe_name):
-        parts = safe_name.split('.')
-        return parts
-
-    @staticmethod
-    def _is_namespaced(namespaces):
-        return bool(len(namespaces) - 1)
+    @cached_property
+    def is_namespaced(self):
+        return bool(len(self.namespaces) - 1)
 
     def __lt__(self, other):
         if not isinstance(other, DottedName):

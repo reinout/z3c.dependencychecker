@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from cached_property import cached_property
 from z3c.dependencychecker.db import ImportsDatabase
 from z3c.dependencychecker.dotted_name import DottedName
 from z3c.dependencychecker.modules import MODULES
@@ -21,32 +22,29 @@ class PackageMetadata(object):
 
     def __init__(self, path):
         logger.debug("Reading package metadata for %s...", path)
-        self.distribution_root = self._get_distribution_root(path)
-        self.setup_py_path = self._get_setup_py_path()
-        self.package_dir = self._get_package_dir()
-        self.egg_info_dir = self._get_egg_info_dir()
-        self.name = self._get_package_name()
+        self._path = path
         self._working_set = self._generate_working_set_with_ourselves()
-        self.top_level = self._get_sources_top_level()
 
-    @staticmethod
-    def _get_distribution_root(path):
-        if 'setup.py' not in os.listdir(path):
+    @cached_property
+    def distribution_root(self):
+        if 'setup.py' not in os.listdir(self._path):
             logger.error(
                 'setup.py was not found in %s. '
                 'Without it dependencychecker can not work.',
-                path,
+                self._path,
             )
             sys.exit(1)
-        return path
+        return self._path
 
-    def _get_setup_py_path(self):
+    @cached_property
+    def setup_py_path(self):
         return os.path.join(
             self.distribution_root,
             'setup.py',
         )
 
-    def _get_package_dir(self):
+    @cached_property
+    def package_dir(self):
         """Check where the .egg-info is located"""
         try_paths = (
             self.distribution_root,
@@ -78,14 +76,16 @@ class PackageMetadata(object):
 
         return results
 
-    def _get_egg_info_dir(self):
+    @cached_property
+    def egg_info_dir(self):
         results = self._find_egg_info_in_folder(self.package_dir)
         return os.path.join(
             self.package_dir,
             results[0],
         )
 
-    def _get_package_name(self):
+    @cached_property
+    def name(self):
         path, filename = os.path.split(self.egg_info_dir)
         name = filename[:-len('.egg-info')]
         logger.debug(
@@ -143,7 +143,8 @@ class PackageMetadata(object):
             )
             yield extra_name, dotted_names
 
-    def _get_sources_top_level(self):
+    @cached_property
+    def top_level(self):
         path = os.path.join(
             self.egg_info_dir,
             'top_level.txt',
