@@ -10,6 +10,6 @@ install:
   - buildout code-analysis:return-status-codes=True
 script:
   - bin/code-analysis
-  - pytest z3c --cov z3c --cov-report term-missing
+  - pytest z3c --cov z3c/dependencychecker --cov-report term-missing
 after_success:
   - coveralls
