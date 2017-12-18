@@ -14,9 +14,9 @@ class DottedName(object):
         is_test=False,
     ):
         self.name = name
-        self.safe_name = self._get_safe_name(name)
-        self.namespaces = self._get_namespaces(self.safe_name)
-        self.is_namespaced = self._is_namespaced(self.namespaces)
+        self._safe_name = ''
+        self.safe_name = name
+
         self.file_path = file_path
         self.is_test = is_test
 
@@ -34,19 +34,22 @@ class DottedName(object):
             file_path=file_path,
         )
 
-    @staticmethod
-    def _get_safe_name(name):
+    @property
+    def safe_name(self):
+        return self._safe_name
+
+    @safe_name.setter
+    def safe_name(self, name):
         safe_name = name.lower().replace('-', '_')
-        return safe_name
+        self._safe_name = safe_name
 
-    @staticmethod
-    def _get_namespaces(safe_name):
-        parts = safe_name.split('.')
-        return parts
+    @property
+    def namespaces(self):
+        return self.safe_name.split('.')
 
-    @staticmethod
-    def _is_namespaced(namespaces):
-        return bool(len(namespaces) - 1)
+    @property
+    def is_namespaced(self):
+        return bool(len(self.namespaces) - 1)
 
     def __lt__(self, other):
         if not isinstance(other, DottedName):

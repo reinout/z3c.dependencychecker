@@ -20,16 +20,17 @@ class PackageMetadata(object):
     """
 
     def __init__(self, path):
-        self.distribution_root = self._get_distribution_root(path)
-        self.setup_py_path = self._get_setup_py_path()
-        self.package_dir = self._get_package_dir()
-        self.egg_info_dir = self._get_egg_info_dir()
-        self.name = self._get_package_name()
-        self._working_set = self._generate_working_set_with_ourselves()
-        self.top_level = self._get_sources_top_level()
+        self._distribution_root = None
+        self.distribution_root = path
 
-    @staticmethod
-    def _get_distribution_root(path):
+        self._working_set = self._generate_working_set_with_ourselves()
+
+    @property
+    def distribution_root(self):
+        return self._distribution_root
+
+    @distribution_root.setter
+    def distribution_root(self, path):
         if 'setup.py' not in os.listdir(path):
             logger.error(
                 'setup.py was not found in %s. '
@@ -37,15 +38,17 @@ class PackageMetadata(object):
                 path,
             )
             sys.exit(1)
-        return path
+        self._distribution_root = path
 
-    def _get_setup_py_path(self):
+    @property
+    def setup_py_path(self):
         return os.path.join(
             self.distribution_root,
             'setup.py',
         )
 
-    def _get_package_dir(self):
+    @property
+    def package_dir(self):
         """Check where the .egg-info is located"""
         try_paths = (
             self.distribution_root,
@@ -77,14 +80,16 @@ class PackageMetadata(object):
 
         return results
 
-    def _get_egg_info_dir(self):
+    @property
+    def egg_info_dir(self):
         results = self._find_egg_info_in_folder(self.package_dir)
         return os.path.join(
             self.package_dir,
             results[0],
         )
 
-    def _get_package_name(self):
+    @property
+    def name(self):
         path, filename = os.path.split(self.egg_info_dir)
         name = filename[:-len('.egg-info')]
         logger.debug(
@@ -142,7 +147,8 @@ class PackageMetadata(object):
             )
             yield extra_name, dotted_names
 
-    def _get_sources_top_level(self):
+    @property
+    def top_level(self):
         path = os.path.join(
             self.egg_info_dir,
             'top_level.txt',
