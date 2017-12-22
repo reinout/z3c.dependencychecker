@@ -39,7 +39,7 @@ class ImportsDatabase(object):
             self._extras_requirements[extra_name] = only_extra_dotted_names
 
     def _filter_duplicates(self, imports):
-        """Return all items in imports that are not found in reference"""
+        """Return all items in imports that are not a requirement already"""
         all_imports = set([dotted_name for dotted_name in imports])
         filtered = all_imports - self._requirements
         return filtered
