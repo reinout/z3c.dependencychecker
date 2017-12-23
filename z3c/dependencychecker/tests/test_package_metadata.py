@@ -296,8 +296,9 @@ def test_no_top_level_txt_file_found(minimal_structure):
     )
 
     sys_exit = False
+    metadata = PackageMetadata(path)
     try:
-        PackageMetadata(path)
+        metadata.top_level
     except SystemExit:
         sys_exit = True
 
@@ -314,8 +315,9 @@ def test_no_sources_top_level_folder_found(minimal_structure):
     )
 
     sys_exit = False
+    metadata = PackageMetadata(path)
     try:
-        PackageMetadata(path)
+        metadata.top_level
     except SystemExit:
         sys_exit = True
 

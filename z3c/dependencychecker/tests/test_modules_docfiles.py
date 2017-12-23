@@ -41,6 +41,16 @@ MULTIPLE_IMPORTS_DIFFERENT_LINES = '\n'.join([
     '        >>> from zope.component import utility',
     '        """',
 ])
+MULTIPLE_IMPORTS_DIFFERENT_LINES_WITH_INVALID_CODE_LINES_BETWEEN = '\n'.join([
+    'class MyClass(object):',
+    '    def test(self):',
+    '        """Docstring with code to be evaluated.',
+    '',
+    '        >>> from zope.component import adapter',
+    '        >>> this should  be skipped and next line processed happily',
+    '        >>> from zope.component import utility',
+    '        """',
+])
 
 
 def _get_dependencies_on_file(folder, source):
@@ -105,6 +115,19 @@ def test_code_found_details(tmpdir):
     assert dotted_names == ['zope.annotation', ]
 
 
+def test_always_testing(tmpdir):
+    temporal_file = write_source_file_at(
+        (tmpdir.strpath, ),
+        source_code='>>> import foo',
+        filename='file.rst'
+    )
+
+    doc_file = DocFiles(tmpdir.strpath, temporal_file)
+    dotted_names = [x for x in doc_file.scan()]
+    assert len(dotted_names) == 1
+    assert dotted_names[0].is_test
+
+
 def test_multiple_imports_same_line(tmpdir):
     dotted_names = _get_dependencies_on_file(
         tmpdir,
@@ -134,6 +157,24 @@ def test_multiple_imports_different_lines_details(tmpdir):
     dotted_names = _get_dependencies_on_file(
         tmpdir,
         MULTIPLE_IMPORTS_DIFFERENT_LINES,
+    )
+
+    assert 'zope.component.adapter' in dotted_names
+    assert 'zope.component.utility' in dotted_names
+
+
+def test_multiple_imports_with_invalid_lines(tmpdir):
+    dotted_names = _get_dependencies_on_file(
+        tmpdir,
+        MULTIPLE_IMPORTS_DIFFERENT_LINES_WITH_INVALID_CODE_LINES_BETWEEN,
+    )
+    assert len(dotted_names) == 2
+
+
+def test_multiple_imports_with_invalid_lines_details(tmpdir):
+    dotted_names = _get_dependencies_on_file(
+        tmpdir,
+        MULTIPLE_IMPORTS_DIFFERENT_LINES_WITH_INVALID_CODE_LINES_BETWEEN,
     )
 
     assert 'zope.component.adapter' in dotted_names

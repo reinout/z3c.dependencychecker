@@ -29,6 +29,7 @@ setup(name='z3c.dependencychecker',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'stdlib-list',
           ],
       extras_require = {
           'test': [
@@ -38,6 +39,6 @@ setup(name='z3c.dependencychecker',
           },
       entry_points={
           'console_scripts':
-          ['dependencychecker = z3c.dependencychecker.dependencychecker:main'
+          ['dependencychecker = z3c.dependencychecker.main:main'
            ]},
       )

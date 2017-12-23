@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from z3c.dependencychecker.dotted_name import DottedName
 import mock
+import pytest
+import sys
 
 
 def test_minimal():
@@ -27,6 +29,36 @@ def test_requirement_constructor():
 
     assert obj.file_path is None
     assert obj.name == 'my.dotted.name'
+
+
+def test_requirement_constructor_python_prefix():
+    mock_object = mock.MagicMock()
+    mock_property = mock.PropertyMock(return_value='python-dateutil')
+    type(mock_object).project_name = mock_property
+
+    obj = DottedName.from_requirement(mock_object)
+
+    assert obj.name == 'dateutil'
+
+
+def test_requirement_constructor_keep_python_if_no_prefix():
+    mock_object = mock.MagicMock()
+    mock_property = mock.PropertyMock(return_value='one-python-dateutil')
+    type(mock_object).project_name = mock_property
+
+    obj = DottedName.from_requirement(mock_object)
+
+    assert obj.name == 'one_python_dateutil'
+
+
+def test_requirement_constructor_change_to_underscores():
+    mock_object = mock.MagicMock()
+    mock_property = mock.PropertyMock(return_value='my-fancy-package')
+    type(mock_object).project_name = mock_property
+
+    obj = DottedName.from_requirement(mock_object)
+
+    assert obj.name == 'my_fancy_package'
 
 
 def test_requirement_constructor_with_path():
@@ -103,6 +135,10 @@ def test_is_namespaced():
     assert obj.is_namespaced
 
 
+@pytest.mark.skipif(
+    sys.version_info > (3, 0),
+    reason='Fails on Python 3.x as it raises a TypeError',
+)
 def test_comparison_fallback():
     obj1 = DottedName('plone.app.dexterity')
     result = obj1 < object()
