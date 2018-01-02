@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from z3c.dependencychecker.db import ImportsDatabase
 from z3c.dependencychecker.dotted_name import DottedName
+from z3c.dependencychecker.modules import MODULES
 from z3c.dependencychecker.utils import change_dir
 import glob
 import logging
@@ -189,6 +190,7 @@ class Package(object):
     def __init__(self, path):
         self.metadata = PackageMetadata(path)
         self.imports = ImportsDatabase()
+        self.imports.own_dotted_name = DottedName(self.metadata.name)
 
     def set_declared_dependencies(self):
         """Add this packages' dependencies defined in setup.py to the database
@@ -203,3 +205,9 @@ class Package(object):
         """
         for extra, dotted_names in self.metadata.get_extras_dependencies():
             self.imports.add_extra_requirements(extra, dotted_names)
+
+    def analyze_package(self):
+        top_folder = self.metadata.top_level
+        for module_obj in MODULES:
+            for source_file in module_obj.create_from_files(top_folder):
+                self.imports.add_imports(source_file.scan())

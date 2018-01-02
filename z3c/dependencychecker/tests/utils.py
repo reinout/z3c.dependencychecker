@@ -37,3 +37,7 @@ def get_requirements_names_for_extra(database, extra=''):
         requirement.name
         for requirement in database._extras_requirements[extra]
     ]
+
+
+def get_sorted_imports_paths(database):
+    return sorted([x.file_path for x in database.imports_used])
