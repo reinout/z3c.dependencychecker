@@ -20,6 +20,7 @@ class PackageMetadata(object):
     """
 
     def __init__(self, path):
+        logger.debug("Reading package metadata for %s...", path)
         self.distribution_root = self._get_distribution_root(path)
         self.setup_py_path = self._get_setup_py_path()
         self.package_dir = self._get_package_dir()
