@@ -1,1 +1,1 @@
-Zope Foundation and Contributors
+Reinout van Rees

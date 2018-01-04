@@ -3,6 +3,7 @@ from xml.etree import ElementTree
 from z3c.dependencychecker.dotted_name import DottedName
 import ast
 import fnmatch
+import logging
 import os
 import re
 
@@ -22,6 +23,8 @@ s?     # ensure plurals are handled as well
 """.format(os.sep)
 
 TEST_IN_PATH_REGEX = re.compile(TEST_REGEX, re.VERBOSE)
+
+logger = logging.getLogger(__name__)
 
 
 class BaseModule(object):
@@ -308,7 +311,12 @@ class PythonDocstrings(PythonModule):
                 try:
                     tree = ast.parse(code)
                 except SyntaxError:
-                    return
+                    logger.debug(
+                        'Could not parse "%s" in %s',
+                        line,
+                        self.path,
+                    )
+                    continue
 
                 for node in ast.walk(tree):
                     for dotted_name in self._process_ast_node(node):
@@ -360,7 +368,12 @@ class DocFiles(PythonDocstrings):
                     try:
                         tree = ast.parse(code)
                     except SyntaxError:
-                        return
+                        logger.debug(
+                            'Could not parse "%s" in %s',
+                            line,
+                            self.path,
+                        )
+                        continue
 
                     for node in ast.walk(tree):
                         for dotted_name in self._process_ast_node(node):

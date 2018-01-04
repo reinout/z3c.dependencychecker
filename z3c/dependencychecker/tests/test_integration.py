@@ -1,16 +1,11 @@
 # -*- coding: utf-8 -*-
-from z3c.dependencychecker.dependencychecker import main
+from pkg_resources import load_entry_point
+from z3c.dependencychecker.main import main
 from z3c.dependencychecker.utils import change_dir
 import mock
 import sys
 
-
-MAIN_OUTPUT = """Unused imports
-==============
-src/sample1/unusedimports.py:7:  tempfile
-src/sample1/unusedimports.py:4:  zest.releaser
-src/sample1/unusedimports.py:6:  os
-
+MAIN_OUTPUT = """
 Missing requirements
 ====================
      Products.GenericSetup.interfaces.EXTENSION
@@ -56,8 +51,36 @@ setup.py to have effect.
 
 def test_highlevel_integration(capsys, fake_project):
     with change_dir(fake_project):
-        arguments = ['dependencychecker']
+        arguments = ['dependencychecker', ]
         with mock.patch.object(sys, 'argv', arguments):
             main()
             out, err = capsys.readouterr()
             assert MAIN_OUTPUT in out
+
+
+def test_entry_point_installed():
+    """Check that pkg_resources can find the entry point defined in setup.py"""
+    entry_point = load_entry_point(
+        'z3c.dependencychecker',
+        'console_scripts',
+        'dependencychecker'
+    )
+    assert entry_point
+
+
+def test_entry_point_run():
+    """Check that calling the entry point calls a z3c.dependencychecker
+    function
+    """
+    def fake_main():
+        return 'All dependencies are fine'
+
+    import z3c.dependencychecker.main
+    with mock.patch.object(z3c.dependencychecker.main, 'main', fake_main):
+        entry_point = load_entry_point(
+            'z3c.dependencychecker',
+            'console_scripts',
+            'dependencychecker'
+        )
+
+    assert entry_point() == 'All dependencies are fine'

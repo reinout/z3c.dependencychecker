@@ -192,6 +192,11 @@ class Package(object):
         self.imports = ImportsDatabase()
         self.imports.own_dotted_name = DottedName(self.metadata.name)
 
+    def inspect(self):
+        self.set_declared_dependencies()
+        self.set_declared_extras_dependencies()
+        self.analyze_package()
+
     def set_declared_dependencies(self):
         """Add this packages' dependencies defined in setup.py to the database
         """
@@ -209,5 +214,10 @@ class Package(object):
     def analyze_package(self):
         top_folder = self.metadata.top_level
         for module_obj in MODULES:
+            logger.debug(module_obj)
             for source_file in module_obj.create_from_files(top_folder):
+                logger.debug(
+                    'Search dependencies in file %s',
+                    source_file.path,
+                )
                 self.imports.add_imports(source_file.scan())
