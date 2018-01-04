@@ -55,6 +55,7 @@ def set_log_level(verbose):
     logging.basicConfig(
         level=level,
         stream=sys.stdout,
+        format="%(levelname)s: %(message)s"
     )
 
 
