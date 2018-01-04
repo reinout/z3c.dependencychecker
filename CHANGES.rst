@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-2.0 (unreleased)
+2.0 (2018-01-04)
 ----------------
 
 - Complete rewrite: code does no longer use deprecated functionality,
