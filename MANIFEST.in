@@ -4,3 +4,4 @@ global-exclude *.pyc
 exclude bootstrap.py
 exclude buildout.cfg
 exclude .*
+exclude requirements*.txt
