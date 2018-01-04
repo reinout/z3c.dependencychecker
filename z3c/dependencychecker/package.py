@@ -217,7 +217,7 @@ class Package(object):
             logger.debug(module_obj)
             for source_file in module_obj.create_from_files(top_folder):
                 logger.debug(
-                    'Search dependencies in file %s',
+                    'Searching dependencies in file %s...',
                     source_file.path,
                 )
                 self.imports.add_imports(source_file.scan())
