@@ -217,7 +217,8 @@ class Package(object):
             logger.debug("Starting analyzing files using %s...", module_obj)
             for source_file in module_obj.create_from_files(top_folder):
                 logger.debug(
-                    'Searching dependencies in file %s...',
+                    'Searching dependencies (with %s) in file %s...',
+                    module_obj.__name__,
                     source_file.path,
                 )
                 self.imports.add_imports(source_file.scan())
