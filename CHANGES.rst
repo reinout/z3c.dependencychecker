@@ -7,6 +7,9 @@ Changelog of z3c.dependencychecker
 - We're releasing it as a wheel, too, now.
   [reinout]
 
+- Small improvements to the debug logging (``-v/--verbose`` shows it).
+  [reinout]
+
 
 2.0 (2018-01-04)
 ----------------

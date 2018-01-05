@@ -37,7 +37,7 @@ class ImportsDatabase(object):
             )
 
             logger.warn(
-                'extra requirement "%s" is declared twice on setup.py',
+                'extra requirement "%s" is declared twice in setup.py',
                 extra_name,
             )
         else:
@@ -51,7 +51,7 @@ class ImportsDatabase(object):
 
     def add_imports(self, imports):
         for single_import in imports:
-            logger.debug('Import found %s', single_import.name)
+            logger.debug('    Import found: %s', single_import.name)
             self.imports_used.append(single_import)
 
     def get_missing_imports(self):

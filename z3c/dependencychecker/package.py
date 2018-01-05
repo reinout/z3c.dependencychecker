@@ -20,6 +20,7 @@ class PackageMetadata(object):
     """
 
     def __init__(self, path):
+        logger.debug("Reading package metadata for %s...", path)
         self.distribution_root = self._get_distribution_root(path)
         self.setup_py_path = self._get_setup_py_path()
         self.package_dir = self._get_package_dir()
@@ -214,10 +215,11 @@ class Package(object):
     def analyze_package(self):
         top_folder = self.metadata.top_level
         for module_obj in MODULES:
-            logger.debug(module_obj)
+            logger.debug("Starting analyzing files using %s...", module_obj)
             for source_file in module_obj.create_from_files(top_folder):
                 logger.debug(
-                    'Search dependencies in file %s',
+                    'Searching dependencies (with %s) in file %s...',
+                    module_obj.__name__,
                     source_file.path,
                 )
                 self.imports.add_imports(source_file.scan())
