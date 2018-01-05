@@ -4,7 +4,8 @@ Changelog of z3c.dependencychecker
 2.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- We're releasing it as a wheel, too, now.
+  [reinout]
 
 
 2.0 (2018-01-04)
