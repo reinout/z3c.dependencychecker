@@ -19,6 +19,11 @@ Changelog of z3c.dependencychecker
 - Handle multiple dotted names found in a single ZCML parameter.
   [gforcada]
 
+- Process requirements' project names to remove the ``python-`` prefix,
+  turn all dashes into underscores as well.
+  This helps finding quite a lot of packages.
+  [gforcada]
+
 2.0 (2018-01-04)
 ----------------
 
