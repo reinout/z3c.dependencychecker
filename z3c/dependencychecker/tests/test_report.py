@@ -51,7 +51,7 @@ def test_missing_requirements(capsys, minimal_structure):
     )
 
     package = Package(path)
-    package.analyze_package()
+    package.inspect()
     report = Report(package)
     report.missing_requirements()
     out, err = capsys.readouterr()
@@ -75,7 +75,7 @@ def test_missing_test_requirements(capsys, minimal_structure):
     )
 
     package = Package(path)
-    package.analyze_package()
+    package.inspect()
     report = Report(package)
     report.missing_test_requirements()
     out, err = capsys.readouterr()
@@ -94,8 +94,7 @@ def test_unneeded_requirements(capsys, minimal_structure):
     )
 
     package = Package(path)
-    package.set_declared_dependencies()
-    package.analyze_package()
+    package.inspect()
     report = Report(package)
     report.unneeded_requirements()
     out, err = capsys.readouterr()
@@ -119,8 +118,7 @@ def test_unneeded_test_requirements(capsys, minimal_structure):
     )
 
     package = Package(path)
-    package.set_declared_extras_dependencies()
-    package.analyze_package()
+    package.inspect()
     report = Report(package)
     report.unneeded_test_requirements()
     out, err = capsys.readouterr()
@@ -138,8 +136,7 @@ def test_unneeded_test_requirements_no_tests_requirements(
     path, package_name = minimal_structure
 
     package = Package(path)
-    package.set_declared_extras_dependencies()
-    package.analyze_package()
+    package.inspect()
     report = Report(package)
     report.unneeded_test_requirements()
     out, err = capsys.readouterr()
@@ -175,9 +172,7 @@ def test_requirements_that_should_be_test_requirements(
     )
 
     package = Package(path)
-    package.set_declared_dependencies()
-    package.set_declared_extras_dependencies()
-    package.analyze_package()
+    package.inspect()
     report = Report(package)
     report.requirements_that_should_be_test_requirements()
     out, err = capsys.readouterr()

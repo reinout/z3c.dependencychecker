@@ -10,6 +10,14 @@ Changelog of z3c.dependencychecker
 - Small improvements to the debug logging (``-v/--verbose`` shows it).
   [reinout]
 
+- Remove unused parameter in DottedName.
+  [gforcada]
+
+- All imports found by DocFiles imports extractor are marked as test ones.
+  [gforcada]
+
+- Handle multiple dotted names found in a single ZCML parameter.
+  [gforcada]
 
 2.0 (2018-01-04)
 ----------------
