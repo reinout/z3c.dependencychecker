@@ -54,6 +54,7 @@ setup(
         'setuptools',
         'stdlib-list',
         'cached-property',
+        'toml',
     ],
     extras_require={
         'test': [
