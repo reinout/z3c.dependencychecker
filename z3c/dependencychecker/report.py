@@ -13,6 +13,10 @@ class Report(object):
     def print_report(self):
         logger.debug('Package requirements: %s', self._database._requirements)
         logger.debug('Package extras: %s', self._database._extras_requirements)
+        logger.debug(
+            'User defined mappings: %s',
+            self._database.user_mappings,
+        )
         self.missing_requirements()
         self.missing_test_requirements()
         self.unneeded_requirements()

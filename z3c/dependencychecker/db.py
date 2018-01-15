@@ -19,6 +19,8 @@ class ImportsDatabase(object):
         self._requirements = set()
         self._extras_requirements = {}
         self.imports_used = []
+        self.user_mappings = {}
+        self.reverse_user_mappings = {}
         self.own_dotted_name = None
 
     def add_requirements(self, requirements):
@@ -53,6 +55,30 @@ class ImportsDatabase(object):
         for single_import in imports:
             logger.debug('    Import found: %s', single_import.name)
             self.imports_used.append(single_import)
+
+    def add_user_mapping(self, package_name, provided_names):
+        package = DottedName(package_name)
+        packages_provided = [DottedName(name) for name in provided_names]
+
+        if package not in self._all_requirements():
+            logger.info(
+                'Ignoring package %s as is not a dependency of the '
+                'package being analyzed',
+                package,
+            )
+            return
+
+        self.user_mappings[package] = set(packages_provided)
+
+        for single_package in packages_provided:
+            self.reverse_user_mappings[single_package] = package
+
+    def _all_requirements(self):
+        all_requirements = self._requirements.copy()
+        for extra in self._extras_requirements:
+            all_requirements.update(self._extras_requirements[extra])
+
+        return all_requirements
 
     def get_missing_imports(self):
         filters = (
