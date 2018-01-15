@@ -19,6 +19,9 @@ Changelog of z3c.dependencychecker
 - Handle multiple dotted names found in a single ZCML parameter.
   [gforcada]
 
+- Use properties to make code more pythonic.
+  [gforcada]
+
 2.0 (2018-01-04)
 ----------------
 
