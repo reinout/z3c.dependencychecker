@@ -51,6 +51,7 @@ setup(
     install_requires=[
         'setuptools',
         'stdlib-list',
+        'cached-property',
     ],
     extras_require={
         'test': [

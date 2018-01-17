@@ -2,3 +2,4 @@
 setuptools==33.1.1
 zc.buildout==2.9.5
 stdlib-list==0.4.0
+cached-property==1.3.1
