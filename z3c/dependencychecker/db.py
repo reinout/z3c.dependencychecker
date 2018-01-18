@@ -90,7 +90,8 @@ class ImportsDatabase(object):
         )
         missing = self._apply_filters(self.imports_used, filters)
         unique_imports = self._get_unique_imports(imports_list=missing)
-        return unique_imports
+        result = self._filter_user_mappings(unique_imports)
+        return result
 
     def get_missing_test_imports(self):
         filters = (
@@ -301,3 +302,20 @@ class ImportsDatabase(object):
                 return self._extras_requirements[candidate]
 
         return []
+
+    def _filter_user_mappings(self, dotted_names):
+        """Remove dotted names that are in user mappings"""
+        result = []
+        for single_import in dotted_names:
+            for provided_package in self.reverse_user_mappings:
+                if single_import in provided_package:
+                    logger.debug(
+                        'Skip %s as is part of user mapping %s',
+                        single_import,
+                        self.reverse_user_mappings[provided_package],
+                    )
+                    break
+            else:
+                result.append(single_import)
+
+        return result
