@@ -104,7 +104,8 @@ class ImportsDatabase(object):
         )
         missing = self._apply_filters(self.imports_used, filters)
         unique_imports = self._get_unique_imports(imports_list=missing)
-        return unique_imports
+        result = self._filter_user_mappings(unique_imports)
+        return result
 
     def get_unneeded_requirements(self):
         all_but_test_requirements = self._requirements.copy()

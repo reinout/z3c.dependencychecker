@@ -118,6 +118,93 @@ def test_missing_test_requirements(capsys, minimal_structure):
     assert 'this.package' in out
 
 
+def test_missing_test_requirements_with_user_mapping(
+    capsys,
+    minimal_structure
+):
+    path, package_name = minimal_structure
+    write_source_file_at(
+        (path, package_name),
+        '__init__.py',
+        '',
+    )
+    write_source_file_at(
+        (path, package_name, 'tests'),
+        '__init__.py',
+        'import Products.Five.browser.views.BrowserView'
+    )
+    write_source_file_at(
+        (path, '{0}.egg-info'.format(package_name)),
+        'requires.txt',
+        'Zope2',
+    )
+    write_source_file_at(
+        (path, ),
+        'pyproject.toml',
+        '\n'.join([
+            '[tool.dependencychecker]',
+            'Zope2 = ["Products.Five" ]',
+        ]),
+    )
+
+    package = Package(path)
+    package.inspect()
+    report = Report(package)
+    report.missing_test_requirements()
+    out, err = capsys.readouterr()
+
+    assert '' == out
+    assert 'Missing requirements\n' \
+           '====================' not in out
+    assert 'Products.Five' not in out
+    assert 'Zope2' not in out
+
+
+def test_missing_test_requirements_with_user_mapping_on_test_extra(
+    capsys,
+    minimal_structure
+):
+    path, package_name = minimal_structure
+    write_source_file_at(
+        (path, package_name),
+        '__init__.py',
+        '',
+    )
+    write_source_file_at(
+        (path, package_name, 'tests'),
+        '__init__.py',
+        'import Products.Five.browser.views.BrowserView'
+    )
+    write_source_file_at(
+        (path, '{0}.egg-info'.format(package_name)),
+        'requires.txt',
+        '\n'.join([
+            '[test]',
+            'Zope2',
+        ]),
+    )
+    write_source_file_at(
+        (path, ),
+        'pyproject.toml',
+        '\n'.join([
+            '[tool.dependencychecker]',
+            'Zope2 = ["Products.Five" ]',
+        ]),
+    )
+
+    package = Package(path)
+    package.inspect()
+    report = Report(package)
+    report.missing_test_requirements()
+    out, err = capsys.readouterr()
+
+    assert '' == out
+    assert 'Missing requirements\n' \
+           '====================' not in out
+    assert 'Products.Five' not in out
+    assert 'Zope2' not in out
+
+
 def test_unneeded_requirements(capsys, minimal_structure):
     path, package_name = minimal_structure
     write_source_file_at(
