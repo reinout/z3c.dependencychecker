@@ -7,17 +7,13 @@ python:
   - 3.4
   - 3.5
   - 3.6
-matrix:
-  allow_failures:
-  - python: 3.5
-  - python: 3.6
 install:
   - rm -rf /home/travis/virtualenv/python2.7.13/lib/python2.7/site-packages/setuptools-36.0.1.dist-info
   - pip install -r requirements-dev.txt
 # force failure of code analysis
   - buildout code-analysis:return-status-codes=True
 script:
-  - bin/code-analysis
+  - if [[ ( "$TRAVIS_PYTHON_VERSION" ==  "2.7" ) || ( "$TRAVIS_PYTHON_VERSION" ==  "3.3" ) || ( "$TRAVIS_PYTHON_VERSION" ==  "3.4" )  ]]; then bin/code-analysis; fi
   - pytest z3c --cov z3c/dependencychecker --cov-report term-missing
 after_success:
   - coveralls
