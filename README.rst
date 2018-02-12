@@ -42,22 +42,31 @@ z3c.dependencychecker reports on:
 
 It checks the following locations:
 
-- Python files for regular imports.
+- Python files for regular imports and their docstrings.
 
 - Zcml files for ``package="some.thing"`` attributes. It also supports Plone's
-  generic setup files.
+  generic setup files as well as FTI XML files.
 
 - Python files, ``.txt`` and ``.rst`` files for imports in doctests.
 
+- django settings files.
 
-Note on running the tests
---------------------------
+User mappings
+-------------
 
-The tests are quite sensitive to other python packages being available. *If*
-the tests do not run, first wrap the buildout in a virtualenv to make double
-sure there are no interfering packages. Or make sure you use a clean (system)
-python.
+Some packages available on pypi have a different name than the import statement needed to use them,
+i.e. `python-dateutil` is imported as `import dateutil`.
+Others provide more than one package, i.e `Zope2` provides several packages like `Products.Five` or `Products.OFSP`.
 
+For those cases, z3c.dependencychecker has a solution: user mappings.
+
+Add a `pyproject.toml` file on the root of your project with the following content:
+
+    [tool.dependencychecker]
+    python-dateutil = ['dateutil']
+    Zope2 = ['Products.Five', 'Products.OFSP' ]
+
+z3c.dependencychecker will read this information and use it on its reports.
 
 Credits
 -------
