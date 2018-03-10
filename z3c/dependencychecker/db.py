@@ -19,6 +19,8 @@ class ImportsDatabase(object):
         self._requirements = set()
         self._extras_requirements = {}
         self.imports_used = []
+        self.user_mappings = {}
+        self.reverse_user_mappings = {}
         self.own_dotted_name = None
 
     def add_requirements(self, requirements):
@@ -64,6 +66,30 @@ class ImportsDatabase(object):
             else:
                 logger.debug('    Import ignored: %s', single_import.name)
 
+    def add_user_mapping(self, package_name, provided_names):
+        package = DottedName(package_name)
+        packages_provided = [DottedName(name) for name in provided_names]
+
+        if package not in self._all_requirements():
+            logger.info(
+                'Ignoring package %s as is not a dependency of the '
+                'package being analyzed',
+                package,
+            )
+            return
+
+        self.user_mappings[package] = set(packages_provided)
+
+        for single_package in packages_provided:
+            self.reverse_user_mappings[single_package] = package
+
+    def _all_requirements(self):
+        all_requirements = self._requirements.copy()
+        for extra in self._extras_requirements:
+            all_requirements.update(self._extras_requirements[extra])
+
+        return all_requirements
+
     def get_missing_imports(self):
         filters = (
             self._filter_out_testing_imports,
@@ -71,7 +97,8 @@ class ImportsDatabase(object):
         )
         missing = self._apply_filters(self.imports_used, filters)
         unique_imports = self._get_unique_imports(imports_list=missing)
-        return unique_imports
+        result = self._filter_user_mappings(unique_imports)
+        return result
 
     def get_missing_test_imports(self):
         filters = (
@@ -81,7 +108,8 @@ class ImportsDatabase(object):
         )
         missing = self._apply_filters(self.imports_used, filters)
         unique_imports = self._get_unique_imports(imports_list=missing)
-        return unique_imports
+        result = self._filter_user_mappings(unique_imports)
+        return result
 
     def get_unneeded_requirements(self):
         all_but_test_requirements = self._requirements.copy()
@@ -276,3 +304,20 @@ class ImportsDatabase(object):
                 return self._extras_requirements[candidate]
 
         return []
+
+    def _filter_user_mappings(self, dotted_names):
+        """Remove dotted names that are in user mappings"""
+        result = []
+        for single_import in dotted_names:
+            for provided_package in self.reverse_user_mappings:
+                if single_import in provided_package:
+                    logger.debug(
+                        'Skip %s as is part of user mapping %s',
+                        single_import,
+                        self.reverse_user_mappings[provided_package],
+                    )
+                    break
+            else:
+                result.append(single_import)
+
+        return result

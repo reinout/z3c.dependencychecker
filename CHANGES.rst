@@ -22,6 +22,9 @@ Changelog of z3c.dependencychecker
 - Use properties to make code more pythonic.
   [gforcada]
 
+- Allow users to define their own mappings on a `pyproject.toml` file.
+  See README.rst.
+
 - Filter imports when adding them to the database, rather than on each report.
   [gforcada]
 

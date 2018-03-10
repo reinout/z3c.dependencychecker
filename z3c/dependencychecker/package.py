@@ -9,6 +9,7 @@ import logging
 import os
 import pkg_resources
 import sys
+import toml
 
 
 logger = logging.getLogger(__name__)
@@ -197,6 +198,7 @@ class Package(object):
     def inspect(self):
         self.set_declared_dependencies()
         self.set_declared_extras_dependencies()
+        self.set_user_mappings()
         self.analyze_package()
 
     def set_declared_dependencies(self):
@@ -213,6 +215,19 @@ class Package(object):
         for extra, dotted_names in self.metadata.get_extras_dependencies():
             self.imports.add_extra_requirements(extra, dotted_names)
 
+    def set_user_mappings(self):
+        """Add any user defined mapping
+
+        They need to be on a pyproject.toml file within the table
+        tool.dependencychecker.
+
+        See tests/test_user_mappings.py for examples.
+        """
+        config = self._load_user_config()
+        for package, packages_provided in config.items():
+            if isinstance(packages_provided, list):
+                self.imports.add_user_mapping(package, packages_provided)
+
     def analyze_package(self):
         top_folder = self.metadata.top_level
         for module_obj in MODULES:
@@ -224,3 +239,14 @@ class Package(object):
                     source_file.path,
                 )
                 self.imports.add_imports(source_file.scan())
+
+    def _load_user_config(self):
+        config_file_path = os.sep.join([
+            self.metadata.distribution_root,
+            'pyproject.toml',
+        ])
+        try:
+            config = toml.load(config_file_path)
+            return config[u'tool'][u'dependencychecker']
+        except (IOError, KeyError, ):
+            return {}
