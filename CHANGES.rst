@@ -24,6 +24,8 @@ Changelog of z3c.dependencychecker
 
 - Allow users to define their own mappings on a `pyproject.toml` file.
   See README.rst.
+
+- Filter imports when adding them to the database, rather than on each report.
   [gforcada]
 
 2.0 (2018-01-04)
