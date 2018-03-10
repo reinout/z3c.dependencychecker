@@ -4,11 +4,8 @@ Changelog of z3c.dependencychecker
 2.1.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
-
-2.1 (2018-03-10)
-----------------
+- Note: 2.1 had a technical release problem, hence 2.1.1.
+  [reinout]
 
 - We're releasing it as a wheel, too, now.
   [reinout]
@@ -34,6 +31,7 @@ Changelog of z3c.dependencychecker
 - Filter imports when adding them to the database, rather than on each report.
   [gforcada]
 
+
 2.0 (2018-01-04)
 ----------------
 
@@ -44,6 +42,7 @@ Changelog of z3c.dependencychecker
 
 - Add support for Python 3.
   [gforcada]
+
 
 1.16 (2017-06-21)
 -----------------
