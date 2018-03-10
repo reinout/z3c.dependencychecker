@@ -22,6 +22,9 @@ Changelog of z3c.dependencychecker
 - Use properties to make code more pythonic.
   [gforcada]
 
+- Filter imports when adding them to the database, rather than on each report.
+  [gforcada]
+
 2.0 (2018-01-04)
 ----------------
 

@@ -50,17 +50,24 @@ class ImportsDatabase(object):
         return filtered
 
     def add_imports(self, imports):
+        filters = (
+            self._filter_out_known_packages,
+            self._filter_out_own_package,
+            self._filter_out_python_standard_library,
+        )
         for single_import in imports:
             logger.debug('    Import found: %s', single_import.name)
-            self.imports_used.append(single_import)
+
+            unknown_import = self._apply_filters([single_import, ], filters)
+            if unknown_import:
+                self.imports_used.append(single_import)
+            else:
+                logger.debug('    Import ignored: %s', single_import.name)
 
     def get_missing_imports(self):
         filters = (
-            self._filter_out_known_packages,
             self._filter_out_testing_imports,
-            self._filter_out_own_package,
             self._filter_out_requirements,
-            self._filter_out_python_standard_library,
         )
         missing = self._apply_filters(self.imports_used, filters)
         unique_imports = self._get_unique_imports(imports_list=missing)
@@ -68,12 +75,9 @@ class ImportsDatabase(object):
 
     def get_missing_test_imports(self):
         filters = (
-            self._filter_out_known_packages,
             self._filter_out_only_testing_imports,
-            self._filter_out_own_package,
             self._filter_out_requirements,
             self._filter_out_test_requirements,
-            self._filter_out_python_standard_library,
         )
         missing = self._apply_filters(self.imports_used, filters)
         unique_imports = self._get_unique_imports(imports_list=missing)
@@ -98,8 +102,6 @@ class ImportsDatabase(object):
     def requirements_that_should_be_test_requirements(self):
         non_testing_filters = (
             self._filter_out_testing_imports,
-            self._filter_out_python_standard_library,
-            self._filter_out_own_package,
         )
         non_testing_imports = self._apply_filters(
             self.imports_used,
@@ -115,7 +117,6 @@ class ImportsDatabase(object):
         ]
         testing_filters = (
             self._filter_out_only_testing_imports,
-            self._filter_out_python_standard_library,
             self._filter_out_own_package,
         )
         testing_imports = self._apply_filters(

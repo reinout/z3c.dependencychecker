@@ -5,7 +5,7 @@ import os
 def write_source_file_at(
     path_parts,
     filename='test.py',
-    source_code='import one',
+    source_code='import unknown.dependency',
 ):
     folder_path = os.path.join(*path_parts)
 

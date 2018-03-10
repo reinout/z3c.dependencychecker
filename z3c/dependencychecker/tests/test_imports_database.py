@@ -123,6 +123,7 @@ def test_no_used_imports():
 
 def test_add_used_imports():
     database = ImportsDatabase()
+    database.own_dotted_name = DottedName('something-else')
     database.add_imports([
         DottedName('one'),
         DottedName('two'),
