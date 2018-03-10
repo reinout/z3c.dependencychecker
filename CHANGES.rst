@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-2.1 (unreleased)
+2.1 (2018-03-10)
 ----------------
 
 - We're releasing it as a wheel, too, now.
