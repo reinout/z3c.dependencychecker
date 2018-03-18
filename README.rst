@@ -1,3 +1,4 @@
+=====================
 z3c.dependencychecker
 =====================
 
@@ -14,7 +15,7 @@ warn when discovering missing or unneeded dependencies.
 
 
 What it does
-------------
+============
 
 z3c.dependencychecker reports on:
 
@@ -52,7 +53,7 @@ It checks the following locations:
 - django settings files.
 
 User mappings
--------------
+=============
 
 Some packages available on pypi have a different name than the import statement needed to use them,
 i.e. `python-dateutil` is imported as `import dateutil`.
@@ -69,7 +70,7 @@ Add a `pyproject.toml` file on the root of your project with the following conte
 z3c.dependencychecker will read this information and use it on its reports.
 
 Credits
--------
+=======
 
 z3c.dependencychecker is a different application/packaging of zope's
 importchecker utility.  It has been used in quite some projects, I grabbed a
@@ -85,11 +86,11 @@ copy from `lovely.recipe's checkout
 - Quite some fixes from `Jonas Baumann <https://github.com/jone>`_.
 
 - Many updates to work well with modern Plone versions by `Gil Forcada
-  Codinachs <http://gil.badall.net/>`.
+  Codinachs <http://gil.badall.net/>`_.
 
 
 Source code, forking and reporting bugs
----------------------------------------
+=======================================
 
 The source code can be found on github:
 https://github.com/reinout/z3c.dependencychecker
