@@ -101,6 +101,7 @@ class ImportsDatabase(object):
         filters = (
             self._filter_out_testing_imports,
             self._filter_out_requirements,
+            self._filter_out_ignored_imports,
         )
         missing = self._apply_filters(self.imports_used, filters)
         unique_imports = self._get_unique_imports(imports_list=missing)
@@ -112,6 +113,7 @@ class ImportsDatabase(object):
             self._filter_out_only_testing_imports,
             self._filter_out_requirements,
             self._filter_out_test_requirements,
+            self._filter_out_ignored_imports,
         )
         missing = self._apply_filters(self.imports_used, filters)
         unique_imports = self._get_unique_imports(imports_list=missing)
@@ -129,6 +131,7 @@ class ImportsDatabase(object):
             self._filter_out_known_packages,
             self._filter_out_python_standard_library,
             self._filter_out_used_imports,
+            self._filter_out_ignored_imports,
         )
         unneeded = self._apply_filters(all_but_test_requirements, filters)
         unique_imports = self._get_unique_imports(imports_list=unneeded)
@@ -166,9 +169,14 @@ class ImportsDatabase(object):
                 testing_imports,
             )
         ]
-        unique = self._get_unique_imports(
-            imports_list=should_be_test_requirements,
+        filters = (
+            self._filter_out_ignored_imports,
         )
+        skip_ignored = self._apply_filters(
+            should_be_test_requirements,
+            filters,
+        )
+        unique = self._get_unique_imports(imports_list=skip_ignored)
         return unique
 
     def get_unneeded_test_requirements(self):
@@ -180,6 +188,7 @@ class ImportsDatabase(object):
             self._filter_out_known_packages,
             self._filter_out_python_standard_library,
             self._filter_out_used_imports,
+            self._filter_out_ignored_imports,
         )
         unneeded = self._apply_filters(test_requirements, filters)
         unique_imports = self._get_unique_imports(imports_list=unneeded)
@@ -223,6 +232,12 @@ class ImportsDatabase(object):
         return self._discard_if_found_obj_in_list(
             dotted_name,
             self.imports_used,
+        )
+
+    def _filter_out_ignored_imports(self, dotted_name):
+        return self._discard_if_found_obj_in_list(
+            dotted_name,
+            self.ignored_packages,
         )
 
     def _filter_out_known_packages(self, dotted_name):
