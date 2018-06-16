@@ -225,7 +225,15 @@ class Package(object):
         """
         config = self._load_user_config()
         for package, packages_provided in config.items():
-            if isinstance(packages_provided, list):
+            if package == 'ignore-packages':
+                if isinstance(packages_provided, list):
+                    self.imports.add_ignored_packages(packages_provided)
+                else:
+                    logger.warning(
+                        'ignore-packages key in pyproject.toml needs to '
+                        'be a list, even for a single package to be ignored.'
+                    )
+            elif isinstance(packages_provided, list):
                 self.imports.add_user_mapping(package, packages_provided)
 
     def analyze_package(self):

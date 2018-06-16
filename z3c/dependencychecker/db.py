@@ -21,6 +21,7 @@ class ImportsDatabase(object):
         self.imports_used = []
         self.user_mappings = {}
         self.reverse_user_mappings = {}
+        self.ignored_packages = set()
         self.own_dotted_name = None
 
     def add_requirements(self, requirements):
@@ -82,6 +83,12 @@ class ImportsDatabase(object):
 
         for single_package in packages_provided:
             self.reverse_user_mappings[single_package] = package
+
+    def add_ignored_packages(self, packages):
+        self.ignored_packages = set([
+            DottedName(package)
+            for package in packages
+        ])
 
     def _all_requirements(self):
         all_requirements = self._requirements.copy()
