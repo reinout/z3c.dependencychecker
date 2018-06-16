@@ -18,9 +18,6 @@ What it does
 
 z3c.dependencychecker reports on:
 
-- **Unused imports**: pyflakes is another tool that does this (and that also
-  reports on missing variables inside the files).
-
 - **Missing (test) requirements**: imports without a corresponding requirement
   in the ``setup.py``.  There might be false alarms, but at least you've got a
   (hopefully short) list of items to check.
