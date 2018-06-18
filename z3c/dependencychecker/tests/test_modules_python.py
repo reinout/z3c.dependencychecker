@@ -2,6 +2,7 @@
 from z3c.dependencychecker.modules import PythonModule
 from z3c.dependencychecker.tests.utils import write_source_file_at
 import os
+import pytest
 import tempfile
 
 
@@ -15,6 +16,9 @@ FROM_IMPORT_MULTIPLE = 'from foo import bar, ber'
 FROM_IMPORT_AS = 'from foo import bar as ber'
 FROM_IMPORT_AS_MULTIPLE = 'from foo import bar as ber, boo as bla'
 FROM_IMPORT_ASTERISK = 'from os import *'
+FROM_IMPORT_DOT = 'from . import something'
+FROM_IMPORT_DOT_DOT = 'from .. import something'
+FROM_IMPORT_DOT_RELATIVE = 'from .local import something'
 
 
 def _get_imports_of_python_module(folder, source):
@@ -165,6 +169,19 @@ def test_import_asterisk(tmpdir):
 def test_import_asterisk_details(tmpdir):
     dotted_names = _get_imports_of_python_module(tmpdir, FROM_IMPORT_ASTERISK)
     assert dotted_names == ['os', ]
+
+
+@pytest.mark.parametrize(
+    'statement',
+    [
+        FROM_IMPORT_DOT,
+        FROM_IMPORT_DOT_DOT,
+        FROM_IMPORT_DOT_RELATIVE,
+    ]
+)
+def test_ignore_local_imports(statement, tmpdir):
+    dotted_names = _get_imports_of_python_module(tmpdir, statement)
+    assert len(dotted_names) == 0
 
 
 def test_from_import_as_multiple(tmpdir):

@@ -4,8 +4,8 @@ Changelog of z3c.dependencychecker
 2.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Ignore relative imports (i.e. from . import foo).
+  [gforcada]
 
 2.1.1 (2018-03-10)
 ------------------

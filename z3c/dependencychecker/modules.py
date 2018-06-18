@@ -103,6 +103,8 @@ class PythonModule(BaseModule):
                 )
 
         elif isinstance(node, ast.ImportFrom):
+            if self._is_relative_import(node):
+                return
             for name in node.names:
                 if name.name == '*':
                     dotted_name = node.module
@@ -113,6 +115,10 @@ class PythonModule(BaseModule):
                     file_path=self.path,
                     is_test=self.testing,
                 )
+
+    @staticmethod
+    def _is_relative_import(import_node):
+        return import_node.level > 0
 
 
 class ZCMLFile(BaseModule):
