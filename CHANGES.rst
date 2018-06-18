@@ -7,6 +7,11 @@ Changelog of z3c.dependencychecker
 - Ignore relative imports (i.e. from . import foo).
   [gforcada]
 
+- Added ``ignore-packages`` config option to totally ignore one or more packages in the reports
+  (whether unused imports or unneeded dependencies).
+  Handy for soft dependencies.
+  [gforcada]
+
 2.1.1 (2018-03-10)
 ------------------
 
