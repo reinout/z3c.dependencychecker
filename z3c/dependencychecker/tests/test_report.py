@@ -491,3 +491,13 @@ def test_print_notice(capsys, minimal_structure):
     out, err = capsys.readouterr()
     assert 'Note: ' in out
     assert '' == err
+
+
+def test_exit_status_set(minimal_structure):
+    path, package_name = minimal_structure
+    package = Package(path)
+    package.inspect()
+    report = Report(package)
+    assert report.exit_status == 0
+    report.print_report()
+    assert report.exit_status == 1
