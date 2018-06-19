@@ -22,6 +22,11 @@ def main():
     report = Report(package_analyzed)
     report.print_report()
 
+    if options.exit_status:
+        exit(report.exit_status)
+
+    exit(0)
+
 
 def parse_command_line():
     usage = (
@@ -37,6 +42,13 @@ def parse_command_line():
         dest='verbose',
         default=False,
         help='Show debug output',
+    )
+    parser.add_option(
+        '--exit-zero',
+        action='store_false',
+        dest='exit_status',
+        default=True,
+        help='Exit with status code "0" even if there are errors.',
     )
     options, args = parser.parse_args()
     return options, args
