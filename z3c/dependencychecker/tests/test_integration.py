@@ -52,10 +52,14 @@ setup.py to have effect.
 def test_highlevel_integration(capsys, fake_project):
     with change_dir(fake_project):
         arguments = ['dependencychecker', ]
-        with mock.patch.object(sys, 'argv', arguments):
-            main()
+        try:
+            with mock.patch.object(sys, 'argv', arguments):
+                main()
+        except SystemExit:
             out, err = capsys.readouterr()
             assert MAIN_OUTPUT in out
+        else:
+            assert True is False  # pragma: nocover
 
 
 def test_entry_point_installed():
