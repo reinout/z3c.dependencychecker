@@ -4,8 +4,10 @@ Changelog of z3c.dependencychecker
 2.3 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Add a new command line option ``--exit-zero``.
+  It forces the program to always exit with a zero status code.
+  Otherwise it will report ``1`` if the program does find anything to report.
+  [gforcada]
 
 2.2 (2018-06-19)
 ----------------
