@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-2.2 (unreleased)
+2.2 (2018-06-19)
 ----------------
 
 - Ignore relative imports (i.e. from . import foo).
