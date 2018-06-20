@@ -170,7 +170,7 @@ class ZCMLFile(BaseModule):
         if attr in node.keys():
             candidate_text = node.get(attr)
             for dotted_name in candidate_text.split(' '):
-                if dotted_name.startswith('.'):
+                if not dotted_name or dotted_name.startswith('.'):
                     continue
 
                 if dotted_name == '*':
