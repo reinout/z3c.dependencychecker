@@ -4,8 +4,8 @@ Changelog of z3c.dependencychecker
 2.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Handle packages that have multiple top levels, i.e. packages like Zope2.
+  [gforcada]
 
 2.3 (2018-06-21)
 ----------------

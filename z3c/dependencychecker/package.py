@@ -161,22 +161,36 @@ class PackageMetadata(object):
         with open(path) as top_level_file:
             content = top_level_file.read().strip()
 
-        sources_top_level = os.path.join(
-            self.package_dir,
-            content,
-        )
+        top_levels = []
+        for candidate in content.split('\n'):
+            possible_top_level = os.path.join(
+                self.package_dir,
+                candidate,
+            )
 
-        if os.path.exists(sources_top_level):
-            return sources_top_level
+            if os.path.exists(possible_top_level):
+                logger.debug('Found top level %s', possible_top_level)
+                top_levels.append(possible_top_level)
+                continue
 
-        single_module_top_level = '{0}.py'.format(sources_top_level)
-        if os.path.exists(single_module_top_level):
-            return single_module_top_level
+            single_module = '{0}.py'.format(possible_top_level)
+            if os.path.exists(single_module):
+                logger.debug('Found top level %s', single_module)
+                top_levels.append(single_module)
+                continue
+
+            logger.warning(
+                'Top level %s not found but referenced '
+                'by top_level.txt',
+                possible_top_level,
+            )
+
+        if top_levels:
+            return top_levels
 
         logger.error(
-            '%s does not exist but %s%stop_level.txt points there.\n'
+            'There are paths found in %s%stop_level.txt that do not exist.\n'
             'Maybe you need to put the package in development again?',
-            sources_top_level,
             self.egg_info_dir,
             os.sep,
         )
@@ -237,16 +251,20 @@ class Package(object):
                 self.imports.add_user_mapping(package, packages_provided)
 
     def analyze_package(self):
-        top_folder = self.metadata.top_level
-        for module_obj in MODULES:
-            logger.debug("Starting analyzing files using %s...", module_obj)
-            for source_file in module_obj.create_from_files(top_folder):
+        for top_folder in self.metadata.top_level:
+            logger.debug("Analyzing package top_level %s...", top_folder)
+            for module_obj in MODULES:
                 logger.debug(
-                    'Searching dependencies (with %s) in file %s...',
-                    module_obj.__name__,
-                    source_file.path,
+                    "Starting analyzing files using %s...",
+                    module_obj,
                 )
-                self.imports.add_imports(source_file.scan())
+                for source_file in module_obj.create_from_files(top_folder):
+                    logger.debug(
+                        'Searching dependencies (with %s) in file %s...',
+                        module_obj.__name__,
+                        source_file.path,
+                    )
+                    self.imports.add_imports(source_file.scan())
 
     def _load_user_config(self):
         config_file_path = os.sep.join([
