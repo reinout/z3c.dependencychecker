@@ -9,6 +9,7 @@ class Report(object):
 
     def __init__(self, package):
         self._database = package.imports
+        self.exit_status = 0
 
     def print_report(self):
         logger.debug('Package requirements: %s', self._database._requirements)
@@ -66,6 +67,8 @@ class Report(object):
         missed = method()
         if len(missed) == 0:
             return
+
+        self.exit_status = 1
 
         self._print_header(title)
         for dotted_name in missed:

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from z3c.dependencychecker.main import get_path
+from z3c.dependencychecker.main import main
 from z3c.dependencychecker.main import parse_command_line
 from z3c.dependencychecker.main import set_log_level
 from z3c.dependencychecker.main import _version
@@ -91,3 +92,31 @@ def test_get_path_given_path_not_a_folder():
         sys_exit = True
 
     assert sys_exit
+
+
+def test_exit_zero_not_set(minimal_structure):
+    path, _ = minimal_structure
+
+    arguments = ['dependencychecker', path]
+    exit_code = 0
+    try:
+        with mock.patch.object(sys, 'argv', arguments):
+            main()
+    except SystemExit as exc:
+        exit_code = exc.code
+
+    assert exit_code == 1
+
+
+def test_exit_zero_set(minimal_structure):
+    path, _ = minimal_structure
+
+    arguments = ['dependencychecker', '--exit-zero', path]
+    exit_code = 0
+    try:
+        with mock.patch.object(sys, 'argv', arguments):
+            main()
+    except SystemExit as exc:
+        exit_code = exc.code
+
+    assert exit_code == 0
