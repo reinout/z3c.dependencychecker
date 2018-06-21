@@ -4,8 +4,8 @@ Changelog of z3c.dependencychecker
 2.3 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Fix ZCML parser to discard empty strings.
+  [gforcada]
 
 2.2 (2018-06-19)
 ----------------
