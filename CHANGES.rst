@@ -9,6 +9,9 @@ Changelog of z3c.dependencychecker
   Otherwise it will report ``1`` if the program does find anything to report.
   [gforcada]
 
+- Fix ZCML parser to discard empty strings.
+  [gforcada]
+
 2.2 (2018-06-19)
 ----------------
 

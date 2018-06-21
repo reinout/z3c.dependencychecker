@@ -26,6 +26,8 @@ BROWSER_PAGE_CLASS = '<browser:page class="my.package.class" />'
 BROWSER_PAGE_FOR = '<browser:page for="my.package.for" />'
 BROWSER_PAGE_LAYER = '<browser:page layer="my.package.layer" />'
 SUBSCRIBER_FOR = '<subscriber for="my.package.for" />'
+SUBSCRIBER_FOR_MULTIPLE = '<subscriber for="my.package.for' \
+                 '                 another.package" />'
 SUBSCRIBER_HANDLER = '<subscriber handler="my.package.handler" />'
 SECURITYPOLICY_COMPONENT = '<securityPolicy component="my.package.component" />'  # noqa
 GS_REGISTERPROFILE_PROVIDES = '<genericsetup:registerProfile provides="my.package.provides" />'  # noqa
@@ -171,6 +173,19 @@ def test_subscriber_for(tmpdir):
 def test_subscriber_for_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, SUBSCRIBER_FOR)
     assert dotted_names == ['my.package.for', ]
+
+
+def test_subscriber_for_multiple(tmpdir):
+    dotted_names = _get_zcml_imports_on_file(tmpdir, SUBSCRIBER_FOR_MULTIPLE)
+    assert len(dotted_names) == 2
+
+
+def test_subscriber_for_multiple_details(tmpdir):
+    dotted_names = _get_zcml_imports_on_file(tmpdir, SUBSCRIBER_FOR_MULTIPLE)
+    assert dotted_names == [
+        'my.package.for',
+        'another.package',
+    ]
 
 
 def test_subscriber_handler(tmpdir):
