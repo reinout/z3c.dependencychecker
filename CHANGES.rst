@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-2.3 (unreleased)
+2.3 (2018-06-21)
 ----------------
 
 - Add a new command line option ``--exit-zero``.
