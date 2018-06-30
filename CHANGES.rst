@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-2.4 (unreleased)
+2.4 (2018-06-30)
 ----------------
 
 - Handle packages that have multiple top levels, i.e. packages like Zope2.
