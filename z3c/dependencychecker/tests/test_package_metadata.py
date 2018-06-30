@@ -282,7 +282,7 @@ def test_top_level_txt_file_found(minimal_structure):
     path, package_name = minimal_structure
     metadata = PackageMetadata(path)
 
-    assert metadata.top_level == os.path.join(path, package_name)
+    assert metadata.top_level == [os.path.join(path, package_name), ]
 
 
 def test_no_top_level_txt_file_found(minimal_structure):
@@ -337,4 +337,29 @@ def test_top_level_is_module(minimal_structure):
 
     metadata = PackageMetadata(path)
 
-    assert metadata.top_level == top_level_module_path
+    assert metadata.top_level == [top_level_module_path, ]
+
+
+def test_top_level_multiple(minimal_structure):
+    path, package_name = minimal_structure
+    top_level_file = os.path.join(
+        path,
+        '{0}.egg-info'.format(package_name),
+        'top_level.txt',
+    )
+    with open(top_level_file, 'w') as top_level:
+        top_level.write('one\n')
+        top_level.write('two\n')
+        top_level.write('three\n')
+
+    top_level_folders = [
+        '{0}/one'.format(path),
+        '{0}/two'.format(path),
+        '{0}/three'.format(path),
+    ]
+    for new_top_level in top_level_folders:
+        os.makedirs(new_top_level)
+
+    metadata = PackageMetadata(path)
+
+    assert metadata.top_level == top_level_folders
