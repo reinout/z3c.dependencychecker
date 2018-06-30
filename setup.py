@@ -36,12 +36,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Topic :: Software Development :: Quality Assurance',
     ],
-    keywords=[
-        'dependencies',
-        'requirements',
-        'missing',
-        'imports',
-    ],
+    keywords='dependencies requirements missing imports',
     author='Reinout van Rees',
     author_email='reinout@vanrees.org',
     url='https://github.com/reinout/z3c.dependencychecker',
