@@ -1,8 +1,8 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-2.5 (unreleased)
-----------------
+2.4.1 (2018-07-01)
+------------------
 
 - Fix rendering of long description in pypi.
   [gforcada]
