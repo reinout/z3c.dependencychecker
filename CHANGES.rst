@@ -1,8 +1,8 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-2.5 (unreleased)
-----------------
+2.4.2 (2018-07-01)
+------------------
 
 - Another go at fixing the long description in pypi.
   [reinout]
