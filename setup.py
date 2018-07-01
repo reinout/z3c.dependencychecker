@@ -20,6 +20,7 @@ setup(
     version=version,
     description=description,
     long_description=long_description,
+    long_description_content_type='text/x-rst; charset=UTF-8',
     # Get strings from http://www.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
         'Development Status :: 5 - Production/Stable',
