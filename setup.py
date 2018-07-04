@@ -1,24 +1,33 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages
+from setuptools import setup
+import codecs
 import os.path
+
 
 version = '2.5.dev0'
 
-long_description = '\n\n'.join([
-    open('README.rst').read(),
-    open(os.path.join('z3c', 'dependencychecker', 'USAGE.rst')).read(),
-    open('CHANGES.rst').read(),
+
+def read(filename):
+    try:
+        with codecs.open(filename, encoding='utf-8') as f:
+            return unicode(f.read())
+    except NameError:
+        with open(filename, 'r', encoding='utf-8') as f:
+            return f.read()
+
+
+
+long_description = u'\n\n'.join([
+    read('README.rst'),
+    read(os.path.join('z3c', 'dependencychecker', 'USAGE.rst')),
+    read('CHANGES.rst'),
     ])
 
-description = """
-Checks which imports are done and compares them to what's
-in setup.py and warns when discovering missing or unneeded
-dependencies.
-"""
 
 setup(
     name='z3c.dependencychecker',
     version=version,
-    description=description,
+    description="Reports on missing or unneeded setup.py dependencies",
     long_description=long_description,
     long_description_content_type='text/x-rst; charset=UTF-8',
     # Get strings from http://www.python.org/pypi?%3Aaction=list_classifiers
