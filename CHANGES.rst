@@ -4,7 +4,8 @@ Changelog of z3c.dependencychecker
 2.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Documentation formatting fixes.
+  [reinout]
 
 
 2.4.3 (2018-07-04)
