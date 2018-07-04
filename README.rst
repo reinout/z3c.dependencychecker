@@ -50,13 +50,15 @@ It checks the following locations:
 User mappings
 -------------
 
-Some packages available on pypi have a different name than the import statement needed to use them,
-i.e. `python-dateutil` is imported as `import dateutil`.
-Others provide more than one package, i.e `Zope2` provides several packages like `Products.Five` or `Products.OFSP`.
+Some packages available on pypi have a different name than the import
+statement needed to use them, i.e. `python-dateutil` is imported as `import
+dateutil`.  Others provide more than one package, i.e `Zope2` provides several
+packages like `Products.Five` or `Products.OFSP`.
 
 For those cases, z3c.dependencychecker has a solution: user mappings.
 
-Add a `pyproject.toml` file on the root of your project with the following content:
+Add a `pyproject.toml` file on the root of your project with the following
+content::
 
     [tool.dependencychecker]
     python-dateutil = ['dateutil']
@@ -67,25 +69,26 @@ z3c.dependencychecker will read this information and use it on its reports.
 Ignore packages
 ---------------
 
-Sometimes you need to add a package in `setup.py` although you are not importing it directly,
-but maybe is an extra dependency of one of your dependencies,
-or your package has a soft dependency on a package,
-and as a soft dependency it is not mandatory to install it always.
+Sometimes you need to add a package in `setup.py` although you are not
+importing it directly, but maybe is an extra dependency of one of your
+dependencies, or your package has a soft dependency on a package, and as a
+soft dependency it is not mandatory to install it always.
 
-`z3c.dependencychecker` would complain in both cases.
-It would report that a dependency is not needed,
-or that a missing package is not listed on the package requirements.
+`z3c.dependencychecker` would complain in both cases. It would report that a
+dependency is not needed, or that a missing package is not listed on the
+package requirements.
 
 Fortunately, `z3c.dependencychecker` also has a solution for it.
 
-Add a `pyproject.toml` file on the root of your project with the following content:
+Add a `pyproject.toml` file on the root of your project with the following
+content::
 
     [tool.dependencychecker]
     ignore-packages = ['one-package', 'another.package' ]
 
 `z3c.dependencychecker` will totally ignore those packages in its reports,
-whether they're requirements that appear to be unused,
-or requirements that appear to be missing.
+whether they're requirements that appear to be unused, or requirements that
+appear to be missing.
 
 Credits
 -------
