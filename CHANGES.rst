@@ -10,29 +10,15 @@ Changelog of z3c.dependencychecker
 2.4.4 (2018-07-04)
 ------------------
 
+Note: this includes the 2.4.1 - 2.4.4 releases, we had to iterate a bit to get
+the formatting right :-)
+
+- Fix rendering of long description in pypi.
+  [gforcada, reinout]
+
 - Documentation formatting fixes.
   [reinout]
 
-
-2.4.3 (2018-07-04)
-------------------
-
-- Another go at fixing the long description in pypi.
-  [reinout]
-
-
-2.4.2 (2018-07-01)
-------------------
-
-- Another go at fixing the long description in pypi.
-  [reinout]
-
-
-2.4.1 (2018-07-01)
-------------------
-
-- Fix rendering of long description in pypi.
-  [gforcada]
 
 2.4 (2018-06-30)
 ----------------
