@@ -106,8 +106,9 @@ copy from `lovely.recipe's checkout
 
 - Quite some fixes from `Jonas Baumann <https://github.com/jone>`_.
 
-- Many updates to work well with modern Plone versions by `Gil Forcada
-  Codinachs <http://gil.badall.net/>`.
+- Many updates (basically: rewriting the entire codebase to work with AST!) to
+  work well with modern Plone versions by `Gil Forcada Codinachs
+  <http://gil.badall.net/>`.
 
 
 Source code, forking and reporting bugs
