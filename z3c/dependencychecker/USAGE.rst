@@ -21,7 +21,7 @@ By default, it looks in the ``src/`` directory for your sources.
 Alternatively, you can specify a start directory yourself, for instance
 ``'.'`` if there's no ``src/`` directory.
 
-We have a sample project in a temp directory:
+We have a sample project in a temp directory::
 
     >>> sample1_dir
     '/TESTTEMP/sample1'
@@ -30,7 +30,7 @@ We have a sample project in a temp directory:
     src
 
 For our test, we call the main() method, just like the ``dependencychecker``
-script would:
+script would::
 
     >>> import os
     >>> os.chdir(sample1_dir)
