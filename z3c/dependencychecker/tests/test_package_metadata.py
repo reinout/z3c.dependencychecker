@@ -64,6 +64,32 @@ def test_package_dir_on_src_folder(minimal_structure):
     assert metadata.package_dir == src_folder
 
 
+def test_package_dir_on_another_folder(minimal_structure):
+    def move_top_level_to_folder(package_path, egg_folder, folder_path):
+        top_level_file_path = os.path.join(
+            egg_folder,
+            'top_level.txt'
+        )
+        with open(top_level_file_path) as top_level_file:
+            top_level_folder = top_level_file.read().strip()
+
+        top_level_sources = os.path.join(package_path, top_level_folder)
+
+        shutil.move(top_level_sources, folder_path)
+        shutil.move(egg_folder, folder_path)
+
+    path, package_name = minimal_structure
+
+    egg_info_folder = os.path.join(path, '{0}.egg-info'.format(package_name))
+    folder_path = os.path.join(path, 'somewhere')
+
+    move_top_level_to_folder(path, egg_info_folder, folder_path)
+
+    metadata = PackageMetadata(path)
+
+    assert metadata.package_dir == folder_path
+
+
 def test_no_package_dir_found(minimal_structure):
     path, package_name = minimal_structure
     shutil.rmtree(os.path.join(path, '{0}.egg-info'.format(package_name)))
