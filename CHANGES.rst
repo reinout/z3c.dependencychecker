@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-2.5 (unreleased)
+2.5 (2018-07-06)
 ----------------
 
 - Check in every top level folder if the .egg-info folder is in them.
