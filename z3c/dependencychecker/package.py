@@ -47,10 +47,18 @@ class PackageMetadata(object):
     @cached_property
     def package_dir(self):
         """Check where the .egg-info is located"""
-        try_paths = (
-            self.distribution_root,
-            os.path.join(self.distribution_root, 'src', )
-        )
+        try_paths = [
+            self.distribution_root
+        ]
+        top_level_elements = [
+            os.path.join(self.distribution_root, folder)
+            for folder in os.listdir(self.distribution_root)
+        ]
+        try_paths += [
+            folder
+            for folder in top_level_elements
+            if os.path.isdir(folder)
+        ]
         for path in try_paths:
             folder_found = self._find_egg_info_in_folder(path)
             if folder_found:
@@ -65,16 +73,8 @@ class PackageMetadata(object):
 
     @staticmethod
     def _find_egg_info_in_folder(path):
-        if not os.path.exists(path):
-            logger.error(
-                'Folder %s does not exist',
-                path,
-            )
-            sys.exit(1)
-
         with change_dir(path):
             results = glob.glob('*.egg-info')
-
         return results
 
     @cached_property
