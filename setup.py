@@ -4,7 +4,7 @@ import codecs
 import os.path
 
 
-version = '2.5.1'
+version = '2.5.2.dev0'
 
 
 def read(filename):
