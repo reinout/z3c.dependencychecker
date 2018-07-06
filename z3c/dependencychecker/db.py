@@ -190,6 +190,7 @@ class ImportsDatabase(object):
             self._filter_out_python_standard_library,
             self._filter_out_used_imports,
             self._filter_out_ignored_imports,
+            self._filter_out_mappings_on_test,
         )
         unneeded = self._apply_filters(test_requirements, filters)
         unique_imports = self._get_unique_imports(imports_list=unneeded)
@@ -250,6 +251,30 @@ class ImportsDatabase(object):
             if not self._discard_if_found_obj_in_list(
                     dotted_name,
                     self.imports_used):
+                return False
+
+        return True
+
+    def _filter_out_mappings_on_test(self, meta_package):
+        """Filter meta packages
+
+        If it is not a meta package, let it continue the filtering.
+
+        If it is a meta package, check if any of the packages it provides is
+        used. If any of them it is, then filter it.
+        """
+        if meta_package not in self.user_mappings.keys():
+            return True
+
+        filters = (
+            self._filter_out_only_testing_imports,
+        )
+        test_only_imports = self._apply_filters(self.imports_used, filters)
+
+        for dotted_name in self.user_mappings[meta_package]:
+            if not self._discard_if_found_obj_in_list(
+                    dotted_name,
+                    test_only_imports):
                 return False
 
         return True

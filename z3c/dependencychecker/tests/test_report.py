@@ -457,6 +457,52 @@ def test_unneeded_test_requirements_with_ignore_packages(
     assert 'mock' not in out
 
 
+def test_unneeded_test_requirements_with_user_mappings(
+    capsys,
+    minimal_structure
+):
+    path, package_name = minimal_structure
+    write_source_file_at(
+        (path, package_name + '.egg-info'),
+        'requires.txt',
+        '\n'.join([
+            '[test]',
+            'pytest',
+            'ZODB3',
+        ]),
+    )
+    write_source_file_at(
+        (path, ),
+        'pyproject.toml',
+        '\n'.join([
+            '[tool.dependencychecker]',
+            '"ZODB3" = ["BTrees" ]',
+        ]),
+    )
+    write_source_file_at(
+        (path, package_name, ),
+        '__init__.py',
+        '',
+    )
+    write_source_file_at(
+        (path, package_name, 'tests', ),
+        '__init__.py',
+        'from BTrees import Tree',
+    )
+
+    package = Package(path)
+    package.inspect()
+    report = Report(package)
+    report.unneeded_test_requirements()
+    out, err = capsys.readouterr()
+
+    assert 'Unneeded test requirements\n' \
+           '==========================' in out
+    assert 'pytest' in out
+    assert 'ZODB3' not in out
+    assert 'BTrees' not in out
+
+
 def test_unneeded_test_requirements_no_tests_requirements(
     capsys,
     minimal_structure,
