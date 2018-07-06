@@ -320,6 +320,84 @@ def test_unneeded_requirements_with_ignored_packages(
     assert 'two' in out
 
 
+def test_unneeded_requirements_with_user_mapping(
+        capsys,
+        minimal_structure):
+    path, package_name = minimal_structure
+    write_source_file_at(
+        (path, package_name),
+        '__init__.py',
+        'from BTrees import Tree',
+    )
+    write_source_file_at(
+        (path, ),
+        'pyproject.toml',
+        '\n'.join([
+            '[tool.dependencychecker]',
+            '"ZODB3" = ["BTrees" ]',
+        ]),
+    )
+    write_source_file_at(
+        (path, '{0}.egg-info'.format(package_name), ),
+        'requires.txt',
+        '\n'.join([
+            'ZODB3',
+            'setuptools',
+            'one',
+        ]),
+    )
+
+    package = Package(path)
+    package.inspect()
+    report = Report(package)
+    report.unneeded_requirements()
+    out, err = capsys.readouterr()
+
+    assert 'Unneeded requirements\n' \
+           '=====================' in out
+    assert 'ZODB3' not in out
+    assert 'one' in out
+
+
+def test_unneeded_requirements_with_user_mapping2(
+        capsys,
+        minimal_structure):
+    path, package_name = minimal_structure
+    write_source_file_at(
+        (path, package_name),
+        '__init__.py',
+        'from Plone import Tree',
+    )
+    write_source_file_at(
+        (path, ),
+        'pyproject.toml',
+        '\n'.join([
+            '[tool.dependencychecker]',
+            '"ZODB3" = ["BTrees" ]',
+        ]),
+    )
+    write_source_file_at(
+        (path, '{0}.egg-info'.format(package_name), ),
+        'requires.txt',
+        '\n'.join([
+            'ZODB3',
+            'setuptools',
+            'one',
+        ]),
+    )
+
+    package = Package(path)
+    package.inspect()
+    report = Report(package)
+    report.unneeded_requirements()
+    out, err = capsys.readouterr()
+
+    assert 'Unneeded requirements\n' \
+           '=====================' in out
+    assert 'ZODB3' in out
+    assert 'one' in out
+
+
 def test_unneeded_test_requirements(capsys, minimal_structure):
     path, package_name = minimal_structure
     write_source_file_at(
