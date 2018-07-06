@@ -17,9 +17,10 @@ Usage
 Run the ``dependencychecker`` or ``bin/dependencychecker`` script from your
 project's root folder and it will report on your dependencies.
 
-By default, it looks in the ``src/`` directory for your sources.
-Alternatively, you can specify a start directory yourself, for instance
-``'.'`` if there's no ``src/`` directory.
+You must have installed your project, as z3c.dependencychecker needs the
+``YOURPROJECT.egg-info`` directory that setuptools generates. It looks for
+that directory in the root folder and in the direct subdirectory (like
+``src/`` or ``plone/``).
 
 We have a sample project in a temp directory::
 
