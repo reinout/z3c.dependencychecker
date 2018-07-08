@@ -607,6 +607,58 @@ def test_requirements_that_should_be_test_requirements_with_ignored_packages(
     assert 'two' not in out
 
 
+def test_requirements_that_should_be_test_requirements_with_user_mappings(
+    capsys,
+    minimal_structure,
+):
+    path, package_name = minimal_structure
+    write_source_file_at(
+        (path, package_name),
+        '__init__.py',
+        'import one',
+    )
+    write_source_file_at(
+        (path, package_name, 'tests'),
+        '__init__.py',
+        '\n'.join([
+            'import two',
+            'import BTrees',
+        ])
+    )
+    write_source_file_at(
+        (path, package_name + '.egg-info'),
+        'requires.txt',
+        '\n'.join([
+            'one',
+            'two',
+            'ZODB3',
+            '[test]',
+            'pytest',
+            'mock',
+        ]),
+    )
+    write_source_file_at(
+        (path, ),
+        'pyproject.toml',
+        '\n'.join([
+            '[tool.dependencychecker]',
+            '"ZODB3" = ["BTrees" ]',
+        ]),
+    )
+
+    package = Package(path)
+    package.inspect()
+    report = Report(package)
+    report.requirements_that_should_be_test_requirements()
+    out, err = capsys.readouterr()
+
+    assert 'Requirements that should be test requirements\n' \
+           '=============================================' in out
+    assert 'ZODB3' in out
+    assert 'two' in out
+    assert 'one' not in out
+
+
 def test_print_notice(capsys, minimal_structure):
     path, package_name = minimal_structure
     package = Package(path)
