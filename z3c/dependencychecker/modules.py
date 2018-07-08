@@ -326,6 +326,7 @@ class PythonDocstrings(PythonModule):
 
                 for node in ast.walk(tree):
                     for dotted_name in self._process_ast_node(node):
+                        dotted_name.is_test = True
                         yield dotted_name
 
     @staticmethod
