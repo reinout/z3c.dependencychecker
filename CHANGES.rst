@@ -4,8 +4,13 @@ Changelog of z3c.dependencychecker
 2.5.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Use the user mappings on the remaining reports:
 
+  - unneeded dependencies
+  - unneeded test dependencies
+  - dependencies that should be test dependencies
+
+  [gforcada]
 
 2.5.1 (2018-07-06)
 ------------------
