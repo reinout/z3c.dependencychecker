@@ -1,8 +1,8 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-2.5.2 (unreleased)
-------------------
+2.6 (2018-07-09)
+----------------
 
 - Use the user mappings on the remaining reports:
 
