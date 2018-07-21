@@ -146,12 +146,20 @@ class ImportsDatabase(object):
             self.imports_used,
             non_testing_filters,
         )
+        complete_non_testing_imports = []
+        for non_test_import in non_testing_imports:
+            if non_test_import in self.reverse_user_mappings:
+                meta_package = self.reverse_user_mappings[non_test_import]
+                complete_non_testing_imports.append(meta_package)
+                continue
+            complete_non_testing_imports.append(non_test_import)
+
         requirements_not_used = [
             requirement
             for requirement in self._requirements
             if self._discard_if_found_obj_in_list(
                 requirement,
-                non_testing_imports,
+                complete_non_testing_imports,
             )
         ]
         testing_filters = (
