@@ -659,6 +659,68 @@ def test_requirements_that_should_be_test_requirements_with_user_mappings(
     assert 'one' not in out
 
 
+def test_requirements_that_should_be_test_requirements_with_user_mapping2(
+    capsys,
+    minimal_structure,
+):
+    """Test that user mappings used in both regular and test imports are
+    not downgraded to test imports only.
+    """
+    path, package_name = minimal_structure
+    write_source_file_at(
+        (path, package_name),
+        '__init__.py',
+        '\n'.join([
+            'import one',
+            'import two',
+            'import part.of.meta',
+        ]),
+    )
+    write_source_file_at(
+        (path, package_name, 'tests'),
+        '__init__.py',
+        '\n'.join([
+            'import three',
+            'import four',
+            'import part.of.meta',
+        ])
+    )
+    write_source_file_at(
+        (path, package_name + '.egg-info'),
+        'requires.txt',
+        '\n'.join([
+            'one',
+            'two',
+            'three',
+            'meta-package',
+            '[test]',
+            'four',
+        ]),
+    )
+    write_source_file_at(
+        (path, ),
+        'pyproject.toml',
+        '\n'.join([
+            '[tool.dependencychecker]',
+            'meta-package = ["part.of.meta" ]',
+        ]),
+    )
+
+    package = Package(path)
+    package.inspect()
+    report = Report(package)
+    report.requirements_that_should_be_test_requirements()
+    out, err = capsys.readouterr()
+
+    assert 'Requirements that should be test requirements\n' \
+           '=============================================' in out
+    assert 'three' in out
+    assert 'one' not in out
+    assert 'two' not in out
+    assert 'part.of.meta' not in out
+    assert 'meta-package' not in out
+
+
 def test_print_notice(capsys, minimal_structure):
     path, package_name = minimal_structure
     package = Package(path)
