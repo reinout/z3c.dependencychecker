@@ -4,7 +4,9 @@ Changelog of z3c.dependencychecker
 2.7 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Fixed the 'requirement should be test requirement' report. There were corner
+  cases when using user mappings.
+  [gforcada]
 
 
 2.6 (2018-07-09)
