@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-2.7 (unreleased)
+2.7 (2018-08-08)
 ----------------
 
 - Fixed the 'requirement should be test requirement' report. There were corner
