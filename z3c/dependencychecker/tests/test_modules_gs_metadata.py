@@ -31,7 +31,7 @@ MORE_DEPENDENCIES = """
 def _get_dependencies_on_file(folder, source):
     full_content = XML_TEMPLATE.format(source)
     temporal_file = write_source_file_at(
-        (folder.strpath, ),
+        (folder.strpath,),
         source_code=full_content,
         filename='configure.zcml',
     )
@@ -51,7 +51,7 @@ def test_create_from_files_deep_nested(minimal_structure):
     path, package_name = minimal_structure
     src_path = os.path.join(path, 'src')
     write_source_file_at(
-        [src_path, 'a', 'b', 'c', ],
+        [src_path, 'a', 'b', 'c'],
         filename='metadata.xml',
     )
 
@@ -94,7 +94,7 @@ def test_one_dependency(tmpdir):
 
 def test_one_dependency_details(tmpdir):
     dotted_names = _get_dependencies_on_file(tmpdir, ONE_DEPENDENCY)
-    assert dotted_names == ['plone.app.caching', ]
+    assert dotted_names == ['plone.app.caching']
 
 
 def test_more_dependencies(tmpdir):

@@ -4,7 +4,6 @@ logger = logging.getLogger(__name__)
 
 
 class Report:
-
     def __init__(self, package):
         self._database = package.imports
         self.exit_status = 0

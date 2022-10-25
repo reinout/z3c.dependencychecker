@@ -78,7 +78,7 @@ def test_safe_name_all_at_once():
 
 def test_namespaces_none():
     obj = DottedName('plain_package_name')
-    assert obj.namespaces == ['plain_package_name', ]
+    assert obj.namespaces == ['plain_package_name']
 
 
 def test_namespaces_some():
@@ -88,13 +88,13 @@ def test_namespaces_some():
 
 def test_namespaces_some_details():
     obj = DottedName('plone.app.dexterity')
-    assert obj.namespaces == ['plone', 'app', 'dexterity', ]
+    assert obj.namespaces == ['plone', 'app', 'dexterity']
 
 
 def test_namespaces_really_long():
     obj = DottedName('one.two.three.four.five.six')
     assert len(obj.namespaces) == 6
-    assert obj.namespaces == ['one', 'two', 'three', 'four', 'five', 'six', ]
+    assert obj.namespaces == ['one', 'two', 'three', 'four', 'five', 'six']
 
 
 def test_is_namespaced_not():
@@ -169,5 +169,5 @@ def test_hash_in_use():
     obj2 = DottedName('two')
     obj3 = DottedName('three')
     obj4 = DottedName('one')
-    uniques = {obj1, obj2, obj3, obj4, }
+    uniques = {obj1, obj2, obj3, obj4}
     assert len(uniques) == 3

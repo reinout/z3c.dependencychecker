@@ -6,7 +6,6 @@ from cached_property import cached_property
 
 @total_ordering
 class DottedName:
-
     def __init__(
         self,
         name,

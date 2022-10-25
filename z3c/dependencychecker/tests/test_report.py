@@ -45,11 +45,7 @@ def test_missing_requirements_nothing(capsys):
 
 def test_missing_requirements(capsys, minimal_structure):
     path, package_name = minimal_structure
-    write_source_file_at(
-        (path, package_name),
-        '__init__.py',
-        'import this.package'
-    )
+    write_source_file_at((path, package_name), '__init__.py', 'import this.package')
 
     package = Package(path)
     package.inspect()
@@ -57,8 +53,7 @@ def test_missing_requirements(capsys, minimal_structure):
     report.missing_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Missing requirements\n' \
-           '====================' in out
+    assert 'Missing requirements\n' '====================' in out
     assert 'this.package' in out
 
 
@@ -67,7 +62,7 @@ def test_missing_requirements_with_user_mapping(capsys, minimal_structure):
     write_source_file_at(
         (path, package_name),
         '__init__.py',
-        'import Products.Five.browser.views.BrowserView'
+        'import Products.Five.browser.views.BrowserView',
     )
     write_source_file_at(
         (path, '{0}.egg-info'.format(package_name)),
@@ -75,12 +70,14 @@ def test_missing_requirements_with_user_mapping(capsys, minimal_structure):
         'Zope2',
     )
     write_source_file_at(
-        (path, ),
+        (path,),
         'pyproject.toml',
-        '\n'.join([
-            '[tool.dependencychecker]',
-            'Zope2 = ["Four", "Products.Five", "Three" ]',
-        ]),
+        '\n'.join(
+            [
+                '[tool.dependencychecker]',
+                'Zope2 = ["Four", "Products.Five", "Three" ]',
+            ]
+        ),
     )
 
     package = Package(path)
@@ -89,8 +86,7 @@ def test_missing_requirements_with_user_mapping(capsys, minimal_structure):
     report.missing_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Missing requirements\n' \
-           '====================' not in out
+    assert 'Missing requirements\n' '====================' not in out
     assert 'Products.Five' not in out
     assert 'Zope2' not in out
 
@@ -100,15 +96,17 @@ def test_missing_requirements_with_ignored_packages(capsys, minimal_structure):
     write_source_file_at(
         (path, package_name),
         '__init__.py',
-        'import Products.Five.browser.views.BrowserView'
+        'import Products.Five.browser.views.BrowserView',
     )
     write_source_file_at(
-        (path, ),
+        (path,),
         'pyproject.toml',
-        '\n'.join([
-            '[tool.dependencychecker]',
-            'ignore-packages = ["Four", "Products.Five", "Three" ]',
-        ]),
+        '\n'.join(
+            [
+                '[tool.dependencychecker]',
+                'ignore-packages = ["Four", "Products.Five", "Three" ]',
+            ]
+        ),
     )
 
     package = Package(path)
@@ -117,8 +115,7 @@ def test_missing_requirements_with_ignored_packages(capsys, minimal_structure):
     report.missing_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Missing requirements\n' \
-           '====================' not in out
+    assert 'Missing requirements\n' '====================' not in out
     assert 'Products.Five' not in out
     assert 'Four' not in out
     assert 'Three' not in out
@@ -143,15 +140,11 @@ def test_missing_test_requirements(capsys, minimal_structure):
     report.missing_test_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Missing test requirements\n' \
-           '=========================' in out
+    assert 'Missing test requirements\n' '=========================' in out
     assert 'this.package' in out
 
 
-def test_missing_test_requirements_with_user_mapping(
-    capsys,
-    minimal_structure
-):
+def test_missing_test_requirements_with_user_mapping(capsys, minimal_structure):
     path, package_name = minimal_structure
     write_source_file_at(
         (path, package_name),
@@ -161,7 +154,7 @@ def test_missing_test_requirements_with_user_mapping(
     write_source_file_at(
         (path, package_name, 'tests'),
         '__init__.py',
-        'import Products.Five.browser.views.BrowserView'
+        'import Products.Five.browser.views.BrowserView',
     )
     write_source_file_at(
         (path, '{0}.egg-info'.format(package_name)),
@@ -169,12 +162,9 @@ def test_missing_test_requirements_with_user_mapping(
         'Zope2',
     )
     write_source_file_at(
-        (path, ),
+        (path,),
         'pyproject.toml',
-        '\n'.join([
-            '[tool.dependencychecker]',
-            'Zope2 = ["Products.Five" ]',
-        ]),
+        '\n'.join(['[tool.dependencychecker]', 'Zope2 = ["Products.Five" ]']),
     )
 
     package = Package(path)
@@ -184,15 +174,13 @@ def test_missing_test_requirements_with_user_mapping(
     out, err = capsys.readouterr()
 
     assert '' == out
-    assert 'Missing requirements\n' \
-           '====================' not in out
+    assert 'Missing requirements\n' '====================' not in out
     assert 'Products.Five' not in out
     assert 'Zope2' not in out
 
 
 def test_missing_test_requirements_with_user_mapping_on_test_extra(
-    capsys,
-    minimal_structure
+    capsys, minimal_structure
 ):
     path, package_name = minimal_structure
     write_source_file_at(
@@ -203,23 +191,17 @@ def test_missing_test_requirements_with_user_mapping_on_test_extra(
     write_source_file_at(
         (path, package_name, 'tests'),
         '__init__.py',
-        'import Products.Five.browser.views.BrowserView'
+        'import Products.Five.browser.views.BrowserView',
     )
     write_source_file_at(
         (path, '{0}.egg-info'.format(package_name)),
         'requires.txt',
-        '\n'.join([
-            '[test]',
-            'Zope2',
-        ]),
+        '\n'.join(['[test]', 'Zope2']),
     )
     write_source_file_at(
-        (path, ),
+        (path,),
         'pyproject.toml',
-        '\n'.join([
-            '[tool.dependencychecker]',
-            'Zope2 = ["Products.Five" ]',
-        ]),
+        '\n'.join(['[tool.dependencychecker]', 'Zope2 = ["Products.Five" ]']),
     )
 
     package = Package(path)
@@ -229,16 +211,12 @@ def test_missing_test_requirements_with_user_mapping_on_test_extra(
     out, err = capsys.readouterr()
 
     assert '' == out
-    assert 'Missing requirements\n' \
-           '====================' not in out
+    assert 'Missing requirements\n' '====================' not in out
     assert 'Products.Five' not in out
     assert 'Zope2' not in out
 
 
-def test_missing_test_requirements_with_ignored_packages(
-    capsys,
-    minimal_structure
-):
+def test_missing_test_requirements_with_ignored_packages(capsys, minimal_structure):
     path, package_name = minimal_structure
     write_source_file_at(
         (path, package_name),
@@ -248,15 +226,17 @@ def test_missing_test_requirements_with_ignored_packages(
     write_source_file_at(
         (path, package_name, 'tests'),
         '__init__.py',
-        'import Products.Five.browser.views.BrowserView'
+        'import Products.Five.browser.views.BrowserView',
     )
     write_source_file_at(
-        (path, ),
+        (path,),
         'pyproject.toml',
-        '\n'.join([
-            '[tool.dependencychecker]',
-            'ignore-packages = ["Products.Five" ]',
-        ]),
+        '\n'.join(
+            [
+                '[tool.dependencychecker]',
+                'ignore-packages = ["Products.Five" ]',
+            ]
+        ),
     )
 
     package = Package(path)
@@ -266,8 +246,7 @@ def test_missing_test_requirements_with_ignored_packages(
     out, err = capsys.readouterr()
 
     assert '' == out
-    assert 'Missing requirements\n' \
-           '====================' not in out
+    assert 'Missing requirements\n' '====================' not in out
     assert 'Products.Five' not in out
 
 
@@ -285,15 +264,12 @@ def test_unneeded_requirements(capsys, minimal_structure):
     report.unneeded_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Unneeded requirements\n' \
-           '=====================' in out
+    assert 'Unneeded requirements\n' '=====================' in out
     assert 'one' in out
     assert 'two' in out
 
 
-def test_unneeded_requirements_with_ignored_packages(
-        capsys,
-        minimal_structure):
+def test_unneeded_requirements_with_ignored_packages(capsys, minimal_structure):
     path, package_name = minimal_structure
     write_source_file_at(
         (path, package_name),
@@ -301,12 +277,14 @@ def test_unneeded_requirements_with_ignored_packages(
         'import this.package',
     )
     write_source_file_at(
-        (path, ),
+        (path,),
         'pyproject.toml',
-        '\n'.join([
-            '[tool.dependencychecker]',
-            'ignore-packages = ["one" ]',
-        ]),
+        '\n'.join(
+            [
+                '[tool.dependencychecker]',
+                'ignore-packages = ["one" ]',
+            ]
+        ),
     )
 
     package = Package(path)
@@ -315,15 +293,12 @@ def test_unneeded_requirements_with_ignored_packages(
     report.unneeded_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Unneeded requirements\n' \
-           '=====================' in out
+    assert 'Unneeded requirements\n' '=====================' in out
     assert 'one' not in out
     assert 'two' in out
 
 
-def test_unneeded_requirements_with_user_mapping(
-        capsys,
-        minimal_structure):
+def test_unneeded_requirements_with_user_mapping(capsys, minimal_structure):
     path, package_name = minimal_structure
     write_source_file_at(
         (path, package_name),
@@ -331,21 +306,14 @@ def test_unneeded_requirements_with_user_mapping(
         'from BTrees import Tree',
     )
     write_source_file_at(
-        (path, ),
+        (path,),
         'pyproject.toml',
-        '\n'.join([
-            '[tool.dependencychecker]',
-            '"ZODB3" = ["BTrees" ]',
-        ]),
+        '\n'.join(['[tool.dependencychecker]', '"ZODB3" = ["BTrees" ]']),
     )
     write_source_file_at(
-        (path, '{0}.egg-info'.format(package_name), ),
+        (path, '{0}.egg-info'.format(package_name)),
         'requires.txt',
-        '\n'.join([
-            'ZODB3',
-            'setuptools',
-            'one',
-        ]),
+        '\n'.join(['ZODB3', 'setuptools', 'one']),
     )
 
     package = Package(path)
@@ -354,15 +322,12 @@ def test_unneeded_requirements_with_user_mapping(
     report.unneeded_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Unneeded requirements\n' \
-           '=====================' in out
+    assert 'Unneeded requirements\n' '=====================' in out
     assert 'ZODB3' not in out
     assert 'one' in out
 
 
-def test_unneeded_requirements_with_user_mapping2(
-        capsys,
-        minimal_structure):
+def test_unneeded_requirements_with_user_mapping2(capsys, minimal_structure):
     path, package_name = minimal_structure
     write_source_file_at(
         (path, package_name),
@@ -370,21 +335,14 @@ def test_unneeded_requirements_with_user_mapping2(
         'from Plone import Tree',
     )
     write_source_file_at(
-        (path, ),
+        (path,),
         'pyproject.toml',
-        '\n'.join([
-            '[tool.dependencychecker]',
-            '"ZODB3" = ["BTrees" ]',
-        ]),
+        '\n'.join(['[tool.dependencychecker]', '"ZODB3" = ["BTrees" ]']),
     )
     write_source_file_at(
-        (path, '{0}.egg-info'.format(package_name), ),
+        (path, '{0}.egg-info'.format(package_name)),
         'requires.txt',
-        '\n'.join([
-            'ZODB3',
-            'setuptools',
-            'one',
-        ]),
+        '\n'.join(['ZODB3', 'setuptools', 'one']),
     )
 
     package = Package(path)
@@ -393,8 +351,7 @@ def test_unneeded_requirements_with_user_mapping2(
     report.unneeded_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Unneeded requirements\n' \
-           '=====================' in out
+    assert 'Unneeded requirements\n' '=====================' in out
     assert 'ZODB3' in out
     assert 'one' in out
 
@@ -404,11 +361,7 @@ def test_unneeded_test_requirements(capsys, minimal_structure):
     write_source_file_at(
         (path, package_name + '.egg-info'),
         'requires.txt',
-        '\n'.join([
-            '[test]',
-            'pytest',
-            'mock',
-        ]),
+        '\n'.join(['[test]', 'pytest', 'mock']),
     )
 
     package = Package(path)
@@ -417,33 +370,22 @@ def test_unneeded_test_requirements(capsys, minimal_structure):
     report.unneeded_test_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Unneeded test requirements\n' \
-           '==========================' in out
+    assert 'Unneeded test requirements\n' '==========================' in out
     assert 'pytest' in out
     assert 'mock' in out
 
 
-def test_unneeded_test_requirements_with_ignore_packages(
-    capsys,
-    minimal_structure
-):
+def test_unneeded_test_requirements_with_ignore_packages(capsys, minimal_structure):
     path, package_name = minimal_structure
     write_source_file_at(
         (path, package_name + '.egg-info'),
         'requires.txt',
-        '\n'.join([
-            '[test]',
-            'pytest',
-            'mock',
-        ]),
+        '\n'.join(['[test]', 'pytest', 'mock']),
     )
     write_source_file_at(
-        (path, ),
+        (path,),
         'pyproject.toml',
-        '\n'.join([
-            '[tool.dependencychecker]',
-            'ignore-packages = ["mock" ]',
-        ]),
+        '\n'.join(['[tool.dependencychecker]', 'ignore-packages = ["mock" ]']),
     )
 
     package = Package(path)
@@ -452,41 +394,30 @@ def test_unneeded_test_requirements_with_ignore_packages(
     report.unneeded_test_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Unneeded test requirements\n' \
-           '==========================' in out
+    assert 'Unneeded test requirements\n' '==========================' in out
     assert 'pytest' in out
     assert 'mock' not in out
 
 
-def test_unneeded_test_requirements_with_user_mappings(
-    capsys,
-    minimal_structure
-):
+def test_unneeded_test_requirements_with_user_mappings(capsys, minimal_structure):
     path, package_name = minimal_structure
     write_source_file_at(
         (path, package_name + '.egg-info'),
         'requires.txt',
-        '\n'.join([
-            '[test]',
-            'pytest',
-            'ZODB3',
-        ]),
+        '\n'.join(['[test]', 'pytest', 'ZODB3']),
     )
     write_source_file_at(
-        (path, ),
+        (path,),
         'pyproject.toml',
-        '\n'.join([
-            '[tool.dependencychecker]',
-            '"ZODB3" = ["BTrees" ]',
-        ]),
+        '\n'.join(['[tool.dependencychecker]', '"ZODB3" = ["BTrees" ]']),
     )
     write_source_file_at(
-        (path, package_name, ),
+        (path, package_name),
         '__init__.py',
         '',
     )
     write_source_file_at(
-        (path, package_name, 'tests', ),
+        (path, package_name, 'tests'),
         '__init__.py',
         'from BTrees import Tree',
     )
@@ -497,8 +428,7 @@ def test_unneeded_test_requirements_with_user_mappings(
     report.unneeded_test_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Unneeded test requirements\n' \
-           '==========================' in out
+    assert 'Unneeded test requirements\n' '==========================' in out
     assert 'pytest' in out
     assert 'ZODB3' not in out
     assert 'BTrees' not in out
@@ -537,13 +467,7 @@ def test_requirements_that_should_be_test_requirements(
     write_source_file_at(
         (path, package_name + '.egg-info'),
         'requires.txt',
-        '\n'.join([
-            'one',
-            'two',
-            '[test]',
-            'pytest',
-            'mock',
-        ]),
+        '\n'.join(['one', 'two', '[test]', 'pytest', 'mock']),
     )
 
     package = Package(path)
@@ -552,8 +476,10 @@ def test_requirements_that_should_be_test_requirements(
     report.requirements_that_should_be_test_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Requirements that should be test requirements\n' \
-           '=============================================' in out
+    assert (
+        'Requirements that should be test requirements\n'
+        '=============================================' in out
+    )
     assert 'two' in out
 
 
@@ -570,30 +496,17 @@ def test_requirements_that_should_be_test_requirements_with_ignored_packages(
     write_source_file_at(
         (path, package_name, 'tests'),
         '__init__.py',
-        '\n'.join([
-            'import two',
-            'import three',
-        ])
+        '\n'.join(['import two', 'import three']),
     )
     write_source_file_at(
         (path, package_name + '.egg-info'),
         'requires.txt',
-        '\n'.join([
-            'one',
-            'two',
-            'three',
-            '[test]',
-            'pytest',
-            'mock',
-        ]),
+        '\n'.join(['one', 'two', 'three', '[test]', 'pytest', 'mock']),
     )
     write_source_file_at(
-        (path, ),
+        (path,),
         'pyproject.toml',
-        '\n'.join([
-            '[tool.dependencychecker]',
-            'ignore-packages = ["two" ]',
-        ]),
+        '\n'.join(['[tool.dependencychecker]', 'ignore-packages = ["two" ]']),
     )
 
     package = Package(path)
@@ -602,8 +515,10 @@ def test_requirements_that_should_be_test_requirements_with_ignored_packages(
     report.requirements_that_should_be_test_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Requirements that should be test requirements\n' \
-           '=============================================' in out
+    assert (
+        'Requirements that should be test requirements\n'
+        '=============================================' in out
+    )
     assert 'three' in out
     assert 'two' not in out
 
@@ -621,30 +536,17 @@ def test_requirements_that_should_be_test_requirements_with_user_mappings(
     write_source_file_at(
         (path, package_name, 'tests'),
         '__init__.py',
-        '\n'.join([
-            'import two',
-            'import BTrees',
-        ])
+        '\n'.join(['import two', 'import BTrees']),
     )
     write_source_file_at(
         (path, package_name + '.egg-info'),
         'requires.txt',
-        '\n'.join([
-            'one',
-            'two',
-            'ZODB3',
-            '[test]',
-            'pytest',
-            'mock',
-        ]),
+        '\n'.join(['one', 'two', 'ZODB3', '[test]', 'pytest', 'mock']),
     )
     write_source_file_at(
-        (path, ),
+        (path,),
         'pyproject.toml',
-        '\n'.join([
-            '[tool.dependencychecker]',
-            '"ZODB3" = ["BTrees" ]',
-        ]),
+        '\n'.join(['[tool.dependencychecker]', '"ZODB3" = ["BTrees" ]']),
     )
 
     package = Package(path)
@@ -653,8 +555,10 @@ def test_requirements_that_should_be_test_requirements_with_user_mappings(
     report.requirements_that_should_be_test_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Requirements that should be test requirements\n' \
-           '=============================================' in out
+    assert (
+        'Requirements that should be test requirements\n'
+        '=============================================' in out
+    )
     assert 'ZODB3' in out
     assert 'two' in out
     assert 'one' not in out
@@ -671,40 +575,22 @@ def test_requirements_that_should_be_test_requirements_with_user_mapping2(
     write_source_file_at(
         (path, package_name),
         '__init__.py',
-        '\n'.join([
-            'import one',
-            'import two',
-            'import part.of.meta',
-        ]),
+        '\n'.join(['import one', 'import two', 'import part.of.meta']),
     )
     write_source_file_at(
         (path, package_name, 'tests'),
         '__init__.py',
-        '\n'.join([
-            'import three',
-            'import four',
-            'import part.of.meta',
-        ])
+        '\n'.join(['import three', 'import four', 'import part.of.meta']),
     )
     write_source_file_at(
         (path, package_name + '.egg-info'),
         'requires.txt',
-        '\n'.join([
-            'one',
-            'two',
-            'three',
-            'meta-package',
-            '[test]',
-            'four',
-        ]),
+        '\n'.join(['one', 'two', 'three', 'meta-package', '[test]', 'four']),
     )
     write_source_file_at(
-        (path, ),
+        (path,),
         'pyproject.toml',
-        '\n'.join([
-            '[tool.dependencychecker]',
-            'meta-package = ["part.of.meta" ]',
-        ]),
+        '\n'.join(['[tool.dependencychecker]', 'meta-package = ["part.of.meta" ]']),
     )
 
     package = Package(path)
@@ -713,8 +599,10 @@ def test_requirements_that_should_be_test_requirements_with_user_mapping2(
     report.requirements_that_should_be_test_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Requirements that should be test requirements\n' \
-           '=============================================' in out
+    assert (
+        'Requirements that should be test requirements\n'
+        '=============================================' in out
+    )
     assert 'three' in out
     assert 'one' not in out
     assert 'two' not in out

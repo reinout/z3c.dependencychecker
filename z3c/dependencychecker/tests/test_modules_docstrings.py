@@ -2,76 +2,73 @@
 from z3c.dependencychecker.modules import PythonDocstrings
 from z3c.dependencychecker.tests.utils import write_source_file_at
 
-NO_DOC = '\n'.join([
-    'class MyClass(object):',
-    '    pass',
-])
-INVALID_PYTHON = '\n'.join([
-    '"""',
-    '>>> and some text here that breaks the parser'
-    '"""',
-])
-DOC_IN_MODULE = '\n'.join([
-    '"""',
-    'Random docstring with code to be evaluated.',
-    '',
-    '>>> import zope.component',
-    '"""',
-])
-DOC_IN_FUNCTION = '\n'.join([
-    'def test():'
-    '    """Random docstring with code to be evaluated.',
-    '',
-    '    >>> import zope.component.adapter',
-    '    """',
-])
-DOC_IN_CLASS = '\n'.join([
-    'class MyClass(object):'
-    '    """Random docstring with code to be evaluated.'
-    '',
-    '    >>> from zope.component import utility',
-    '    """',
-])
-DOC_IN_METHOD = '\n'.join([
-    'class MyClass(object):',
-    '    def test(self):',
-    '        """Docstring with code to be evaluated.',
-    '',
-    '        >>> import zope.interface',
-    '        """',
-])
-MULTIPLE_IMPORTS_SAME_LINE = '\n'.join([
-    'class MyClass(object):',
-    '    def test(self):',
-    '        """Docstring with code to be evaluated.',
-    '',
-    '        >>> from zope.interface import Interface, Attribute',
-    '        """',
-])
-MULTIPLE_IMPORTS_DIFFERENT_LINES = '\n'.join([
-    'class MyClass(object):',
-    '    def test(self):',
-    '        """Docstring with code to be evaluated.',
-    '',
-    '        >>> from zope.component import adapter',
-    '        >>> from zope.component import utility',
-    '        """',
-])
-MULTIPLE_IMPORTS_DIFFERENT_LINES_WITH_INVALID_CODE_LINES_BETWEEN = '\n'.join([
-    'class MyClass(object):',
-    '    def test(self):',
-    '        """Docstring with code to be evaluated.',
-    '',
-    '        >>> from zope.component import adapter',
-    '        >>> this should  be skipped and next line processed happily',
-    '        >>> from zope.component import utility',
-    '        """',
-])
+NO_DOC = 'class MyClass(object): ...'
+INVALID_PYTHON = '''
+"""
+>>> and some text here that breaks the parser
+"""
+'''
+DOC_IN_MODULE = '''
+"""
+Random docstring with code to be evaluated.
+
+>>> import zope.component
+"""
+'''
+DOC_IN_FUNCTION = '''
+def test():
+    """Random docstring with code to be evaluated.
+
+    >>> import zope.component.adapter
+    """
+'''
+DOC_IN_CLASS = '''
+class MyClass(object):
+    """Random docstring with code to be evaluated.
+
+    >>> from zope.component import utility
+    """
+'''
+DOC_IN_METHOD = '''
+class MyClass(object):
+    def test(self):
+        """Docstring with code to be evaluated.
+
+        >>> import zope.interface
+        """
+'''
+MULTIPLE_IMPORTS_SAME_LINE = '''
+class MyClass(object):
+    def test(self):
+        """Docstring with code to be evaluated.
+
+        >>> from zope.interface import Interface, Attribute
+        """
+'''
+MULTIPLE_IMPORTS_DIFFERENT_LINES = '''
+class MyClass(object):
+    def test(self):
+        """Docstring with code to be evaluated.
+
+        >>> from zope.component import adapter
+        >>> from zope.component import utility
+        """
+'''
+MULTIPLE_IMPORTS_DIFFERENT_LINES_WITH_INVALID_CODE_LINES_BETWEEN = '''
+class MyClass(object):
+    def test(self):
+        """Docstring with code to be evaluated.
+
+        >>> from zope.component import adapter
+        >>> this should  be skipped and next line processed happily
+        >>> from zope.component import utility
+        """
+'''
 
 
 def _get_dependencies_on_file(folder, source):
     temporal_file = write_source_file_at(
-        (folder.strpath, ),
+        (folder.strpath,),
         source_code=source,
     )
 
@@ -97,7 +94,7 @@ def test_docstring_in_module(tmpdir):
 
 def test_docstring_in_module_details(tmpdir):
     dotted_names = _get_dependencies_on_file(tmpdir, DOC_IN_MODULE)
-    assert dotted_names == ['zope.component', ]
+    assert dotted_names == ['zope.component']
 
 
 def test_docstring_in_function(tmpdir):
@@ -107,7 +104,7 @@ def test_docstring_in_function(tmpdir):
 
 def test_docstring_in_function_details(tmpdir):
     dotted_names = _get_dependencies_on_file(tmpdir, DOC_IN_FUNCTION)
-    assert dotted_names == ['zope.component.adapter', ]
+    assert dotted_names == ['zope.component.adapter']
 
 
 def test_docstring_in_class(tmpdir):
@@ -117,7 +114,7 @@ def test_docstring_in_class(tmpdir):
 
 def test_docstring_in_class_details(tmpdir):
     dotted_names = _get_dependencies_on_file(tmpdir, DOC_IN_CLASS)
-    assert dotted_names == ['zope.component.utility', ]
+    assert dotted_names == ['zope.component.utility']
 
 
 def test_docstring_in_method(tmpdir):
@@ -127,7 +124,7 @@ def test_docstring_in_method(tmpdir):
 
 def test_docstring_in_method_details(tmpdir):
     dotted_names = _get_dependencies_on_file(tmpdir, DOC_IN_METHOD)
-    assert dotted_names == ['zope.interface', ]
+    assert dotted_names == ['zope.interface']
 
 
 def test_docstring_multiple_imports_same_line(tmpdir):

@@ -19,7 +19,9 @@ s?     # ensure plurals are handled as well
 \.     # a dot
 \w+    # extension
 )
-""".format(os.sep)
+""".format(
+    os.sep
+)
 
 TEST_IN_PATH_REGEX = re.compile(TEST_REGEX, re.VERBOSE)
 
@@ -27,7 +29,6 @@ logger = logging.getLogger(__name__)
 
 
 class BaseModule:
-
     def __init__(self, package_path, full_path):
         self.path = full_path
         self._relative_path = self._get_relative_path(package_path, full_path)
@@ -35,7 +36,7 @@ class BaseModule:
 
     @staticmethod
     def _get_relative_path(package_path, full_path):
-        return full_path[len(package_path):]
+        return full_path[len(package_path) :]
 
     def _is_test_module(self):
         return bool(re.search(TEST_IN_PATH_REGEX, self._relative_path))
@@ -49,7 +50,6 @@ class BaseModule:
 
 
 class PythonModule(BaseModule):
-
     @classmethod
     def create_from_files(cls, top_dir):
         """Find all python files in the package
@@ -127,13 +127,13 @@ class ZCMLFile(BaseModule):
     """
 
     ELEMENTS = {
-        'include': ('package', ),
-        'adapter': ('for', 'factory', 'provides', ),
-        'utility': ('provides', 'component', ),
-        'browser:page': ('class', 'for', 'layer', ),
-        'subscriber': ('handler', 'for', ),
-        'securityPolicy': ('component', ),
-        'genericsetup:registerProfile': ('provides', ),
+        'include': ('package',),
+        'adapter': ('for', 'factory', 'provides'),
+        'utility': ('provides', 'component'),
+        'browser:page': ('class', 'for', 'layer'),
+        'subscriber': ('handler', 'for'),
+        'securityPolicy': ('component',),
+        'genericsetup:registerProfile': ('provides',),
     }
 
     @classmethod
@@ -436,18 +436,22 @@ class DjangoSettings(PythonModule):
 
     @staticmethod
     def _is_installed_apps_assignment(node):
-        if len(node.targets) == 1 and \
-                isinstance(node.targets[0], ast.Name) and \
-                node.targets[0].id == 'INSTALLED_APPS':
+        if (
+            len(node.targets) == 1
+            and isinstance(node.targets[0], ast.Name)
+            and node.targets[0].id == 'INSTALLED_APPS'
+        ):
             return True
 
         return False
 
     @staticmethod
     def _is_test_runner_assignment(node):
-        if len(node.targets) == 1 and \
-                isinstance(node.targets[0], ast.Name) and \
-                node.targets[0].id == 'TEST_RUNNER':
+        if (
+            len(node.targets) == 1
+            and isinstance(node.targets[0], ast.Name)
+            and node.targets[0].id == 'TEST_RUNNER'
+        ):
             return True
 
         return False

@@ -3,9 +3,12 @@ import os
 
 from z3c.dependencychecker.package import Package, PackageMetadata
 from z3c.dependencychecker.tests.utils import (
-    get_extras_requirements_names, get_requirements_names,
-    get_requirements_names_for_extra, get_sorted_imports_paths,
-    write_source_file_at)
+    get_extras_requirements_names,
+    get_requirements_names,
+    get_requirements_names_for_extra,
+    get_sorted_imports_paths,
+    write_source_file_at,
+)
 
 
 def test_package_has_metadata(minimal_structure):
@@ -51,11 +54,7 @@ def test_declared_extras_dependencies_one_extra(minimal_structure):
         'requires.txt',
     )
     with open(requires_file_path, 'w') as requires:
-        requires.write('\n'.join([
-            '[extra]',
-            'my.package',
-            'another.package',
-        ]))
+        requires.write('\n'.join(['[extra]', 'my.package', 'another.package']))
 
     package = Package(path)
     package.set_declared_dependencies()
@@ -78,13 +77,9 @@ def test_declared_extras_dependencies_only_on_extras(minimal_structure):
         'requires.txt',
     )
     with open(requires_file_path, 'w') as requires:
-        requires.write('\n'.join([
-            'setuptools',
-            '',
-            '[extra]',
-            'my_package',
-            'my_other_package',
-        ]))
+        requires.write(
+            '\n'.join(['setuptools', '', '[extra]', 'my_package', 'my_other_package'])
+        )
 
     package = Package(path)
     package.set_declared_dependencies()
@@ -102,17 +97,20 @@ def test_multiple_extras(minimal_structure):
         'requires.txt',
     )
     with open(requires_file_path, 'w') as requires:
-        requires.write('\n'.join([
-            'setuptools',
-            '',
-            '[extra]',
-            'my_package',
-            'my_other_package',
-            ''
-            '[second]',
-            'just',
-            'laughs'
-        ]))
+        requires.write(
+            '\n'.join(
+                [
+                    'setuptools',
+                    '',
+                    '[extra]',
+                    'my_package',
+                    'my_other_package',
+                    '[second]',
+                    'just',
+                    'laughs',
+                ]
+            )
+        )
 
     package = Package(path)
     package.set_declared_extras_dependencies()
@@ -132,7 +130,7 @@ def test_no_python_modules_found(minimal_structure):
 
 def test_python_modules_on_top_level_sources(minimal_structure):
     path, package_name = minimal_structure
-    write_source_file_at((path, package_name), '__init__.py', )
+    write_source_file_at((path, package_name), '__init__.py')
     package = Package(path)
     package.analyze_package()
 
@@ -143,9 +141,9 @@ def test_python_modules_on_top_level_sources(minimal_structure):
 
 def test_python_modules_found_inner_folders(minimal_structure):
     path, package_name = minimal_structure
-    write_source_file_at((path, package_name), '__init__.py', )
-    write_source_file_at((path, package_name, 'test'), '__init__.py', )
-    write_source_file_at((path, package_name, 'test'), 'test.py', )
+    write_source_file_at((path, package_name), '__init__.py')
+    write_source_file_at((path, package_name, 'test'), '__init__.py')
+    write_source_file_at((path, package_name, 'test'), 'test.py')
 
     package = Package(path)
     package.analyze_package()
@@ -160,10 +158,7 @@ def test_top_level_is_a_file(minimal_structure):
     path, package_name = minimal_structure
 
     egg_info_folder = os.path.join(path, '{0}.egg-info'.format(package_name))
-    top_level_file_path = os.path.join(
-        egg_info_folder,
-        'top_level.txt'
-    )
+    top_level_file_path = os.path.join(egg_info_folder, 'top_level.txt')
     with open(top_level_file_path) as top_level_file:
         top_level_folder = top_level_file.read().strip()
 

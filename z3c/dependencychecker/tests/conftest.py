@@ -33,7 +33,7 @@ def fake_project():
     # tools, I'm postfixing them with ``_in``, now we get to rename them.
     # Same for zcml files.
     for (dirpath, dirnames, filenames) in os.walk(package_folder):
-        for filename in (filenames + dirnames):
+        for filename in filenames + dirnames:
             if not filename.endswith('_in'):
                 continue
             new_filename = filename.replace('_in', '')
@@ -57,7 +57,7 @@ def minimal_structure():
     _add_setup_py(folder)
     package_name = _add_egg_info(folder)
 
-    src_folder = os.path.join(folder, 'src', )
+    src_folder = os.path.join(folder, 'src')
     os.makedirs(src_folder)
 
     yield folder, package_name
@@ -71,10 +71,7 @@ def _add_setup_py(folder):
 
 
 def _add_egg_info(folder):
-    package_name = ''.join(
-        random.choice(string.ascii_lowercase)
-        for _ in range(10)
-    )
+    package_name = ''.join(random.choice(string.ascii_lowercase) for _ in range(10))
 
     egg_info_folder_path = os.path.join(
         folder,
@@ -91,29 +88,22 @@ def _add_egg_info(folder):
 
 def _write_pkg_info_file(folder):
     with open(os.path.join(folder, 'PKG-INFO'), 'w') as pkg_info:
-        lines = '\n'.join([
-            'Metadata-Version: 1.0',
-            'Name: testpackage',
-            'Version: 1.0.dev0',
-        ])
+        lines = '\n'.join(
+            ['Metadata-Version: 1.0', 'Name: testpackage', 'Version: 1.0.dev0']
+        )
         pkg_info.write(lines)
 
 
 def _write_requires_file(folder):
     with open(os.path.join(folder, 'requires.txt'), 'w') as requires_file:
-        lines = '\n'.join([
-            'one',
-            'two',
-        ])
+        lines = '\n'.join(['one', 'two'])
         requires_file.write(lines)
 
 
 def _write_top_level_file(folder_path, package_name):
     file_path = os.path.join(folder_path, 'top_level.txt')
     with open(file_path, 'w') as top_level_file:
-        lines = '\n'.join([
-            package_name,
-        ])
+        lines = '\n'.join([package_name])
         top_level_file.write(lines)
 
     sources_top_folder = os.path.join(

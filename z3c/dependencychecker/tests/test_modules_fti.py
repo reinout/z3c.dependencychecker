@@ -49,7 +49,7 @@ SCHEMA_EMPTY = '<property name="schema"></property>'
 def _get_fti_imports_on_file(folder, source):
     full_content = XML_TEMPLATE.format(source)
     temporal_file = write_source_file_at(
-        (folder.strpath, ),
+        (folder.strpath,),
         source_code=full_content,
         filename='configure.zcml',
     )
@@ -69,7 +69,7 @@ def test_create_from_files_deep_nested(minimal_structure):
     path, package_name = minimal_structure
     src_path = os.path.join(path, 'src')
     write_source_file_at(
-        [src_path, 'a', 'b', 'c', 'types', ],
+        [src_path, 'a', 'b', 'c', 'types'],
         filename='test.xml',
     )
 
@@ -99,7 +99,7 @@ def test_one_behavior(tmpdir):
 
 def test_one_behavior_details(tmpdir):
     dotted_names = _get_fti_imports_on_file(tmpdir, ONE_BEHAVIOR)
-    assert dotted_names == ['my.behavior', ]
+    assert dotted_names == ['my.behavior']
 
 
 def test_more_behaviors(tmpdir):

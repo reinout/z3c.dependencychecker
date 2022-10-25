@@ -53,7 +53,7 @@ setup.py to have effect.
 
 def test_highlevel_integration(capsys, fake_project):
     with change_dir(fake_project):
-        arguments = ['dependencychecker', ]
+        arguments = ['dependencychecker']
         try:
             with mock.patch.object(sys, 'argv', arguments):
                 main()
@@ -67,9 +67,7 @@ def test_highlevel_integration(capsys, fake_project):
 def test_entry_point_installed():
     """Check that pkg_resources can find the entry point defined in setup.py"""
     entry_point = load_entry_point(
-        'z3c.dependencychecker',
-        'console_scripts',
-        'dependencychecker'
+        'z3c.dependencychecker', 'console_scripts', 'dependencychecker'
     )
     assert entry_point
 
@@ -78,15 +76,15 @@ def test_entry_point_run():
     """Check that calling the entry point calls a z3c.dependencychecker
     function
     """
+
     def fake_main():
         return 'All dependencies are fine'
 
     import z3c.dependencychecker.main
+
     with mock.patch.object(z3c.dependencychecker.main, 'main', fake_main):
         entry_point = load_entry_point(
-            'z3c.dependencychecker',
-            'console_scripts',
-            'dependencychecker'
+            'z3c.dependencychecker', 'console_scripts', 'dependencychecker'
         )
 
     assert entry_point() == 'All dependencies are fine'

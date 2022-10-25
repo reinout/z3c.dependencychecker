@@ -4,57 +4,57 @@ import os
 from z3c.dependencychecker.modules import DocFiles
 from z3c.dependencychecker.tests.utils import write_source_file_at
 
-NO_DOC = '\n'.join([
-    'Random title',
-    '============',
-    '',
-    'Random paragraph',
-])
-INVALID_PYTHON = '\n'.join([
-    'Random title',
-    '============',
-    '',
-    'Random paragraph',
-    '>>> and some text here that breaks the parser'
-])
-SINGLE_IMPORT = '\n'.join([
-    'Random title',
-    '============',
-    '',
-    'Random paragraph',
-    '>>> import zope.annotation'
-])
-MULTIPLE_IMPORTS_SAME_LINE = '\n'.join([
-    'Random title',
-    '============',
-    '',
-    'Random paragraph',
-    '>>> from zope.interface import Interface, Attribute',
-])
-MULTIPLE_IMPORTS_DIFFERENT_LINES = '\n'.join([
-    'class MyClass(object):',
-    '    def test(self):',
-    '        """Docstring with code to be evaluated.',
-    '',
-    '        >>> from zope.component import adapter',
-    '        >>> from zope.component import utility',
-    '        """',
-])
-MULTIPLE_IMPORTS_DIFFERENT_LINES_WITH_INVALID_CODE_LINES_BETWEEN = '\n'.join([
-    'class MyClass(object):',
-    '    def test(self):',
-    '        """Docstring with code to be evaluated.',
-    '',
-    '        >>> from zope.component import adapter',
-    '        >>> this should  be skipped and next line processed happily',
-    '        >>> from zope.component import utility',
-    '        """',
-])
+NO_DOC = """
+Random title
+============
+
+Random paragraph
+"""
+INVALID_PYTHON = """
+Random title
+============
+
+Random paragraph
+>>> and some text here that breaks the parser
+"""
+SINGLE_IMPORT = """
+Random title
+============
+
+Random paragraph
+>>> import zope.annotation
+"""
+MULTIPLE_IMPORTS_SAME_LINE = """
+Random title
+============
+
+Random paragraph
+>>> from zope.interface import Interface, Attribute
+"""
+MULTIPLE_IMPORTS_DIFFERENT_LINES = '''
+class MyClass(object):',
+    def test(self):',
+        """Docstring with code to be evaluated.
+
+        >>> from zope.component import adapter
+        >>> from zope.component import utility
+        """
+'''
+MULTIPLE_IMPORTS_DIFFERENT_LINES_WITH_INVALID_CODE_LINES_BETWEEN = '''
+class MyClass(object):',
+    def test(self):',
+        """Docstring with code to be evaluated.
+
+        >>> from zope.component import adapter
+        >>> this should  be skipped and next line processed happily
+        >>> from zope.component import utility
+        """'
+'''
 
 
 def _get_dependencies_on_file(folder, source):
     temporal_file = write_source_file_at(
-        (folder.strpath, ),
+        (folder.strpath,),
         source_code=source,
     )
 
@@ -74,7 +74,7 @@ def test_create_from_files_deep_nested_txt(minimal_structure):
     path, package_name = minimal_structure
     src_path = os.path.join(path, 'src')
     write_source_file_at(
-        [src_path, 'a', 'b', 'c', ],
+        [src_path, 'a', 'b', 'c'],
         filename='bla.txt',
     )
 
@@ -86,7 +86,7 @@ def test_create_from_files_deep_nested_rst(minimal_structure):
     path, package_name = minimal_structure
     src_path = os.path.join(path, 'src')
     write_source_file_at(
-        [src_path, 'a', 'b', 'c', ],
+        [src_path, 'a', 'b', 'c'],
         filename='bla.rst',
     )
 
@@ -111,14 +111,12 @@ def test_code_found(tmpdir):
 
 def test_code_found_details(tmpdir):
     dotted_names = _get_dependencies_on_file(tmpdir, SINGLE_IMPORT)
-    assert dotted_names == ['zope.annotation', ]
+    assert dotted_names == ['zope.annotation']
 
 
 def test_always_testing(tmpdir):
     temporal_file = write_source_file_at(
-        (tmpdir.strpath, ),
-        source_code='>>> import foo',
-        filename='file.rst'
+        (tmpdir.strpath,), source_code='>>> import foo', filename='file.rst'
     )
 
     doc_file = DocFiles(tmpdir.strpath, temporal_file)

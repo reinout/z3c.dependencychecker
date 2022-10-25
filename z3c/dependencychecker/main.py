@@ -30,9 +30,7 @@ def main():
 
 def parse_command_line():
     usage = (
-        'Usage: %prog [path]'
-        '\n'
-        '(path defaults to package name, fallback is "src/")'
+        'Usage: %prog [path]' '\n' '(path defaults to package name, fallback is "src/")'
     )
     parser = optparse.OptionParser(usage=usage, version=_version())
     parser.add_option(
@@ -65,9 +63,7 @@ def set_log_level(verbose):
         level = logging.DEBUG
 
     logging.basicConfig(
-        level=level,
-        stream=sys.stdout,
-        format="%(levelname)s: %(message)s"
+        level=level, stream=sys.stdout, format="%(levelname)s: %(message)s"
     )
 
 

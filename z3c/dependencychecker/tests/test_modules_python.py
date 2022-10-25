@@ -24,7 +24,7 @@ FROM_IMPORT_DOT_RELATIVE = 'from .local import something'
 
 def _get_imports_of_python_module(folder, source):
     temporal_file = write_source_file_at(
-        (folder.strpath, ),
+        (folder.strpath,),
         source_code=source,
     )
 
@@ -51,7 +51,7 @@ def test_create_from_files_no_init(minimal_structure):
     src_path = os.path.join(path, 'src')
     assert len(os.listdir(src_path)) == 0
 
-    write_source_file_at([src_path, ])
+    write_source_file_at([src_path])
     assert len(os.listdir(src_path)) == 1
 
     modules_found = [x for x in PythonModule.create_from_files(src_path)]
@@ -61,7 +61,7 @@ def test_create_from_files_no_init(minimal_structure):
 def test_create_from_files_ignore_no_python(minimal_structure):
     path, package_name = minimal_structure
     src_path = os.path.join(path, 'src')
-    write_source_file_at([src_path, ], filename='__init__.py')
+    write_source_file_at([src_path], filename='__init__.py')
     tempfile.mkstemp('.pt', 'bla', src_path)
 
     modules_found = [x for x in PythonModule.create_from_files(src_path)]
@@ -71,8 +71,8 @@ def test_create_from_files_ignore_no_python(minimal_structure):
 def test_create_from_files_found_python(minimal_structure):
     path, package_name = minimal_structure
     src_path = os.path.join(path, 'src')
-    write_source_file_at([src_path, ], filename='__init__.py')
-    write_source_file_at([src_path, ], filename='bla.py')
+    write_source_file_at([src_path], filename='__init__.py')
+    write_source_file_at([src_path], filename='bla.py')
 
     modules_found = [x for x in PythonModule.create_from_files(src_path)]
     assert len(modules_found) == 2
@@ -81,12 +81,12 @@ def test_create_from_files_found_python(minimal_structure):
 def test_create_from_files_deep_nested(minimal_structure):
     path, package_name = minimal_structure
     src_path = os.path.join(path, 'src')
-    write_source_file_at([src_path, ], filename='__init__.py')
-    write_source_file_at([src_path, ], filename='bla.py')
-    write_source_file_at([src_path, 'a', ], filename='__init__.py')
-    write_source_file_at([src_path, 'a', ], filename='bla.py')
-    write_source_file_at([src_path, 'a', 'b', ], filename='__init__.py')
-    write_source_file_at([src_path, 'a', 'b', ], filename='bla.py')
+    write_source_file_at([src_path], filename='__init__.py')
+    write_source_file_at([src_path], filename='bla.py')
+    write_source_file_at([src_path, 'a'], filename='__init__.py')
+    write_source_file_at([src_path, 'a'], filename='bla.py')
+    write_source_file_at([src_path, 'a', 'b'], filename='__init__.py')
+    write_source_file_at([src_path, 'a', 'b'], filename='bla.py')
 
     modules_found = [x for x in PythonModule.create_from_files(src_path)]
     assert len(modules_found) == 6
@@ -99,7 +99,7 @@ def test_import(tmpdir):
 
 def test_import_details(tmpdir):
     dotted_names = _get_imports_of_python_module(tmpdir, IMPORT)
-    assert dotted_names == ['foo', ]
+    assert dotted_names == ['foo']
 
 
 def test_import_multiple(tmpdir):
@@ -109,7 +109,7 @@ def test_import_multiple(tmpdir):
 
 def test_import_multiple_details(tmpdir):
     dotted_names = _get_imports_of_python_module(tmpdir, IMPORT_MULTIPLE)
-    assert sorted(dotted_names) == ['bar', 'foo', ]
+    assert sorted(dotted_names) == ['bar', 'foo']
 
 
 def test_import_as(tmpdir):
@@ -119,7 +119,7 @@ def test_import_as(tmpdir):
 
 def test_import_as_details(tmpdir):
     dotted_names = _get_imports_of_python_module(tmpdir, IMPORT_AS)
-    assert dotted_names == ['foo', ]
+    assert dotted_names == ['foo']
 
 
 def test_import_as_multiple(tmpdir):
@@ -129,7 +129,7 @@ def test_import_as_multiple(tmpdir):
 
 def test_import_as_multiple_details(tmpdir):
     dotted_names = _get_imports_of_python_module(tmpdir, IMPORT_AS_MULTIPLE)
-    assert sorted(dotted_names) == ['boo', 'foo', ]
+    assert sorted(dotted_names) == ['boo', 'foo']
 
 
 def test_from_import(tmpdir):
@@ -139,7 +139,7 @@ def test_from_import(tmpdir):
 
 def test_from_import_details(tmpdir):
     dotted_names = _get_imports_of_python_module(tmpdir, FROM_IMPORT)
-    assert dotted_names == ['foo.bar', ]
+    assert dotted_names == ['foo.bar']
 
 
 def test_from_import_multiple(tmpdir):
@@ -149,7 +149,7 @@ def test_from_import_multiple(tmpdir):
 
 def test_from_import_multiple_details(tmpdir):
     dotted_names = _get_imports_of_python_module(tmpdir, FROM_IMPORT_MULTIPLE)
-    assert sorted(dotted_names) == ['foo.bar', 'foo.ber', ]
+    assert sorted(dotted_names) == ['foo.bar', 'foo.ber']
 
 
 def test_from_import_as(tmpdir):
@@ -159,7 +159,7 @@ def test_from_import_as(tmpdir):
 
 def test_from_import_as_details(tmpdir):
     dotted_names = _get_imports_of_python_module(tmpdir, FROM_IMPORT_AS)
-    assert dotted_names == ['foo.bar', ]
+    assert dotted_names == ['foo.bar']
 
 
 def test_import_asterisk(tmpdir):
@@ -169,7 +169,7 @@ def test_import_asterisk(tmpdir):
 
 def test_import_asterisk_details(tmpdir):
     dotted_names = _get_imports_of_python_module(tmpdir, FROM_IMPORT_ASTERISK)
-    assert dotted_names == ['os', ]
+    assert dotted_names == ['os']
 
 
 @pytest.mark.parametrize(
@@ -178,7 +178,7 @@ def test_import_asterisk_details(tmpdir):
         FROM_IMPORT_DOT,
         FROM_IMPORT_DOT_DOT,
         FROM_IMPORT_DOT_RELATIVE,
-    ]
+    ],
 )
 def test_ignore_local_imports(statement, tmpdir):
     dotted_names = _get_imports_of_python_module(tmpdir, statement)
@@ -198,7 +198,7 @@ def test_from_import_as_multiple_details(tmpdir):
         tmpdir,
         FROM_IMPORT_AS_MULTIPLE,
     )
-    assert sorted(dotted_names) == ['foo.bar', 'foo.boo', ]
+    assert sorted(dotted_names) == ['foo.bar', 'foo.boo']
 
 
 def test_imports_multiple_lines(tmpdir):
@@ -206,4 +206,4 @@ def test_imports_multiple_lines(tmpdir):
         tmpdir,
         'import foo\nimport bar',
     )
-    assert sorted(dotted_names) == ['bar', 'foo', ]
+    assert sorted(dotted_names) == ['bar', 'foo']

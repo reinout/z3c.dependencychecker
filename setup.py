@@ -15,12 +15,13 @@ def read(filename):
             return f.read()
 
 
+long_description = f"""
+{read('README.rst')}
 
-long_description = '\n\n'.join([
-    read('README.rst'),
-    read(os.path.join('z3c', 'dependencychecker', 'USAGE.rst')),
-    read('CHANGES.rst'),
-    ])
+{read(os.path.join('z3c', 'dependencychecker', 'USAGE.rst'))}
+
+{read('CHANGES.rst')}
+"""
 
 
 setup(
@@ -52,8 +53,8 @@ setup(
     author_email='reinout@vanrees.org',
     url='https://github.com/reinout/z3c.dependencychecker',
     license='BSD',
-    packages=find_packages(exclude=['ez_setup', ]),
-    namespace_packages=['z3c', ],
+    packages=find_packages(exclude=['ez_setup']),
+    namespace_packages=['z3c'],
     include_package_data=True,
     zip_safe=False,
     install_requires=[

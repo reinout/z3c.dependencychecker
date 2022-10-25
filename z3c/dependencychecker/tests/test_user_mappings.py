@@ -35,17 +35,18 @@ ignore-packages = ['django-toolbar', 'plone.reload']
 
 
 def _write_user_config(path, content):
-    file_path = os.sep.join([path, 'pyproject.toml', ])
+    file_path = os.sep.join(
+        [
+            path,
+            'pyproject.toml',
+        ]
+    )
     with open(file_path, 'w') as config_file:
         config_file.write(content)
 
 
 def _update_requires_txt(path, package_name, packages):
-    file_path = os.sep.join([
-        path,
-        '{0}.egg-info'.format(package_name),
-        'requires.txt'
-    ])
+    file_path = os.sep.join([path, '{0}.egg-info'.format(package_name), 'requires.txt'])
     with open(file_path, 'w') as config_file:
         for package in packages:
             config_file.write('{0}\n'.format(package))
@@ -110,7 +111,13 @@ def test_ignore_user_mappings(minimal_structure):
 def test_one_user_mapping(minimal_structure):
     path, package_name = minimal_structure
     _write_user_config(path, ONE_MAPPING)
-    _update_requires_txt(path, package_name, ['Zope2', ])
+    _update_requires_txt(
+        path,
+        package_name,
+        [
+            'Zope2',
+        ],
+    )
     package = Package(path)
     package.inspect()
     five_dotted_name = DottedName('Products.Five')
@@ -121,13 +128,22 @@ def test_one_user_mapping(minimal_structure):
 
     mappings = package.imports.user_mappings[zope_dotted_name]
     assert len(mappings) == 1
-    assert {five_dotted_name, } == mappings
+    assert {
+        five_dotted_name,
+    } == mappings
 
 
 def test_more_user_mappings(minimal_structure):
     path, package_name = minimal_structure
     _write_user_config(path, MORE_MAPPINGS)
-    _update_requires_txt(path, package_name, ['Zope2', 'Zope4', ])
+    _update_requires_txt(
+        path,
+        package_name,
+        [
+            'Zope2',
+            'Zope4',
+        ],
+    )
     package = Package(path)
     package.inspect()
     zope2_dotted_name = DottedName('Zope2')
@@ -143,7 +159,13 @@ def test_more_user_mappings(minimal_structure):
 def test_subtables(minimal_structure):
     path, package_name = minimal_structure
     _write_user_config(path, SUBTABLES)
-    _update_requires_txt(path, package_name, ['Zope2', ])
+    _update_requires_txt(
+        path,
+        package_name,
+        [
+            'Zope2',
+        ],
+    )
     package = Package(path)
     package.inspect()
     zope2_dotted_name = DottedName('Zope2')

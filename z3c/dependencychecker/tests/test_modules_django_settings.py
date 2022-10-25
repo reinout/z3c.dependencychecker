@@ -17,7 +17,7 @@ TEST_RUNNER_ASSIGNMENT_TO_STRING = 'TEST_RUNNER = "random8"'
 
 def _get_imports_of_python_module(folder, source):
     temporal_file = write_source_file_at(
-        (folder.strpath, ),
+        (folder.strpath,),
         source_code=source,
     )
 
@@ -41,7 +41,7 @@ def test_create_from_files_single_file_random_name():
 def test_create_from_files_single_file_settings_name(minimal_structure):
     path, package_name = minimal_structure
     src_path = os.path.join(path, 'src')
-    write_source_file_at([src_path, ], filename='some_settings.py', )
+    write_source_file_at([src_path], filename='some_settings.py')
     modules_found = [x for x in DjangoSettings.create_from_files(src_path)]
     assert len(modules_found) == 1
 
@@ -50,7 +50,7 @@ def test_create_from_files_deep_nested(minimal_structure):
     path, package_name = minimal_structure
     src_path = os.path.join(path, 'src')
     write_source_file_at(
-        [src_path, 'a', 'b', 'c', ],
+        [src_path, 'a', 'b', 'c'],
         filename='anothersettings.py',
     )
     modules_found = [x for x in DjangoSettings.create_from_files(src_path)]
