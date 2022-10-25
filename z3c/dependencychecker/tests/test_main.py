@@ -2,8 +2,7 @@
 import logging
 import sys
 import tempfile
-
-import mock
+from unittest import mock
 
 from z3c.dependencychecker.main import (
     _version,

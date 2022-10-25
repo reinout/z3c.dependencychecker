@@ -64,10 +64,7 @@ setup(
         'toml',
     ],
     extras_require={
-        'test': [
-            'pytest',
-            'mock',
-        ],
+        'test': ['pytest'],
     },
     entry_points={
         'console_scripts': [

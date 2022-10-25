@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
+from unittest import mock
 
-import mock
 from pkg_resources import load_entry_point
 
 from z3c.dependencychecker.main import main

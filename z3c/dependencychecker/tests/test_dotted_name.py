@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
+from unittest import mock
 
-import mock
 import pytest
 
 from z3c.dependencychecker.dotted_name import DottedName
