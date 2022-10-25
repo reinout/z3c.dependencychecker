@@ -1,8 +1,9 @@
-from stdlib_list import stdlib_list
-from z3c.dependencychecker.dotted_name import DottedName
 import logging
 import sys
 
+from stdlib_list import stdlib_list
+
+from z3c.dependencychecker.dotted_name import DottedName
 
 logger = logging.getLogger(__name__)
 

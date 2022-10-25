@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from z3c.dependencychecker.modules import DjangoSettings
-from z3c.dependencychecker.tests.utils import write_source_file_at
 import os
 import tempfile
 
+from z3c.dependencychecker.modules import DjangoSettings
+from z3c.dependencychecker.tests.utils import write_source_file_at
 
 RANDOM_CODE = 'from zope.component import adapter'
 RANDOM_ASSIGNMENT = 'a = 3'

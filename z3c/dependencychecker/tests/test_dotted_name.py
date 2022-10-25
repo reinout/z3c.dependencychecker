@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-from z3c.dependencychecker.dotted_name import DottedName
+import sys
+
 import mock
 import pytest
-import sys
+
+from z3c.dependencychecker.dotted_name import DottedName
 
 
 def test_minimal():

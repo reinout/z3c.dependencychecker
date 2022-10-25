@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from z3c.dependencychecker.modules import DocFiles
-from z3c.dependencychecker.tests.utils import write_source_file_at
-
 import os
 
+from z3c.dependencychecker.modules import DocFiles
+from z3c.dependencychecker.tests.utils import write_source_file_at
 
 NO_DOC = '\n'.join([
     'Random title',

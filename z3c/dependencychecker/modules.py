@@ -1,11 +1,11 @@
-from xml.etree import ElementTree
-from z3c.dependencychecker.dotted_name import DottedName
 import ast
 import fnmatch
 import logging
 import os
 import re
+from xml.etree import ElementTree
 
+from z3c.dependencychecker.dotted_name import DottedName
 
 TEST_REGEX = r"""
 {0}    # Needs to start with the path separator

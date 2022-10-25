@@ -1,15 +1,16 @@
+import glob
+import logging
+import os
+import sys
+
+import pkg_resources
+import toml
 from cached_property import cached_property
+
 from z3c.dependencychecker.db import ImportsDatabase
 from z3c.dependencychecker.dotted_name import DottedName
 from z3c.dependencychecker.modules import MODULES
 from z3c.dependencychecker.utils import change_dir
-import glob
-import logging
-import os
-import pkg_resources
-import sys
-import toml
-
 
 logger = logging.getLogger(__name__)
 

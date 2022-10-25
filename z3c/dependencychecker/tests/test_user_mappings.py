@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from z3c.dependencychecker.package import Package
-from z3c.dependencychecker.dotted_name import DottedName
 import os
 
+from z3c.dependencychecker.dotted_name import DottedName
+from z3c.dependencychecker.package import Package
 
 EMPTY_FILE = ''
 IGNORE_OTHER_KEYS = """[servers]

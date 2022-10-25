@@ -1,11 +1,12 @@
-from z3c.dependencychecker.package import Package
-from z3c.dependencychecker.report import Report
 import logging
 import optparse
 import os
-import pkg_resources
 import sys
 
+import pkg_resources
+
+from z3c.dependencychecker.package import Package
+from z3c.dependencychecker.report import Report
 
 logger = logging.getLogger(__name__)
 

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from z3c.dependencychecker.modules import ZCMLFile
-from z3c.dependencychecker.tests.utils import write_source_file_at
 import os
 
+from z3c.dependencychecker.modules import ZCMLFile
+from z3c.dependencychecker.tests.utils import write_source_file_at
 
 ZCML_TEMPLATE = """
 <configure

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-from z3c.dependencychecker.modules import PythonModule
-from z3c.dependencychecker.tests.utils import write_source_file_at
 import os
-import pytest
 import tempfile
 
+import pytest
+
+from z3c.dependencychecker.modules import PythonModule
+from z3c.dependencychecker.tests.utils import write_source_file_at
 
 IMPORT = 'import foo'
 IMPORT_MULTIPLE = 'import foo, bar'

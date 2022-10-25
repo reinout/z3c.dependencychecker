@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+import os
+import tempfile
+
+import pytest
+
 from z3c.dependencychecker.modules import BaseModule
 from z3c.dependencychecker.tests.utils import write_source_file_at
-import os
-import pytest
-import tempfile
 
 
 def test_module_path():

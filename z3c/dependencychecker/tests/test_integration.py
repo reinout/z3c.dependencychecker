@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+import sys
+
+import mock
 from pkg_resources import load_entry_point
+
 from z3c.dependencychecker.main import main
 from z3c.dependencychecker.utils import change_dir
-import mock
-import sys
 
 MAIN_OUTPUT = """
 Missing requirements

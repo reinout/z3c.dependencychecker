@@ -1,5 +1,6 @@
 import hashlib
 from functools import total_ordering
+
 from cached_property import cached_property
 
 

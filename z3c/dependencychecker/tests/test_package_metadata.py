@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-from z3c.dependencychecker.package import PackageMetadata
 import os
-import pkg_resources
 import shutil
 import tempfile
+
+import pkg_resources
+
+from z3c.dependencychecker.package import PackageMetadata
 
 
 def test_no_setup_py_file_found():

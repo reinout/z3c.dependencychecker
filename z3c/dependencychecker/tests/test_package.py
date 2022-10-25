@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-from z3c.dependencychecker.package import Package
-from z3c.dependencychecker.package import PackageMetadata
-from z3c.dependencychecker.tests.utils import get_extras_requirements_names
-from z3c.dependencychecker.tests.utils import get_requirements_names
-from z3c.dependencychecker.tests.utils import get_requirements_names_for_extra
-from z3c.dependencychecker.tests.utils import get_sorted_imports_paths
-from z3c.dependencychecker.tests.utils import write_source_file_at
 import os
+
+from z3c.dependencychecker.package import Package, PackageMetadata
+from z3c.dependencychecker.tests.utils import (
+    get_extras_requirements_names, get_requirements_names,
+    get_requirements_names_for_extra, get_sorted_imports_paths,
+    write_source_file_at)
 
 
 def test_package_has_metadata(minimal_structure):
