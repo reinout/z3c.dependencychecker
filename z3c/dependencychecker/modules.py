@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from xml.etree import ElementTree
 from z3c.dependencychecker.dotted_name import DottedName
 import ast
@@ -27,7 +26,7 @@ TEST_IN_PATH_REGEX = re.compile(TEST_REGEX, re.VERBOSE)
 logger = logging.getLogger(__name__)
 
 
-class BaseModule(object):
+class BaseModule:
 
     def __init__(self, package_path, full_path):
         self.path = full_path
@@ -83,8 +82,7 @@ class PythonModule(BaseModule):
 
     def scan(self):
         for node in ast.walk(self._get_tree()):
-            for dotted_name in self._process_ast_node(node):
-                yield dotted_name
+            yield from self._process_ast_node(node)
 
     def _get_tree(self):
         with open(self.path) as module_file:
@@ -109,7 +107,7 @@ class PythonModule(BaseModule):
                 if name.name == '*':
                     dotted_name = node.module
                 else:
-                    dotted_name = '{0}.{1}'.format(node.module, name.name)
+                    dotted_name = f'{node.module}.{name.name}'
                 yield DottedName(
                     dotted_name,
                     file_path=self.path,
@@ -163,8 +161,7 @@ class ZCMLFile(BaseModule):
             element_namespaced = self._build_namespaced_element(element)
             for node in tree.iter(element_namespaced):
                 for attrib in self.ELEMENTS[element]:
-                    for dotted_name in self._extract_dotted_name(node, attrib):
-                        yield dotted_name
+                    yield from self._extract_dotted_name(node, attrib)
 
     def _extract_dotted_name(self, node, attr):
         if attr in node.keys():
@@ -191,7 +188,7 @@ class ZCMLFile(BaseModule):
                 name,
             )
 
-        return '{{http://namespaces.zope.org/zope}}{0}'.format(element)
+        return f'{{http://namespaces.zope.org/zope}}{element}'
 
 
 class FTIFile(BaseModule):
@@ -201,7 +198,7 @@ class FTIFile(BaseModule):
     Zope/Plone based projects to define its content types.
     """
 
-    TYPES_FOLDER = '{0}types'.format(os.sep)
+    TYPES_FOLDER = f'{os.sep}types'
 
     @classmethod
     def create_from_files(cls, top_dir):
@@ -304,8 +301,7 @@ class PythonDocstrings(PythonModule):
         for node in ast.walk(self._get_tree()):
             if isinstance(node, self.NODES_WITH_DOCSTRINGS):
                 docstring = ast.get_docstring(node)
-                for dotted_name in self._parse_docstring(docstring):
-                    yield dotted_name
+                yield from self._parse_docstring(docstring)
 
     def _parse_docstring(self, docstring):
         if not docstring:

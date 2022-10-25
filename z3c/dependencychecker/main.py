@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from z3c.dependencychecker.package import Package
 from z3c.dependencychecker.report import Report
 import logging

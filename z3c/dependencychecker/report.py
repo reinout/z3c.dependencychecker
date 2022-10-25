@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 import logging
 
 
 logger = logging.getLogger(__name__)
 
 
-class Report(object):
+class Report:
 
     def __init__(self, package):
         self._database = package.imports
@@ -72,7 +71,7 @@ class Report(object):
 
         self._print_header(title)
         for dotted_name in missed:
-            print('     {0}'.format(dotted_name.name))
+            print(f'     {dotted_name.name}')
 
     @staticmethod
     def _print_header(message):

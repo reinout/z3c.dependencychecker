@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from cached_property import cached_property
 from z3c.dependencychecker.db import ImportsDatabase
 from z3c.dependencychecker.dotted_name import DottedName
@@ -15,7 +14,7 @@ import toml
 logger = logging.getLogger(__name__)
 
 
-class PackageMetadata(object):
+class PackageMetadata:
     """Information related to a python source distribution
 
     It relies heavily on setuptools and pkg_resources APIs.
@@ -173,7 +172,7 @@ class PackageMetadata(object):
                 top_levels.append(possible_top_level)
                 continue
 
-            single_module = '{0}.py'.format(possible_top_level)
+            single_module = f'{possible_top_level}.py'
             if os.path.exists(single_module):
                 logger.debug('Found top level %s', single_module)
                 top_levels.append(single_module)
@@ -197,7 +196,7 @@ class PackageMetadata(object):
         sys.exit(1)
 
 
-class Package(object):
+class Package:
     """The python package that is being analyzed
 
     This class itself does not much per se, but connects the PackageMetadata
@@ -273,6 +272,6 @@ class Package(object):
         ])
         try:
             config = toml.load(config_file_path)
-            return config[u'tool'][u'dependencychecker']
-        except (IOError, KeyError, ):
+            return config['tool']['dependencychecker']
+        except (OSError, KeyError):
             return {}

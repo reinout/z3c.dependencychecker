@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 import os
 
 
-class change_dir(object):
+class change_dir:
     """Step into a directory temporarily
 
     Copied from https://pythonadventures.wordpress.com/2013/12/15/chdir-a-context-manager-for-switching-working-directories/  # noqa: E501

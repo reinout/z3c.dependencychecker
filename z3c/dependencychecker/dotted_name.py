@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 import hashlib
 from functools import total_ordering
 from cached_property import cached_property
 
 
 @total_ordering
-class DottedName(object):
+class DottedName:
 
     def __init__(
         self,
@@ -49,7 +48,7 @@ class DottedName(object):
         return self.safe_name == other.safe_name
 
     def __repr__(self):
-        return '<DottedName {0}>'.format(self.name)
+        return f'<DottedName {self.name}>'
 
     def __hash__(self):
         digest = hashlib.sha256(self.safe_name.encode()).hexdigest()

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from stdlib_list import stdlib_list
 from z3c.dependencychecker.dotted_name import DottedName
 import logging
@@ -8,7 +7,7 @@ import sys
 logger = logging.getLogger(__name__)
 
 
-class ImportsDatabase(object):
+class ImportsDatabase:
     """Store all imports and requirements of a package
 
     Use that information to extract useful data out of it,
@@ -25,9 +24,9 @@ class ImportsDatabase(object):
         self.own_dotted_name = None
 
     def add_requirements(self, requirements):
-        self._requirements = set([
+        self._requirements = {
             requirement for requirement in requirements
-        ])
+        }
 
     def add_extra_requirements(self, extra_name, dotted_names):
         # A bit of extra work needs to be done as pkg_resources API returns
@@ -48,7 +47,7 @@ class ImportsDatabase(object):
 
     def _filter_duplicates(self, imports):
         """Return all items in imports that are not a requirement already"""
-        all_imports = set([dotted_name for dotted_name in imports])
+        all_imports = {dotted_name for dotted_name in imports}
         filtered = all_imports - self._requirements
         return filtered
 
@@ -85,10 +84,10 @@ class ImportsDatabase(object):
             self.reverse_user_mappings[single_package] = package
 
     def add_ignored_packages(self, packages):
-        self.ignored_packages = set([
+        self.ignored_packages = {
             DottedName(package)
             for package in packages
-        ])
+        }
 
     def _all_requirements(self):
         all_requirements = self._requirements.copy()
@@ -370,7 +369,7 @@ class ImportsDatabase(object):
     def _build_std_library():
         python_version = sys.version_info
         libraries = stdlib_list(
-            '{0}.{1}'.format(
+            '{}.{}'.format(
                 python_version[0],
                 python_version[1],
             )
