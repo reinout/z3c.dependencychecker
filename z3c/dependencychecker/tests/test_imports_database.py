@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from z3c.dependencychecker.db import ImportsDatabase
 from z3c.dependencychecker.dotted_name import DottedName
 from z3c.dependencychecker.tests.utils import (

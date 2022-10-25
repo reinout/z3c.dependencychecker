@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 
 from z3c.dependencychecker.package import Package, PackageMetadata
@@ -34,7 +33,7 @@ def test_declared_dependencies_empty(minimal_structure):
     path, package_name = minimal_structure
     requires_file_path = os.path.join(
         path,
-        '{0}.egg-info'.format(package_name),
+        f'{package_name}.egg-info',
         'requires.txt',
     )
     with open(requires_file_path, 'w') as requires:
@@ -50,7 +49,7 @@ def test_declared_extras_dependencies_one_extra(minimal_structure):
     path, package_name = minimal_structure
     requires_file_path = os.path.join(
         path,
-        '{0}.egg-info'.format(package_name),
+        f'{package_name}.egg-info',
         'requires.txt',
     )
     with open(requires_file_path, 'w') as requires:
@@ -73,7 +72,7 @@ def test_declared_extras_dependencies_only_on_extras(minimal_structure):
     path, package_name = minimal_structure
     requires_file_path = os.path.join(
         path,
-        '{0}.egg-info'.format(package_name),
+        f'{package_name}.egg-info',
         'requires.txt',
     )
     with open(requires_file_path, 'w') as requires:
@@ -93,7 +92,7 @@ def test_multiple_extras(minimal_structure):
     path, package_name = minimal_structure
     requires_file_path = os.path.join(
         path,
-        '{0}.egg-info'.format(package_name),
+        f'{package_name}.egg-info',
         'requires.txt',
     )
     with open(requires_file_path, 'w') as requires:
@@ -157,18 +156,18 @@ def test_python_modules_found_inner_folders(minimal_structure):
 def test_top_level_is_a_file(minimal_structure):
     path, package_name = minimal_structure
 
-    egg_info_folder = os.path.join(path, '{0}.egg-info'.format(package_name))
+    egg_info_folder = os.path.join(path, f'{package_name}.egg-info')
     top_level_file_path = os.path.join(egg_info_folder, 'top_level.txt')
     with open(top_level_file_path) as top_level_file:
         top_level_folder = top_level_file.read().strip()
 
     top_level_sources = os.path.join(path, top_level_folder)
     os.removedirs(top_level_sources)
-    with open('{0}.py'.format(top_level_sources), 'w') as top_level_file:
+    with open(f'{top_level_sources}.py', 'w') as top_level_file:
         top_level_file.write('import one')
 
     package = Package(path)
     package.analyze_package()
     paths = get_sorted_imports_paths(package.imports)
     assert len(paths) == 1
-    assert paths[0].endswith('{0}.py'.format(top_level_folder))
+    assert paths[0].endswith(f'{top_level_folder}.py')

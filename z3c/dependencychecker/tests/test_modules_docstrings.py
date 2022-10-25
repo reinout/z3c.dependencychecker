@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from z3c.dependencychecker.modules import PythonDocstrings
 from z3c.dependencychecker.tests.utils import write_source_file_at
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Standard tests configuration module automatically scanned by pytest.
 
 This module is used to add generic fixtures and other boilerplate needed by
@@ -75,7 +74,7 @@ def _add_egg_info(folder):
 
     egg_info_folder_path = os.path.join(
         folder,
-        '{0}.egg-info'.format(package_name),
+        f'{package_name}.egg-info',
     )
     os.makedirs(egg_info_folder_path)
 

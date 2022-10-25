@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from unittest import mock
 
 from z3c.dependencychecker.package import Package
@@ -65,7 +64,7 @@ def test_missing_requirements_with_user_mapping(capsys, minimal_structure):
         'import Products.Five.browser.views.BrowserView',
     )
     write_source_file_at(
-        (path, '{0}.egg-info'.format(package_name)),
+        (path, f'{package_name}.egg-info'),
         'requires.txt',
         'Zope2',
     )
@@ -157,7 +156,7 @@ def test_missing_test_requirements_with_user_mapping(capsys, minimal_structure):
         'import Products.Five.browser.views.BrowserView',
     )
     write_source_file_at(
-        (path, '{0}.egg-info'.format(package_name)),
+        (path, f'{package_name}.egg-info'),
         'requires.txt',
         'Zope2',
     )
@@ -194,7 +193,7 @@ def test_missing_test_requirements_with_user_mapping_on_test_extra(
         'import Products.Five.browser.views.BrowserView',
     )
     write_source_file_at(
-        (path, '{0}.egg-info'.format(package_name)),
+        (path, f'{package_name}.egg-info'),
         'requires.txt',
         '\n'.join(['[test]', 'Zope2']),
     )
@@ -311,7 +310,7 @@ def test_unneeded_requirements_with_user_mapping(capsys, minimal_structure):
         '\n'.join(['[tool.dependencychecker]', '"ZODB3" = ["BTrees" ]']),
     )
     write_source_file_at(
-        (path, '{0}.egg-info'.format(package_name)),
+        (path, f'{package_name}.egg-info'),
         'requires.txt',
         '\n'.join(['ZODB3', 'setuptools', 'one']),
     )
@@ -340,7 +339,7 @@ def test_unneeded_requirements_with_user_mapping2(capsys, minimal_structure):
         '\n'.join(['[tool.dependencychecker]', '"ZODB3" = ["BTrees" ]']),
     )
     write_source_file_at(
-        (path, '{0}.egg-info'.format(package_name)),
+        (path, f'{package_name}.egg-info'),
         'requires.txt',
         '\n'.join(['ZODB3', 'setuptools', 'one']),
     )

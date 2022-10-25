@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 
 from z3c.dependencychecker.dotted_name import DottedName
@@ -46,10 +45,10 @@ def _write_user_config(path, content):
 
 
 def _update_requires_txt(path, package_name, packages):
-    file_path = os.sep.join([path, '{0}.egg-info'.format(package_name), 'requires.txt'])
+    file_path = os.sep.join([path, f'{package_name}.egg-info', 'requires.txt'])
     with open(file_path, 'w') as config_file:
         for package in packages:
-            config_file.write('{0}\n'.format(package))
+            config_file.write(f'{package}\n')
 
 
 def test_no_file(minimal_structure):
