@@ -136,7 +136,7 @@ the formatting right :-)
 - Improved Django settings extraction.
   [reinout]
 
-- Better detection of python build-in modules. ``logging/__init__.py`` style
+- Better detection of python built-in modules. ``logging/__init__.py`` style
   modules were previously missed.
   [reinout]
 

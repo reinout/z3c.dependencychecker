@@ -56,7 +56,7 @@ def _cleanup_logging_handlers():
     but introducing the pytest-catchlog plugin made it fail.
 
     On top of that, the loop inside a loop in this function is due to some
-    sort of stickyness from pytest-catchlog handler that fails to be removed on
+    sort of stickiness from pytest-catchlog handler that fails to be removed on
     a first iteration...
     """
     root_logger = logging.getLogger()

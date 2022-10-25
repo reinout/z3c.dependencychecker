@@ -79,7 +79,7 @@ def test_parent_folder_is_test_but_module_not():
 
     This means that if I have a package in a folder like:
     /home/gil/testing/my.package
-    And a file withing it like:
+    And a file within it like:
     /home/gil/testing/my.package/src/my/package/configure.zcml
     Despite having 'test' in the path, as it is not part of the package,
     it should be ignored.
