@@ -25,7 +25,7 @@ class ImportsDatabase:
         self.own_dotted_name = None
 
     def add_requirements(self, requirements):
-        self._requirements = {requirement for requirement in requirements}
+        self._requirements = set(requirements)
 
     def add_extra_requirements(self, extra_name, dotted_names):
         # A bit of extra work needs to be done as pkg_resources API returns
@@ -46,7 +46,7 @@ class ImportsDatabase:
 
     def _filter_duplicates(self, imports):
         """Return all items in imports that are not a requirement already"""
-        all_imports = {dotted_name for dotted_name in imports}
+        all_imports = set(imports)
         filtered = all_imports - self._requirements
         return filtered
 

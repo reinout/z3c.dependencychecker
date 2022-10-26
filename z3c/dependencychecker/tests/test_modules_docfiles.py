@@ -65,7 +65,7 @@ def _get_dependencies_on_file(folder, source):
 def test_create_from_files_nothing(minimal_structure):
     path, package_name = minimal_structure
     src_path = os.path.join(path, 'src')
-    modules_found = [x for x in DocFiles.create_from_files(src_path)]
+    modules_found = list(DocFiles.create_from_files(src_path))
     assert len(modules_found) == 0
 
 
@@ -77,7 +77,7 @@ def test_create_from_files_deep_nested_txt(minimal_structure):
         filename='bla.txt',
     )
 
-    modules_found = [x for x in DocFiles.create_from_files(src_path)]
+    modules_found = list(DocFiles.create_from_files(src_path))
     assert len(modules_found) == 1
 
 
@@ -89,7 +89,7 @@ def test_create_from_files_deep_nested_rst(minimal_structure):
         filename='bla.rst',
     )
 
-    modules_found = [x for x in DocFiles.create_from_files(src_path)]
+    modules_found = list(DocFiles.create_from_files(src_path))
     assert len(modules_found) == 1
 
 
@@ -119,7 +119,7 @@ def test_always_testing(tmpdir):
     )
 
     doc_file = DocFiles(tmpdir.strpath, temporal_file)
-    dotted_names = [x for x in doc_file.scan()]
+    dotted_names = list(doc_file.scan())
     assert len(dotted_names) == 1
     assert dotted_names[0].is_test
 

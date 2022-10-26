@@ -22,7 +22,7 @@ class PackageMetadata:
     """
 
     def __init__(self, path):
-        logger.debug("Reading package metadata for %s...", path)
+        logger.debug('Reading package metadata for %s...', path)
         self._path = path
         self._working_set = self._generate_working_set_with_ourselves()
 
@@ -242,10 +242,10 @@ class Package:
 
     def analyze_package(self):
         for top_folder in self.metadata.top_level:
-            logger.debug("Analyzing package top_level %s...", top_folder)
+            logger.debug('Analyzing package top_level %s...', top_folder)
             for module_obj in MODULES:
                 logger.debug(
-                    "Starting analyzing files using %s...",
+                    'Starting analyzing files using %s...',
                     module_obj,
                 )
                 for source_file in module_obj.create_from_files(top_folder):

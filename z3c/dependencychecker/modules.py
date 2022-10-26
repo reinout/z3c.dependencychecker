@@ -146,7 +146,7 @@ class ZCMLFile(BaseModule):
         if top_dir.endswith('.py'):
             return
 
-        for path, folders, filenames in os.walk(top_dir):
+        for path, _folders, filenames in os.walk(top_dir):
             for filename in filenames:
                 if filename.endswith('.zcml'):
                     yield cls(
@@ -210,7 +210,7 @@ class FTIFile(BaseModule):
         if top_dir.endswith('.py'):
             return
 
-        for path, folders, filenames in os.walk(top_dir):
+        for path, _folders, filenames in os.walk(top_dir):
             for filename in filenames:
                 if filename.endswith('.xml') and cls.TYPES_FOLDER in path:
                     yield cls(
@@ -260,7 +260,7 @@ class GSMetadata(BaseModule):
         if top_dir.endswith('.py'):
             return
 
-        for path, folders, filenames in os.walk(top_dir):
+        for path, _folders, filenames in os.walk(top_dir):
             for filename in filenames:
                 if filename == 'metadata.xml':
                     yield cls(
@@ -355,7 +355,7 @@ class DocFiles(PythonDocstrings):
         if top_dir.endswith('.py'):
             return
 
-        for path, folders, filenames in os.walk(top_dir):
+        for path, _folders, filenames in os.walk(top_dir):
             for filename in filenames:
                 if filename.endswith('.txt') or filename.endswith('.rst'):
                     yield cls(
@@ -405,7 +405,7 @@ class DjangoSettings(PythonModule):
         if top_dir.endswith('.py'):
             return
 
-        for path, folders, filenames in os.walk(top_dir):
+        for path, _folders, filenames in os.walk(top_dir):
             for filename in filenames:
                 if fnmatch.fnmatch(filename, '*settings.py'):
                     yield cls(

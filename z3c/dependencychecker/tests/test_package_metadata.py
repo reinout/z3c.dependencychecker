@@ -207,7 +207,7 @@ def test_get_no_dependencies(minimal_structure):
 
     metadata = PackageMetadata(path)
 
-    requirements = [x for x in metadata.get_required_dependencies()]
+    requirements = list(metadata.get_required_dependencies())
     assert len(requirements) == 0
 
 
@@ -275,7 +275,7 @@ def test_get_extra_dependencies(minimal_structure):
         requires_file.write('\n'.join(['one', '', '[test]', 'pytest', 'mock']))
 
     metadata = PackageMetadata(path)
-    extras = [x for x in metadata.get_extras_dependencies()]
+    extras = list(metadata.get_extras_dependencies())
     extra_packages = [x.name for x in extras[0][1]]
     assert len(extras) == 1
     assert 'pytest' in extra_packages
@@ -287,7 +287,7 @@ def test_no_extras(minimal_structure):
 
     metadata = PackageMetadata(path)
 
-    extras = [x for x in metadata.get_extras_dependencies()]
+    extras = list(metadata.get_extras_dependencies())
     assert len(extras) == 0
 
 

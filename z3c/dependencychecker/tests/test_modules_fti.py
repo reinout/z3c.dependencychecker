@@ -60,7 +60,7 @@ def _get_fti_imports_on_file(folder, source):
 
 def test_create_from_files_nothing(minimal_structure):
     path, package_name = minimal_structure
-    modules_found = [x for x in FTIFile.create_from_files(path)]
+    modules_found = list(FTIFile.create_from_files(path))
     assert len(modules_found) == 0
 
 
@@ -72,7 +72,7 @@ def test_create_from_files_deep_nested(minimal_structure):
         filename='test.xml',
     )
 
-    modules_found = [x for x in FTIFile.create_from_files(src_path)]
+    modules_found = list(FTIFile.create_from_files(src_path))
     assert len(modules_found) == 1
 
 
