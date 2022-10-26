@@ -1,4 +1,3 @@
-import sys
 from unittest import mock
 
 import pytest
@@ -106,14 +105,10 @@ def test_is_namespaced():
     assert obj.is_namespaced
 
 
-@pytest.mark.skipif(
-    sys.version_info > (3, 0),
-    reason='Fails on Python 3.x as it raises a TypeError',
-)
 def test_comparison_fallback():
     obj1 = DottedName('plone.app.dexterity')
-    result = obj1 < object()
-    assert result
+    with pytest.raises(TypeError):
+        obj1 < 33  # noqa: B015
 
 
 def test_comparison_bigger_than():
