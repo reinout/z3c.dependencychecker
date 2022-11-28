@@ -37,7 +37,7 @@ class ImportsDatabase:
                 only_extra_dotted_names,
             )
 
-            logger.warn(
+            logger.warning(
                 'extra requirement "%s" is declared twice in setup.py',
                 extra_name,
             )
