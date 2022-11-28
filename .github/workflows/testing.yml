@@ -49,6 +49,6 @@ jobs:
         run: flake8 setup.py z3c/ --count --max-complexity=18 --max-line-length=88 --show-source --statistics
       # tests and coverage
       - name: Test
-        run: pytest z3c --cov --cov-report term-missing
+        run: pytest
       - name: Coverage
         run: coveralls --service=github
