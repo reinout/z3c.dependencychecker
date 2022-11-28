@@ -29,9 +29,7 @@ def main():
 
 
 def parse_command_line():
-    usage = (
-        'Usage: %prog [path]' '\n' '(path defaults to package name, fallback is "src/")'
-    )
+    usage = 'Usage: %prog [path]\n(path defaults to package name, fallback is "src/")'
     parser = optparse.OptionParser(usage=usage, version=_version())
     parser.add_option(
         '-v',

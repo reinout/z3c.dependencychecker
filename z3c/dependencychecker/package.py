@@ -174,7 +174,7 @@ class PackageMetadata:
                 continue
 
             logger.warning(
-                'Top level %s not found but referenced ' 'by top_level.txt',
+                'Top level %s not found but referenced by top_level.txt',
                 possible_top_level,
             )
 
