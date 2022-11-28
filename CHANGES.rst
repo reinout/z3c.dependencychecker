@@ -13,6 +13,10 @@ Changelog of z3c.dependencychecker
 - Test against python 3.7-3.9 and pypy3.
   [gforcada]
 
+- Updated developer documentation.
+  [reinout]
+
+
 2.7 (2018-08-08)
 ----------------
 
