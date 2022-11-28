@@ -141,3 +141,12 @@ requirements in ``requirements.in``, re-generate ``requirements.txt``::
 To run the tests (there's some pytest configuration in ``setup.cfg``)::
 
   $ bin/pytest
+
+Some checks that are run by github actions::
+
+  $ bin/black --skip-string-normalization
+  $ bin/codespell setup.py z3c/
+  $ bin/flake8 setup.py z3c/
+
+Note that the string quoting style is currently not black-standard, so you'll
+have to manage it yourself.
