@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 import tempfile
 from unittest import mock
@@ -71,7 +72,10 @@ def test_get_path_no_path_given():
     with change_dir(folder):
         path = get_path(arguments)
 
-    assert path == folder
+    # realpath() below is used to work around a small mac tempdir naming
+    # issue. /var/folders/xyz is the tempdir, but after cd'ing you're in
+    # /private/var/folders/xyz...
+    assert os.path.realpath(path) == os.path.realpath(folder)
 
 
 def test_get_path_path_given():
