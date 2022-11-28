@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
-from z3c.dependencychecker.modules import FTIFile
-from z3c.dependencychecker.tests.utils import write_source_file_at
 import os
 
+from z3c.dependencychecker.modules import FTIFile
+from z3c.dependencychecker.tests.utils import write_source_file_at
 
 XML_TEMPLATE = """<?xml version="1.0"?>
 <object>
@@ -49,7 +48,7 @@ SCHEMA_EMPTY = '<property name="schema"></property>'
 def _get_fti_imports_on_file(folder, source):
     full_content = XML_TEMPLATE.format(source)
     temporal_file = write_source_file_at(
-        (folder.strpath, ),
+        (folder.strpath,),
         source_code=full_content,
         filename='configure.zcml',
     )
@@ -61,7 +60,7 @@ def _get_fti_imports_on_file(folder, source):
 
 def test_create_from_files_nothing(minimal_structure):
     path, package_name = minimal_structure
-    modules_found = [x for x in FTIFile.create_from_files(path)]
+    modules_found = list(FTIFile.create_from_files(path))
     assert len(modules_found) == 0
 
 
@@ -69,11 +68,11 @@ def test_create_from_files_deep_nested(minimal_structure):
     path, package_name = minimal_structure
     src_path = os.path.join(path, 'src')
     write_source_file_at(
-        [src_path, 'a', 'b', 'c', 'types', ],
+        [src_path, 'a', 'b', 'c', 'types'],
         filename='test.xml',
     )
 
-    modules_found = [x for x in FTIFile.create_from_files(src_path)]
+    modules_found = list(FTIFile.create_from_files(src_path))
     assert len(modules_found) == 1
 
 
@@ -99,7 +98,7 @@ def test_one_behavior(tmpdir):
 
 def test_one_behavior_details(tmpdir):
     dotted_names = _get_fti_imports_on_file(tmpdir, ONE_BEHAVIOR)
-    assert dotted_names == ['my.behavior', ]
+    assert dotted_names == ['my.behavior']
 
 
 def test_more_behaviors(tmpdir):

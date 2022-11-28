@@ -4,8 +4,14 @@ Changelog of z3c.dependencychecker
 2.8 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Drop python 2.7 support.
+  [gforcada]
 
+- Replace travis for GitHub actions.
+  [gforcada]
+
+- Test against python 3.7-3.9 and pypy3.
+  [gforcada]
 
 2.7 (2018-08-08)
 ----------------
@@ -136,7 +142,7 @@ the formatting right :-)
 - Improved Django settings extraction.
   [reinout]
 
-- Better detection of python build-in modules. ``logging/__init__.py`` style
+- Better detection of python built-in modules. ``logging/__init__.py`` style
   modules were previously missed.
   [reinout]
 

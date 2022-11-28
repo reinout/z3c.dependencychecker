@@ -1,12 +1,11 @@
-# -*- coding: utf-8 -*-
-from xml.etree import ElementTree
-from z3c.dependencychecker.dotted_name import DottedName
 import ast
 import fnmatch
 import logging
 import os
 import re
+from xml.etree import ElementTree
 
+from z3c.dependencychecker.dotted_name import DottedName
 
 TEST_REGEX = r"""
 {0}    # Needs to start with the path separator
@@ -20,15 +19,16 @@ s?     # ensure plurals are handled as well
 \.     # a dot
 \w+    # extension
 )
-""".format(os.sep)
+""".format(
+    os.sep
+)
 
 TEST_IN_PATH_REGEX = re.compile(TEST_REGEX, re.VERBOSE)
 
 logger = logging.getLogger(__name__)
 
 
-class BaseModule(object):
-
+class BaseModule:
     def __init__(self, package_path, full_path):
         self.path = full_path
         self._relative_path = self._get_relative_path(package_path, full_path)
@@ -36,7 +36,7 @@ class BaseModule(object):
 
     @staticmethod
     def _get_relative_path(package_path, full_path):
-        return full_path[len(package_path):]
+        return full_path[len(package_path) :]
 
     def _is_test_module(self):
         return bool(re.search(TEST_IN_PATH_REGEX, self._relative_path))
@@ -50,7 +50,6 @@ class BaseModule(object):
 
 
 class PythonModule(BaseModule):
-
     @classmethod
     def create_from_files(cls, top_dir):
         """Find all python files in the package
@@ -83,8 +82,7 @@ class PythonModule(BaseModule):
 
     def scan(self):
         for node in ast.walk(self._get_tree()):
-            for dotted_name in self._process_ast_node(node):
-                yield dotted_name
+            yield from self._process_ast_node(node)
 
     def _get_tree(self):
         with open(self.path) as module_file:
@@ -109,7 +107,7 @@ class PythonModule(BaseModule):
                 if name.name == '*':
                     dotted_name = node.module
                 else:
-                    dotted_name = '{0}.{1}'.format(node.module, name.name)
+                    dotted_name = f'{node.module}.{name.name}'
                 yield DottedName(
                     dotted_name,
                     file_path=self.path,
@@ -129,13 +127,13 @@ class ZCMLFile(BaseModule):
     """
 
     ELEMENTS = {
-        'include': ('package', ),
-        'adapter': ('for', 'factory', 'provides', ),
-        'utility': ('provides', 'component', ),
-        'browser:page': ('class', 'for', 'layer', ),
-        'subscriber': ('handler', 'for', ),
-        'securityPolicy': ('component', ),
-        'genericsetup:registerProfile': ('provides', ),
+        'include': ('package',),
+        'adapter': ('for', 'factory', 'provides'),
+        'utility': ('provides', 'component'),
+        'browser:page': ('class', 'for', 'layer'),
+        'subscriber': ('handler', 'for'),
+        'securityPolicy': ('component',),
+        'genericsetup:registerProfile': ('provides',),
     }
 
     @classmethod
@@ -148,7 +146,7 @@ class ZCMLFile(BaseModule):
         if top_dir.endswith('.py'):
             return
 
-        for path, folders, filenames in os.walk(top_dir):
+        for path, _folders, filenames in os.walk(top_dir):
             for filename in filenames:
                 if filename.endswith('.zcml'):
                     yield cls(
@@ -163,8 +161,7 @@ class ZCMLFile(BaseModule):
             element_namespaced = self._build_namespaced_element(element)
             for node in tree.iter(element_namespaced):
                 for attrib in self.ELEMENTS[element]:
-                    for dotted_name in self._extract_dotted_name(node, attrib):
-                        yield dotted_name
+                    yield from self._extract_dotted_name(node, attrib)
 
     def _extract_dotted_name(self, node, attr):
         if attr in node.keys():
@@ -191,7 +188,7 @@ class ZCMLFile(BaseModule):
                 name,
             )
 
-        return '{{http://namespaces.zope.org/zope}}{0}'.format(element)
+        return f'{{http://namespaces.zope.org/zope}}{element}'
 
 
 class FTIFile(BaseModule):
@@ -201,7 +198,7 @@ class FTIFile(BaseModule):
     Zope/Plone based projects to define its content types.
     """
 
-    TYPES_FOLDER = '{0}types'.format(os.sep)
+    TYPES_FOLDER = f'{os.sep}types'
 
     @classmethod
     def create_from_files(cls, top_dir):
@@ -213,7 +210,7 @@ class FTIFile(BaseModule):
         if top_dir.endswith('.py'):
             return
 
-        for path, folders, filenames in os.walk(top_dir):
+        for path, _folders, filenames in os.walk(top_dir):
             for filename in filenames:
                 if filename.endswith('.xml') and cls.TYPES_FOLDER in path:
                     yield cls(
@@ -263,7 +260,7 @@ class GSMetadata(BaseModule):
         if top_dir.endswith('.py'):
             return
 
-        for path, folders, filenames in os.walk(top_dir):
+        for path, _folders, filenames in os.walk(top_dir):
             for filename in filenames:
                 if filename == 'metadata.xml':
                     yield cls(
@@ -304,8 +301,7 @@ class PythonDocstrings(PythonModule):
         for node in ast.walk(self._get_tree()):
             if isinstance(node, self.NODES_WITH_DOCSTRINGS):
                 docstring = ast.get_docstring(node)
-                for dotted_name in self._parse_docstring(docstring):
-                    yield dotted_name
+                yield from self._parse_docstring(docstring)
 
     def _parse_docstring(self, docstring):
         if not docstring:
@@ -359,7 +355,7 @@ class DocFiles(PythonDocstrings):
         if top_dir.endswith('.py'):
             return
 
-        for path, folders, filenames in os.walk(top_dir):
+        for path, _folders, filenames in os.walk(top_dir):
             for filename in filenames:
                 if filename.endswith('.txt') or filename.endswith('.rst'):
                     yield cls(
@@ -409,7 +405,7 @@ class DjangoSettings(PythonModule):
         if top_dir.endswith('.py'):
             return
 
-        for path, folders, filenames in os.walk(top_dir):
+        for path, _folders, filenames in os.walk(top_dir):
             for filename in filenames:
                 if fnmatch.fnmatch(filename, '*settings.py'):
                     yield cls(
@@ -440,18 +436,22 @@ class DjangoSettings(PythonModule):
 
     @staticmethod
     def _is_installed_apps_assignment(node):
-        if len(node.targets) == 1 and \
-                isinstance(node.targets[0], ast.Name) and \
-                node.targets[0].id == 'INSTALLED_APPS':
+        if (
+            len(node.targets) == 1
+            and isinstance(node.targets[0], ast.Name)
+            and node.targets[0].id == 'INSTALLED_APPS'
+        ):
             return True
 
         return False
 
     @staticmethod
     def _is_test_runner_assignment(node):
-        if len(node.targets) == 1 and \
-                isinstance(node.targets[0], ast.Name) and \
-                node.targets[0].id == 'TEST_RUNNER':
+        if (
+            len(node.targets) == 1
+            and isinstance(node.targets[0], ast.Name)
+            and node.targets[0].id == 'TEST_RUNNER'
+        ):
             return True
 
         return False

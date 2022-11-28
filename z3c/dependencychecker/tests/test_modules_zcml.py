@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
-from z3c.dependencychecker.modules import ZCMLFile
-from z3c.dependencychecker.tests.utils import write_source_file_at
 import os
 
+from z3c.dependencychecker.modules import ZCMLFile
+from z3c.dependencychecker.tests.utils import write_source_file_at
 
 ZCML_TEMPLATE = """
 <configure
@@ -18,7 +17,9 @@ ZCML_TEMPLATE = """
 INCLUDE = '<include package="my.package.include" />'
 ADAPTER_FACTORY = '<adapter factory="my.package.factory" />'
 ADAPTER_FOR = '<adapter for="my.package.for" />'
-ADAPTER_FOR_MULTIPLE = '<adapter for="my.package.for another.package.foo yet.another.one" />'  # noqa
+ADAPTER_FOR_MULTIPLE = (
+    '<adapter for="my.package.for another.package.foo yet.another.one" />'  # noqa
+)
 ADAPTER_PROVIDES = '<adapter provides="my.package.provides" />'
 UTILITY_COMPONENT = '<utility component="my.package.component" />'
 UTILITY_PROVIDES = '<utility provides="my.package.provides" />'
@@ -26,11 +27,14 @@ BROWSER_PAGE_CLASS = '<browser:page class="my.package.class" />'
 BROWSER_PAGE_FOR = '<browser:page for="my.package.for" />'
 BROWSER_PAGE_LAYER = '<browser:page layer="my.package.layer" />'
 SUBSCRIBER_FOR = '<subscriber for="my.package.for" />'
-SUBSCRIBER_FOR_MULTIPLE = '<subscriber for="my.package.for' \
-                 '                 another.package" />'
+SUBSCRIBER_FOR_MULTIPLE = """<subscriber for="my.package.for
+                 another.package" />
+"""
 SUBSCRIBER_HANDLER = '<subscriber handler="my.package.handler" />'
 SECURITYPOLICY_COMPONENT = '<securityPolicy component="my.package.component" />'  # noqa
-GS_REGISTERPROFILE_PROVIDES = '<genericsetup:registerProfile provides="my.package.provides" />'  # noqa
+GS_REGISTERPROFILE_PROVIDES = (
+    '<genericsetup:registerProfile provides="my.package.provides" />'  # noqa
+)
 IGNORE_LOCAL_IMPORT = '<adapter factory=".package.factory" />'
 ASTERISK = '<adapter for="*" />'
 
@@ -38,7 +42,7 @@ ASTERISK = '<adapter for="*" />'
 def _get_zcml_imports_on_file(folder, source):
     full_content = ZCML_TEMPLATE.format(source)
     temporal_file = write_source_file_at(
-        (folder.strpath, ),
+        (folder.strpath,),
         source_code=full_content,
         filename='configure.zcml',
     )
@@ -50,16 +54,16 @@ def _get_zcml_imports_on_file(folder, source):
 
 def test_create_from_files_nothing(minimal_structure):
     path, package_name = minimal_structure
-    modules_found = [x for x in ZCMLFile.create_from_files(path)]
+    modules_found = list(ZCMLFile.create_from_files(path))
     assert len(modules_found) == 0
 
 
 def test_create_from_files_deep_nested(minimal_structure):
     path, package_name = minimal_structure
     src_path = os.path.join(path, 'src')
-    write_source_file_at([src_path, 'a', 'b', ], filename='configure.zcml')
+    write_source_file_at([src_path, 'a', 'b'], filename='configure.zcml')
 
-    modules_found = [x for x in ZCMLFile.create_from_files(src_path)]
+    modules_found = list(ZCMLFile.create_from_files(src_path))
     assert len(modules_found) == 1
 
 
@@ -70,7 +74,7 @@ def test_include(tmpdir):
 
 def test_include_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, INCLUDE)
-    assert dotted_names == ['my.package.include', ]
+    assert dotted_names == ['my.package.include']
 
 
 def test_adapter_factory(tmpdir):
@@ -80,7 +84,7 @@ def test_adapter_factory(tmpdir):
 
 def test_adapter_factory_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, ADAPTER_FACTORY)
-    assert dotted_names == ['my.package.factory', ]
+    assert dotted_names == ['my.package.factory']
 
 
 def test_adapter_for(tmpdir):
@@ -90,7 +94,7 @@ def test_adapter_for(tmpdir):
 
 def test_adapter_for_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, ADAPTER_FOR)
-    assert dotted_names == ['my.package.for', ]
+    assert dotted_names == ['my.package.for']
 
 
 def test_adapter_for_multiple(tmpdir):
@@ -112,7 +116,7 @@ def test_adapter_provides(tmpdir):
 
 def test_adapter_provides_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, ADAPTER_PROVIDES)
-    assert dotted_names == ['my.package.provides', ]
+    assert dotted_names == ['my.package.provides']
 
 
 def test_utility_component(tmpdir):
@@ -122,7 +126,7 @@ def test_utility_component(tmpdir):
 
 def test_utility_component_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, UTILITY_COMPONENT)
-    assert dotted_names == ['my.package.component', ]
+    assert dotted_names == ['my.package.component']
 
 
 def test_utility_provides(tmpdir):
@@ -132,7 +136,7 @@ def test_utility_provides(tmpdir):
 
 def test_utility_provides_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, UTILITY_PROVIDES)
-    assert dotted_names == ['my.package.provides', ]
+    assert dotted_names == ['my.package.provides']
 
 
 def test_browser_page_class(tmpdir):
@@ -142,7 +146,7 @@ def test_browser_page_class(tmpdir):
 
 def test_browser_page_class_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, BROWSER_PAGE_CLASS)
-    assert dotted_names == ['my.package.class', ]
+    assert dotted_names == ['my.package.class']
 
 
 def test_browser_page_for(tmpdir):
@@ -152,7 +156,7 @@ def test_browser_page_for(tmpdir):
 
 def test_browser_page_for_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, BROWSER_PAGE_FOR)
-    assert dotted_names == ['my.package.for', ]
+    assert dotted_names == ['my.package.for']
 
 
 def test_browser_page_layer(tmpdir):
@@ -162,7 +166,7 @@ def test_browser_page_layer(tmpdir):
 
 def test_browser_page_layer_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, BROWSER_PAGE_LAYER)
-    assert dotted_names == ['my.package.layer', ]
+    assert dotted_names == ['my.package.layer']
 
 
 def test_subscriber_for(tmpdir):
@@ -172,7 +176,7 @@ def test_subscriber_for(tmpdir):
 
 def test_subscriber_for_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, SUBSCRIBER_FOR)
-    assert dotted_names == ['my.package.for', ]
+    assert dotted_names == ['my.package.for']
 
 
 def test_subscriber_for_multiple(tmpdir):
@@ -195,7 +199,7 @@ def test_subscriber_handler(tmpdir):
 
 def test_subscriber_handler_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, SUBSCRIBER_HANDLER)
-    assert dotted_names == ['my.package.handler', ]
+    assert dotted_names == ['my.package.handler']
 
 
 def test_securitypolicy_component(tmpdir):
@@ -205,7 +209,7 @@ def test_securitypolicy_component(tmpdir):
 
 def test_securitypolicy_component_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, SECURITYPOLICY_COMPONENT)
-    assert dotted_names == ['my.package.component', ]
+    assert dotted_names == ['my.package.component']
 
 
 def test_gs_registerprofile_provides(tmpdir):
@@ -221,7 +225,7 @@ def test_gs_registerprofile_provides_details(tmpdir):
         tmpdir,
         GS_REGISTERPROFILE_PROVIDES,
     )
-    assert dotted_names == ['my.package.provides', ]
+    assert dotted_names == ['my.package.provides']
 
 
 def test_ignore_local_import(tmpdir):

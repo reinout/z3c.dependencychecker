@@ -1,14 +1,14 @@
-# -*- coding: utf-8 -*-
-from stdlib_list import stdlib_list
-from z3c.dependencychecker.dotted_name import DottedName
 import logging
 import sys
 
+from stdlib_list import stdlib_list
+
+from z3c.dependencychecker.dotted_name import DottedName
 
 logger = logging.getLogger(__name__)
 
 
-class ImportsDatabase(object):
+class ImportsDatabase:
     """Store all imports and requirements of a package
 
     Use that information to extract useful data out of it,
@@ -25,9 +25,7 @@ class ImportsDatabase(object):
         self.own_dotted_name = None
 
     def add_requirements(self, requirements):
-        self._requirements = set([
-            requirement for requirement in requirements
-        ])
+        self._requirements = set(requirements)
 
     def add_extra_requirements(self, extra_name, dotted_names):
         # A bit of extra work needs to be done as pkg_resources API returns
@@ -48,7 +46,7 @@ class ImportsDatabase(object):
 
     def _filter_duplicates(self, imports):
         """Return all items in imports that are not a requirement already"""
-        all_imports = set([dotted_name for dotted_name in imports])
+        all_imports = set(imports)
         filtered = all_imports - self._requirements
         return filtered
 
@@ -61,7 +59,7 @@ class ImportsDatabase(object):
         for single_import in imports:
             logger.debug('    Import found: %s', single_import.name)
 
-            unknown_import = self._apply_filters([single_import, ], filters)
+            unknown_import = self._apply_filters([single_import], filters)
             if unknown_import:
                 self.imports_used.append(single_import)
             else:
@@ -85,10 +83,7 @@ class ImportsDatabase(object):
             self.reverse_user_mappings[single_package] = package
 
     def add_ignored_packages(self, packages):
-        self.ignored_packages = set([
-            DottedName(package)
-            for package in packages
-        ])
+        self.ignored_packages = {DottedName(package) for package in packages}
 
     def _all_requirements(self):
         all_requirements = self._requirements.copy()
@@ -139,9 +134,7 @@ class ImportsDatabase(object):
         return unique_imports
 
     def requirements_that_should_be_test_requirements(self):
-        non_testing_filters = (
-            self._filter_out_testing_imports,
-        )
+        non_testing_filters = (self._filter_out_testing_imports,)
         non_testing_imports = self._apply_filters(
             self.imports_used,
             non_testing_filters,
@@ -185,9 +178,7 @@ class ImportsDatabase(object):
                 complete_test_imports,
             )
         ]
-        filters = (
-            self._filter_out_ignored_imports,
-        )
+        filters = (self._filter_out_ignored_imports,)
         skip_ignored = self._apply_filters(
             should_be_test_requirements,
             filters,
@@ -263,9 +254,7 @@ class ImportsDatabase(object):
             return True
 
         for dotted_name in self.user_mappings[meta_package]:
-            if not self._discard_if_found_obj_in_list(
-                    dotted_name,
-                    self.imports_used):
+            if not self._discard_if_found_obj_in_list(dotted_name, self.imports_used):
                 return False
 
         return True
@@ -281,15 +270,11 @@ class ImportsDatabase(object):
         if meta_package not in self.user_mappings.keys():
             return True
 
-        filters = (
-            self._filter_out_only_testing_imports,
-        )
+        filters = (self._filter_out_only_testing_imports,)
         test_only_imports = self._apply_filters(self.imports_used, filters)
 
         for dotted_name in self.user_mappings[meta_package]:
-            if not self._discard_if_found_obj_in_list(
-                    dotted_name,
-                    test_only_imports):
+            if not self._discard_if_found_obj_in_list(dotted_name, test_only_imports):
                 return False
 
         return True
@@ -349,11 +334,7 @@ class ImportsDatabase(object):
         """
         # this is a generator expression, nothing is computed until it is being
         # called some lines below
-        iterable = (
-            item
-            for item in obj_list
-            if obj in item
-        )
+        iterable = (item for item in obj_list if obj in item)
 
         # any builtin stops consuming the iterator as soon as an element of the
         # iterable is True
@@ -370,7 +351,7 @@ class ImportsDatabase(object):
     def _build_std_library():
         python_version = sys.version_info
         libraries = stdlib_list(
-            '{0}.{1}'.format(
+            '{}.{}'.format(
                 python_version[0],
                 python_version[1],
             )
@@ -380,7 +361,7 @@ class ImportsDatabase(object):
         return fake_std_libraries
 
     def _get_test_extra(self):
-        candidates = ('test', 'tests', )
+        candidates = ('test', 'tests')
         for candidate in candidates:
             if candidate in self._extras_requirements:
                 return self._extras_requirements[candidate]

@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
-from z3c.dependencychecker.dotted_name import DottedName
-import mock
+from unittest import mock
+
 import pytest
-import sys
+
+from z3c.dependencychecker.dotted_name import DottedName
 
 
 def test_minimal():
@@ -76,7 +76,7 @@ def test_safe_name_all_at_once():
 
 def test_namespaces_none():
     obj = DottedName('plain_package_name')
-    assert obj.namespaces == ['plain_package_name', ]
+    assert obj.namespaces == ['plain_package_name']
 
 
 def test_namespaces_some():
@@ -86,13 +86,13 @@ def test_namespaces_some():
 
 def test_namespaces_some_details():
     obj = DottedName('plone.app.dexterity')
-    assert obj.namespaces == ['plone', 'app', 'dexterity', ]
+    assert obj.namespaces == ['plone', 'app', 'dexterity']
 
 
 def test_namespaces_really_long():
     obj = DottedName('one.two.three.four.five.six')
     assert len(obj.namespaces) == 6
-    assert obj.namespaces == ['one', 'two', 'three', 'four', 'five', 'six', ]
+    assert obj.namespaces == ['one', 'two', 'three', 'four', 'five', 'six']
 
 
 def test_is_namespaced_not():
@@ -105,14 +105,10 @@ def test_is_namespaced():
     assert obj.is_namespaced
 
 
-@pytest.mark.skipif(
-    sys.version_info > (3, 0),
-    reason='Fails on Python 3.x as it raises a TypeError',
-)
 def test_comparison_fallback():
     obj1 = DottedName('plone.app.dexterity')
-    result = obj1 < object()
-    assert result
+    with pytest.raises(TypeError):
+        obj1 < 33  # noqa: B015
 
 
 def test_comparison_bigger_than():
@@ -167,5 +163,5 @@ def test_hash_in_use():
     obj2 = DottedName('two')
     obj3 = DottedName('three')
     obj4 = DottedName('one')
-    uniques = {obj1, obj2, obj3, obj4, }
+    uniques = {obj1, obj2, obj3, obj4}
     assert len(uniques) == 3

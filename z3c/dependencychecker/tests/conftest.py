@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Standard tests configuration module automatically scanned by pytest.
 
 This module is used to add generic fixtures and other boilerplate needed by
@@ -7,15 +6,17 @@ our test suite.
 Keeping it here ensures that pytest finds it without extra setup and eases
 reusability.
 """
-from z3c.dependencychecker.package import ImportsDatabase
-from z3c.dependencychecker.dotted_name import DottedName
 import os
-import pkg_resources
-import pytest
 import random
 import shutil
 import string
 import tempfile
+
+import pkg_resources
+import pytest
+
+from z3c.dependencychecker.dotted_name import DottedName
+from z3c.dependencychecker.package import ImportsDatabase
 
 
 @pytest.fixture
@@ -31,7 +32,7 @@ def fake_project():
     # tools, I'm postfixing them with ``_in``, now we get to rename them.
     # Same for zcml files.
     for (dirpath, dirnames, filenames) in os.walk(package_folder):
-        for filename in (filenames + dirnames):
+        for filename in filenames + dirnames:
             if not filename.endswith('_in'):
                 continue
             new_filename = filename.replace('_in', '')
@@ -55,7 +56,7 @@ def minimal_structure():
     _add_setup_py(folder)
     package_name = _add_egg_info(folder)
 
-    src_folder = os.path.join(folder, 'src', )
+    src_folder = os.path.join(folder, 'src')
     os.makedirs(src_folder)
 
     yield folder, package_name
@@ -69,14 +70,11 @@ def _add_setup_py(folder):
 
 
 def _add_egg_info(folder):
-    package_name = ''.join(
-        random.choice(string.ascii_lowercase)
-        for _ in range(10)
-    )
+    package_name = ''.join(random.choice(string.ascii_lowercase) for _ in range(10))
 
     egg_info_folder_path = os.path.join(
         folder,
-        '{0}.egg-info'.format(package_name),
+        f'{package_name}.egg-info',
     )
     os.makedirs(egg_info_folder_path)
 
@@ -89,29 +87,22 @@ def _add_egg_info(folder):
 
 def _write_pkg_info_file(folder):
     with open(os.path.join(folder, 'PKG-INFO'), 'w') as pkg_info:
-        lines = '\n'.join([
-            'Metadata-Version: 1.0',
-            'Name: testpackage',
-            'Version: 1.0.dev0',
-        ])
+        lines = '\n'.join(
+            ['Metadata-Version: 1.0', 'Name: testpackage', 'Version: 1.0.dev0']
+        )
         pkg_info.write(lines)
 
 
 def _write_requires_file(folder):
     with open(os.path.join(folder, 'requires.txt'), 'w') as requires_file:
-        lines = '\n'.join([
-            'one',
-            'two',
-        ])
+        lines = '\n'.join(['one', 'two'])
         requires_file.write(lines)
 
 
 def _write_top_level_file(folder_path, package_name):
     file_path = os.path.join(folder_path, 'top_level.txt')
     with open(file_path, 'w') as top_level_file:
-        lines = '\n'.join([
-            package_name,
-        ])
+        lines = '\n'.join([package_name])
         top_level_file.write(lines)
 
     sources_top_folder = os.path.join(

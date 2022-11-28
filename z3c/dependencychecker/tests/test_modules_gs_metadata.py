@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
-from z3c.dependencychecker.modules import GSMetadata
-from z3c.dependencychecker.tests.utils import write_source_file_at
 import os
 
+from z3c.dependencychecker.modules import GSMetadata
+from z3c.dependencychecker.tests.utils import write_source_file_at
 
 XML_TEMPLATE = """<metadata>
 <dependencies>
@@ -31,7 +30,7 @@ MORE_DEPENDENCIES = """
 def _get_dependencies_on_file(folder, source):
     full_content = XML_TEMPLATE.format(source)
     temporal_file = write_source_file_at(
-        (folder.strpath, ),
+        (folder.strpath,),
         source_code=full_content,
         filename='configure.zcml',
     )
@@ -43,7 +42,7 @@ def _get_dependencies_on_file(folder, source):
 
 def test_create_from_files_nothing(minimal_structure):
     path, package_name = minimal_structure
-    modules_found = [x for x in GSMetadata.create_from_files(path)]
+    modules_found = list(GSMetadata.create_from_files(path))
     assert len(modules_found) == 0
 
 
@@ -51,11 +50,11 @@ def test_create_from_files_deep_nested(minimal_structure):
     path, package_name = minimal_structure
     src_path = os.path.join(path, 'src')
     write_source_file_at(
-        [src_path, 'a', 'b', 'c', ],
+        [src_path, 'a', 'b', 'c'],
         filename='metadata.xml',
     )
 
-    modules_found = [x for x in GSMetadata.create_from_files(src_path)]
+    modules_found = list(GSMetadata.create_from_files(src_path))
     assert len(modules_found) == 1
 
 
@@ -94,7 +93,7 @@ def test_one_dependency(tmpdir):
 
 def test_one_dependency_details(tmpdir):
     dotted_names = _get_dependencies_on_file(tmpdir, ONE_DEPENDENCY)
-    assert dotted_names == ['plone.app.caching', ]
+    assert dotted_names == ['plone.app.caching']
 
 
 def test_more_dependencies(tmpdir):

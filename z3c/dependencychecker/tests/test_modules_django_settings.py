@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
-from z3c.dependencychecker.modules import DjangoSettings
-from z3c.dependencychecker.tests.utils import write_source_file_at
 import os
 import tempfile
 
+from z3c.dependencychecker.modules import DjangoSettings
+from z3c.dependencychecker.tests.utils import write_source_file_at
 
 RANDOM_CODE = 'from zope.component import adapter'
 RANDOM_ASSIGNMENT = 'a = 3'
@@ -17,7 +16,7 @@ TEST_RUNNER_ASSIGNMENT_TO_STRING = 'TEST_RUNNER = "random8"'
 
 def _get_imports_of_python_module(folder, source):
     temporal_file = write_source_file_at(
-        (folder.strpath, ),
+        (folder.strpath,),
         source_code=source,
     )
 
@@ -28,21 +27,21 @@ def _get_imports_of_python_module(folder, source):
 
 def test_create_from_files_nothing(minimal_structure):
     path, package_name = minimal_structure
-    modules_found = [x for x in DjangoSettings.create_from_files(path)]
+    modules_found = list(DjangoSettings.create_from_files(path))
     assert len(modules_found) == 0
 
 
 def test_create_from_files_single_file_random_name():
     _, tmp_file = tempfile.mkstemp('.py')
-    modules_found = [x for x in DjangoSettings.create_from_files(tmp_file)]
+    modules_found = list(DjangoSettings.create_from_files(tmp_file))
     assert len(modules_found) == 0
 
 
 def test_create_from_files_single_file_settings_name(minimal_structure):
     path, package_name = minimal_structure
     src_path = os.path.join(path, 'src')
-    write_source_file_at([src_path, ], filename='some_settings.py', )
-    modules_found = [x for x in DjangoSettings.create_from_files(src_path)]
+    write_source_file_at([src_path], filename='some_settings.py')
+    modules_found = list(DjangoSettings.create_from_files(src_path))
     assert len(modules_found) == 1
 
 
@@ -50,10 +49,10 @@ def test_create_from_files_deep_nested(minimal_structure):
     path, package_name = minimal_structure
     src_path = os.path.join(path, 'src')
     write_source_file_at(
-        [src_path, 'a', 'b', 'c', ],
+        [src_path, 'a', 'b', 'c'],
         filename='anothersettings.py',
     )
-    modules_found = [x for x in DjangoSettings.create_from_files(src_path)]
+    modules_found = list(DjangoSettings.create_from_files(src_path))
     assert len(modules_found) == 1
 
 

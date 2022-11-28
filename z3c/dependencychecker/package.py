@@ -1,28 +1,28 @@
-# -*- coding: utf-8 -*-
+import glob
+import logging
+import os
+import sys
+
+import pkg_resources
+import toml
 from cached_property import cached_property
+
 from z3c.dependencychecker.db import ImportsDatabase
 from z3c.dependencychecker.dotted_name import DottedName
 from z3c.dependencychecker.modules import MODULES
 from z3c.dependencychecker.utils import change_dir
-import glob
-import logging
-import os
-import pkg_resources
-import sys
-import toml
-
 
 logger = logging.getLogger(__name__)
 
 
-class PackageMetadata(object):
+class PackageMetadata:
     """Information related to a python source distribution
 
     It relies heavily on setuptools and pkg_resources APIs.
     """
 
     def __init__(self, path):
-        logger.debug("Reading package metadata for %s...", path)
+        logger.debug('Reading package metadata for %s...', path)
         self._path = path
         self._working_set = self._generate_working_set_with_ourselves()
 
@@ -47,18 +47,12 @@ class PackageMetadata(object):
     @cached_property
     def package_dir(self):
         """Check where the .egg-info is located"""
-        try_paths = [
-            self.distribution_root
-        ]
+        try_paths = [self.distribution_root]
         top_level_elements = [
             os.path.join(self.distribution_root, folder)
             for folder in os.listdir(self.distribution_root)
         ]
-        try_paths += [
-            folder
-            for folder in top_level_elements
-            if os.path.isdir(folder)
-        ]
+        try_paths += [folder for folder in top_level_elements if os.path.isdir(folder)]
         for path in try_paths:
             folder_found = self._find_egg_info_in_folder(path)
             if folder_found:
@@ -88,7 +82,7 @@ class PackageMetadata(object):
     @cached_property
     def name(self):
         path, filename = os.path.split(self.egg_info_dir)
-        name = filename[:-len('.egg-info')]
+        name = filename[: -len('.egg-info')]
         logger.debug(
             'Package name is %s',
             name,
@@ -137,7 +131,7 @@ class PackageMetadata(object):
         this_package = self._get_ourselves_from_working_set()
 
         for extra_name in this_package.extras:
-            extra_requirements = this_package.requires(extras=(extra_name, ))
+            extra_requirements = this_package.requires(extras=(extra_name,))
             dotted_names = (
                 DottedName.from_requirement(req, file_path=self.setup_py_path)
                 for req in extra_requirements
@@ -173,15 +167,14 @@ class PackageMetadata(object):
                 top_levels.append(possible_top_level)
                 continue
 
-            single_module = '{0}.py'.format(possible_top_level)
+            single_module = f'{possible_top_level}.py'
             if os.path.exists(single_module):
                 logger.debug('Found top level %s', single_module)
                 top_levels.append(single_module)
                 continue
 
             logger.warning(
-                'Top level %s not found but referenced '
-                'by top_level.txt',
+                'Top level %s not found but referenced ' 'by top_level.txt',
                 possible_top_level,
             )
 
@@ -197,7 +190,7 @@ class PackageMetadata(object):
         sys.exit(1)
 
 
-class Package(object):
+class Package:
     """The python package that is being analyzed
 
     This class itself does not much per se, but connects the PackageMetadata
@@ -216,11 +209,8 @@ class Package(object):
         self.analyze_package()
 
     def set_declared_dependencies(self):
-        """Add this packages' dependencies defined in setup.py to the database
-        """
-        self.imports.add_requirements(
-            self.metadata.get_required_dependencies()
-        )
+        """Add this packages' dependencies defined in setup.py to the database"""
+        self.imports.add_requirements(self.metadata.get_required_dependencies())
 
     def set_declared_extras_dependencies(self):
         """Add this packages' extras dependencies defined in setup.py to the
@@ -252,10 +242,10 @@ class Package(object):
 
     def analyze_package(self):
         for top_folder in self.metadata.top_level:
-            logger.debug("Analyzing package top_level %s...", top_folder)
+            logger.debug('Analyzing package top_level %s...', top_folder)
             for module_obj in MODULES:
                 logger.debug(
-                    "Starting analyzing files using %s...",
+                    'Starting analyzing files using %s...',
                     module_obj,
                 )
                 for source_file in module_obj.create_from_files(top_folder):
@@ -267,12 +257,11 @@ class Package(object):
                     self.imports.add_imports(source_file.scan())
 
     def _load_user_config(self):
-        config_file_path = os.sep.join([
-            self.metadata.distribution_root,
-            'pyproject.toml',
-        ])
+        config_file_path = os.sep.join(
+            [self.metadata.distribution_root, 'pyproject.toml']
+        )
         try:
             config = toml.load(config_file_path)
-            return config[u'tool'][u'dependencychecker']
-        except (IOError, KeyError, ):
+            return config['tool']['dependencychecker']
+        except (OSError, KeyError):
             return {}

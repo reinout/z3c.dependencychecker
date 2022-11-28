@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 
 
@@ -22,10 +21,7 @@ def write_source_file_at(
 
 
 def get_requirements_names(database):
-    return [
-        requirement.name
-        for requirement in database._requirements
-    ]
+    return [requirement.name for requirement in database._requirements]
 
 
 def get_extras_requirements_names(database):
@@ -33,10 +29,7 @@ def get_extras_requirements_names(database):
 
 
 def get_requirements_names_for_extra(database, extra=''):
-    return [
-        requirement.name
-        for requirement in database._extras_requirements[extra]
-    ]
+    return [requirement.name for requirement in database._extras_requirements[extra]]
 
 
 def get_sorted_imports_paths(database):
