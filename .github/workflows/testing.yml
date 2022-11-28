@@ -46,7 +46,7 @@ jobs:
         run: codespell *.rst setup.py z3c/
       - name: Lint with flake8
         if: matrix.python-version == '3.9'
-        run: flake8 setup.py z3c/ --count --max-complexity=18 --max-line-length=88 --show-source --statistics
+        run: flake8 setup.py z3c/ --count --show-source --statistics
       # tests and coverage
       - name: Test
         run: pytest
