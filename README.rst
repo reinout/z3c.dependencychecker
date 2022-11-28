@@ -123,3 +123,21 @@ requests in the github issue tracker.
 Every time you commit something, ``bin/code-analysis`` is automatically
 run. Pay attention to the output and fix the problems that are reported. Or
 fix the setup so that inappropriate reports are filtered out.
+
+
+Local development setup
+-----------------------
+
+Create a virtualenv and install the requirements::
+
+  $ python3 -m venv .
+  $ bin/pip install -r requirements.txt
+
+If you changed the actual requirements in ``setup.py`` or the development
+requirements in ``requirements.in``, re-generate ``requirements.txt``::
+
+  $ bin/pip-compile requirements.in
+
+To run the tests (there's some pytest configuration in ``setup.cfg``)::
+
+  $ bin/pytest
