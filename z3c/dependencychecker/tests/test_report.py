@@ -1,7 +1,5 @@
 from unittest import mock
 
-import pytest
-
 from z3c.dependencychecker.package import Package
 from z3c.dependencychecker.report import Report
 from z3c.dependencychecker.tests.utils import write_source_file_at
@@ -44,10 +42,9 @@ def test_missing_requirements_nothing(capsys):
     assert out == ''
 
 
-@pytest.mark.skip
 def test_missing_requirements(capsys, minimal_structure):
     path, package_name = minimal_structure
-    write_source_file_at((path, package_name), '__init__.py', 'import this.package')
+    write_source_file_at((path, package_name), '__init__.py', 'import another.package')
 
     package = Package(path)
     package.inspect()
@@ -56,7 +53,7 @@ def test_missing_requirements(capsys, minimal_structure):
     out, err = capsys.readouterr()
 
     assert 'Missing requirements\n' '====================' in out
-    assert 'this.package' in out
+    assert 'another.package' in out
 
 
 def test_missing_requirements_with_user_mapping(capsys, minimal_structure):
@@ -123,7 +120,6 @@ def test_missing_requirements_with_ignored_packages(capsys, minimal_structure):
     assert 'Three' not in out
 
 
-@pytest.mark.skip
 def test_missing_test_requirements(capsys, minimal_structure):
     path, package_name = minimal_structure
     write_source_file_at(
@@ -134,7 +130,7 @@ def test_missing_test_requirements(capsys, minimal_structure):
     write_source_file_at(
         (path, package_name, 'tests'),
         '__init__.py',
-        'import this.package',
+        'import another.package',
     )
 
     package = Package(path)
@@ -144,7 +140,7 @@ def test_missing_test_requirements(capsys, minimal_structure):
     out, err = capsys.readouterr()
 
     assert 'Missing test requirements\n' '=========================' in out
-    assert 'this.package' in out
+    assert 'another.package' in out
 
 
 def test_missing_test_requirements_with_user_mapping(capsys, minimal_structure):
