@@ -132,6 +132,30 @@ def test_one_user_mapping(minimal_structure):
     } == mappings
 
 
+def test_filter_out_mappings_on_test(minimal_structure):
+    path, package_name = minimal_structure
+    _write_user_config(path, ONE_MAPPING)
+    _update_requires_txt(
+        path,
+        package_name,
+        ['plone.reload', '[test]', 'Zope2'],
+    )
+    package = Package(path)
+    package.inspect()
+    five_dotted_name = DottedName('Products.Five')
+    plone_reload_dotted_name = DottedName('plone.reload')
+    zope_dotted_name = DottedName('Zope2')
+
+    assert len(package.imports.user_mappings) == 1
+    assert zope_dotted_name in package.imports.user_mappings
+
+    # The next two aren'd in the mapping, so they shouldn't be filtered out:
+    assert package.imports._filter_out_mappings_on_test(plone_reload_dotted_name)
+    assert package.imports._filter_out_mappings_on_test(five_dotted_name)
+    # This one is in the mapping, but shouldn't be filtered out as it is a test-only import.
+    assert package.imports._filter_out_mappings_on_test(zope_dotted_name)
+
+
 def test_more_user_mappings(minimal_structure):
     path, package_name = minimal_structure
     _write_user_config(path, MORE_MAPPINGS)

@@ -1,7 +1,7 @@
-stdlib-list
-cached-property
-toml
+# Ourselves, including our dependencies
+-e file:.#z3c.dependencychecker[test]
 
+# Development tools
 black
 codespell
 coveralls
@@ -17,6 +17,7 @@ flake8-quotes
 flake8-todo
 importlib-metadata; python_version < '3.8'
 isort
+pip-tools
 pytest
 pytest-cov
 pyupgrade
