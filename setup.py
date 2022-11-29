@@ -57,7 +57,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
-        'stdlib-list',
+        'stdlib-list; python_version < "3.10"',
         'cached-property',
         'toml',
     ],
