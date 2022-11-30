@@ -1,7 +1,5 @@
 from unittest import mock
 
-import pytest
-
 from z3c.dependencychecker.package import Package
 from z3c.dependencychecker.report import Report
 from z3c.dependencychecker.tests.utils import write_source_file_at
@@ -44,10 +42,9 @@ def test_missing_requirements_nothing(capsys):
     assert out == ''
 
 
-@pytest.mark.skip
 def test_missing_requirements(capsys, minimal_structure):
     path, package_name = minimal_structure
-    write_source_file_at((path, package_name), '__init__.py', 'import this.package')
+    write_source_file_at((path, package_name), '__init__.py', 'import another.package')
 
     package = Package(path)
     package.inspect()
@@ -55,8 +52,8 @@ def test_missing_requirements(capsys, minimal_structure):
     report.missing_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Missing requirements\n' '====================' in out
-    assert 'this.package' in out
+    assert 'Missing requirements\n====================' in out
+    assert 'another.package' in out
 
 
 def test_missing_requirements_with_user_mapping(capsys, minimal_structure):
@@ -88,7 +85,7 @@ def test_missing_requirements_with_user_mapping(capsys, minimal_structure):
     report.missing_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Missing requirements\n' '====================' not in out
+    assert 'Missing requirements\n====================' not in out
     assert 'Products.Five' not in out
     assert 'Zope2' not in out
 
@@ -117,13 +114,12 @@ def test_missing_requirements_with_ignored_packages(capsys, minimal_structure):
     report.missing_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Missing requirements\n' '====================' not in out
+    assert 'Missing requirements\n====================' not in out
     assert 'Products.Five' not in out
     assert 'Four' not in out
     assert 'Three' not in out
 
 
-@pytest.mark.skip
 def test_missing_test_requirements(capsys, minimal_structure):
     path, package_name = minimal_structure
     write_source_file_at(
@@ -134,7 +130,7 @@ def test_missing_test_requirements(capsys, minimal_structure):
     write_source_file_at(
         (path, package_name, 'tests'),
         '__init__.py',
-        'import this.package',
+        'import another.package',
     )
 
     package = Package(path)
@@ -143,8 +139,8 @@ def test_missing_test_requirements(capsys, minimal_structure):
     report.missing_test_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Missing test requirements\n' '=========================' in out
-    assert 'this.package' in out
+    assert 'Missing test requirements\n=========================' in out
+    assert 'another.package' in out
 
 
 def test_missing_test_requirements_with_user_mapping(capsys, minimal_structure):
@@ -177,7 +173,7 @@ def test_missing_test_requirements_with_user_mapping(capsys, minimal_structure):
     out, err = capsys.readouterr()
 
     assert '' == out
-    assert 'Missing requirements\n' '====================' not in out
+    assert 'Missing requirements\n====================' not in out
     assert 'Products.Five' not in out
     assert 'Zope2' not in out
 
@@ -214,7 +210,7 @@ def test_missing_test_requirements_with_user_mapping_on_test_extra(
     out, err = capsys.readouterr()
 
     assert '' == out
-    assert 'Missing requirements\n' '====================' not in out
+    assert 'Missing requirements\n====================' not in out
     assert 'Products.Five' not in out
     assert 'Zope2' not in out
 
@@ -249,7 +245,7 @@ def test_missing_test_requirements_with_ignored_packages(capsys, minimal_structu
     out, err = capsys.readouterr()
 
     assert '' == out
-    assert 'Missing requirements\n' '====================' not in out
+    assert 'Missing requirements\n====================' not in out
     assert 'Products.Five' not in out
 
 
@@ -267,7 +263,7 @@ def test_unneeded_requirements(capsys, minimal_structure):
     report.unneeded_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Unneeded requirements\n' '=====================' in out
+    assert 'Unneeded requirements\n=====================' in out
     assert 'one' in out
     assert 'two' in out
 
@@ -296,7 +292,7 @@ def test_unneeded_requirements_with_ignored_packages(capsys, minimal_structure):
     report.unneeded_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Unneeded requirements\n' '=====================' in out
+    assert 'Unneeded requirements\n=====================' in out
     assert 'one' not in out
     assert 'two' in out
 
@@ -325,7 +321,7 @@ def test_unneeded_requirements_with_user_mapping(capsys, minimal_structure):
     report.unneeded_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Unneeded requirements\n' '=====================' in out
+    assert 'Unneeded requirements\n=====================' in out
     assert 'ZODB3' not in out
     assert 'one' in out
 
@@ -354,7 +350,7 @@ def test_unneeded_requirements_with_user_mapping2(capsys, minimal_structure):
     report.unneeded_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Unneeded requirements\n' '=====================' in out
+    assert 'Unneeded requirements\n=====================' in out
     assert 'ZODB3' in out
     assert 'one' in out
 
@@ -373,7 +369,7 @@ def test_unneeded_test_requirements(capsys, minimal_structure):
     report.unneeded_test_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Unneeded test requirements\n' '==========================' in out
+    assert 'Unneeded test requirements\n==========================' in out
     assert 'pytest' in out
     assert 'mock' in out
 
@@ -397,7 +393,7 @@ def test_unneeded_test_requirements_with_ignore_packages(capsys, minimal_structu
     report.unneeded_test_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Unneeded test requirements\n' '==========================' in out
+    assert 'Unneeded test requirements\n==========================' in out
     assert 'pytest' in out
     assert 'mock' not in out
 
@@ -431,7 +427,7 @@ def test_unneeded_test_requirements_with_user_mappings(capsys, minimal_structure
     report.unneeded_test_requirements()
     out, err = capsys.readouterr()
 
-    assert 'Unneeded test requirements\n' '==========================' in out
+    assert 'Unneeded test requirements\n==========================' in out
     assert 'pytest' in out
     assert 'ZODB3' not in out
     assert 'BTrees' not in out

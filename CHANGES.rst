@@ -10,7 +10,7 @@ Changelog of z3c.dependencychecker
 - Replace travis for GitHub actions.
   [gforcada]
 
-- Test against python 3.7-3.9 and pypy3.
+- Test against python 3.7-3.11 and pypy3.
   [gforcada]
 
 - Updated developer documentation.

@@ -42,6 +42,8 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Software Development :: Quality Assurance',
@@ -57,7 +59,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
-        'stdlib-list',
+        'stdlib-list; python_version < "3.10"',
         'cached-property',
         'toml',
     ],

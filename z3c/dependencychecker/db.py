@@ -1,11 +1,13 @@
 import logging
 import sys
 
-from stdlib_list import stdlib_list
-
 from z3c.dependencychecker.dotted_name import DottedName
 
 logger = logging.getLogger(__name__)
+
+
+# starting from python 3.10 the list of builtin methods are available directly
+PY_10_OR_HIGHER = sys.version_info[1] >= 10
 
 
 class ImportsDatabase:
@@ -37,7 +39,7 @@ class ImportsDatabase:
                 only_extra_dotted_names,
             )
 
-            logger.warn(
+            logger.warning(
                 'extra requirement "%s" is declared twice in setup.py',
                 extra_name,
             )
@@ -349,13 +351,21 @@ class ImportsDatabase:
 
     @staticmethod
     def _build_std_library():
-        python_version = sys.version_info
-        libraries = stdlib_list(
-            '{}.{}'.format(
-                python_version[0],
-                python_version[1],
+        if PY_10_OR_HIGHER:
+            # see https://github.com/jackmaney/python-stdlib-list/issues/55
+            libraries = list(
+                set(list(sys.stdlib_module_names) + list(sys.builtin_module_names))
             )
-        )
+        else:
+            from stdlib_list import stdlib_list
+
+            python_version = sys.version_info
+            libraries = stdlib_list(
+                '{}.{}'.format(
+                    python_version[0],
+                    python_version[1],
+                )
+            )
 
         fake_std_libraries = [DottedName(x) for x in libraries]
         return fake_std_libraries
