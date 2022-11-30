@@ -3,7 +3,7 @@ import os.path
 
 from setuptools import find_packages, setup
 
-version = '2.8.dev0'
+version = '2.8'
 
 
 def read(filename):

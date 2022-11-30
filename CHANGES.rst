@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-2.8 (unreleased)
+2.8 (2022-11-30)
 ----------------
 
 - Drop python 2.7 support.
