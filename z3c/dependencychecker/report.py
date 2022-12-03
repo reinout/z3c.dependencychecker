@@ -9,10 +9,10 @@ class Report:
         self.exit_status = 0
 
     def print_report(self):
-        logger.debug('Package requirements: %s', self._database._requirements)
-        logger.debug('Package extras: %s', self._database._extras_requirements)
+        logger.debug("Package requirements: %s", self._database._requirements)
+        logger.debug("Package extras: %s", self._database._extras_requirements)
         logger.debug(
-            'User defined mappings: %s',
+            "User defined mappings: %s",
             self._database.user_mappings,
         )
         self.missing_requirements()
@@ -24,41 +24,41 @@ class Report:
 
     def missing_requirements(self):
         self._print_metric(
-            'Missing requirements',
+            "Missing requirements",
             self._database.get_missing_imports,
         )
 
     def missing_test_requirements(self):
         self._print_metric(
-            'Missing test requirements',
+            "Missing test requirements",
             self._database.get_missing_test_imports,
         )
 
     def unneeded_requirements(self):
         self._print_metric(
-            'Unneeded requirements',
+            "Unneeded requirements",
             self._database.get_unneeded_requirements,
         )
 
     def requirements_that_should_be_test_requirements(self):
         self._print_metric(
-            'Requirements that should be test requirements',
+            "Requirements that should be test requirements",
             self._database.requirements_that_should_be_test_requirements,
         )
 
     def unneeded_test_requirements(self):
         self._print_metric(
-            'Unneeded test requirements',
+            "Unneeded test requirements",
             self._database.get_unneeded_test_requirements,
         )
 
     @staticmethod
     def print_notice():
-        print('')
-        print('Note: requirements are taken from the egginfo dir, so you need')
-        print('to re-run buildout (or setup.py or whatever) for changes in')
-        print('setup.py to have effect.')
-        print('')
+        print("")
+        print("Note: requirements are taken from the egginfo dir, so you need")
+        print("to re-run buildout (or setup.py or whatever) for changes in")
+        print("setup.py to have effect.")
+        print("")
 
     def _print_metric(self, title, method):
         missed = method()
@@ -69,11 +69,11 @@ class Report:
 
         self._print_header(title)
         for dotted_name in missed:
-            print(f'     {dotted_name.name}')
+            print(f"     {dotted_name.name}")
 
     @staticmethod
     def _print_header(message):
         if message:
-            print('')
+            print("")
             print(message)
-            print('=' * len(message))
+            print("=" * len(message))

@@ -64,17 +64,17 @@ def _get_dependencies_on_file(folder, source):
 
 def test_create_from_files_nothing(minimal_structure):
     path, package_name = minimal_structure
-    src_path = os.path.join(path, 'src')
+    src_path = os.path.join(path, "src")
     modules_found = list(DocFiles.create_from_files(src_path))
     assert len(modules_found) == 0
 
 
 def test_create_from_files_deep_nested_txt(minimal_structure):
     path, package_name = minimal_structure
-    src_path = os.path.join(path, 'src')
+    src_path = os.path.join(path, "src")
     write_source_file_at(
-        [src_path, 'a', 'b', 'c'],
-        filename='bla.txt',
+        [src_path, "a", "b", "c"],
+        filename="bla.txt",
     )
 
     modules_found = list(DocFiles.create_from_files(src_path))
@@ -83,10 +83,10 @@ def test_create_from_files_deep_nested_txt(minimal_structure):
 
 def test_create_from_files_deep_nested_rst(minimal_structure):
     path, package_name = minimal_structure
-    src_path = os.path.join(path, 'src')
+    src_path = os.path.join(path, "src")
     write_source_file_at(
-        [src_path, 'a', 'b', 'c'],
-        filename='bla.rst',
+        [src_path, "a", "b", "c"],
+        filename="bla.rst",
     )
 
     modules_found = list(DocFiles.create_from_files(src_path))
@@ -110,12 +110,12 @@ def test_code_found(tmpdir):
 
 def test_code_found_details(tmpdir):
     dotted_names = _get_dependencies_on_file(tmpdir, SINGLE_IMPORT)
-    assert dotted_names == ['zope.annotation']
+    assert dotted_names == ["zope.annotation"]
 
 
 def test_always_testing(tmpdir):
     temporal_file = write_source_file_at(
-        (tmpdir.strpath,), source_code='>>> import foo', filename='file.rst'
+        (tmpdir.strpath,), source_code=">>> import foo", filename="file.rst"
     )
 
     doc_file = DocFiles(tmpdir.strpath, temporal_file)
@@ -137,8 +137,8 @@ def test_multiple_imports_same_line_details(tmpdir):
         tmpdir,
         MULTIPLE_IMPORTS_SAME_LINE,
     )
-    assert 'zope.interface.Interface' in dotted_names
-    assert 'zope.interface.Attribute' in dotted_names
+    assert "zope.interface.Interface" in dotted_names
+    assert "zope.interface.Attribute" in dotted_names
 
 
 def test_multiple_imports_different_lines(tmpdir):
@@ -155,8 +155,8 @@ def test_multiple_imports_different_lines_details(tmpdir):
         MULTIPLE_IMPORTS_DIFFERENT_LINES,
     )
 
-    assert 'zope.component.adapter' in dotted_names
-    assert 'zope.component.utility' in dotted_names
+    assert "zope.component.adapter" in dotted_names
+    assert "zope.component.utility" in dotted_names
 
 
 def test_multiple_imports_with_invalid_lines(tmpdir):
@@ -173,5 +173,5 @@ def test_multiple_imports_with_invalid_lines_details(tmpdir):
         MULTIPLE_IMPORTS_DIFFERENT_LINES_WITH_INVALID_CODE_LINES_BETWEEN,
     )
 
-    assert 'zope.component.adapter' in dotted_names
-    assert 'zope.component.utility' in dotted_names
+    assert "zope.component.adapter" in dotted_names
+    assert "zope.component.utility" in dotted_names

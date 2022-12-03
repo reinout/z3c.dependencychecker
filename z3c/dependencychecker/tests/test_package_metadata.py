@@ -29,7 +29,7 @@ def test_setup_py_path(minimal_structure):
     path, package_name = minimal_structure
     metadata = PackageMetadata(path)
 
-    assert metadata.setup_py_path == os.path.join(path, 'setup.py')
+    assert metadata.setup_py_path == os.path.join(path, "setup.py")
 
 
 def test_package_dir_on_distribution_root(minimal_structure):
@@ -41,7 +41,7 @@ def test_package_dir_on_distribution_root(minimal_structure):
 
 def test_package_dir_on_src_folder(minimal_structure):
     def move_top_level_to_src(package_path, egg_folder, src_path):
-        top_level_file_path = os.path.join(egg_folder, 'top_level.txt')
+        top_level_file_path = os.path.join(egg_folder, "top_level.txt")
         with open(top_level_file_path) as top_level_file:
             top_level_folder = top_level_file.read().strip()
 
@@ -52,8 +52,8 @@ def test_package_dir_on_src_folder(minimal_structure):
 
     path, package_name = minimal_structure
 
-    egg_info_folder = os.path.join(path, f'{package_name}.egg-info')
-    src_folder = os.path.join(path, 'src')
+    egg_info_folder = os.path.join(path, f"{package_name}.egg-info")
+    src_folder = os.path.join(path, "src")
 
     move_top_level_to_src(path, egg_info_folder, src_folder)
 
@@ -64,7 +64,7 @@ def test_package_dir_on_src_folder(minimal_structure):
 
 def test_package_dir_on_another_folder(minimal_structure):
     def move_top_level_to_folder(package_path, egg_folder, folder_path):
-        top_level_file_path = os.path.join(egg_folder, 'top_level.txt')
+        top_level_file_path = os.path.join(egg_folder, "top_level.txt")
         with open(top_level_file_path) as top_level_file:
             top_level_folder = top_level_file.read().strip()
 
@@ -75,8 +75,8 @@ def test_package_dir_on_another_folder(minimal_structure):
 
     path, package_name = minimal_structure
 
-    egg_info_folder = os.path.join(path, f'{package_name}.egg-info')
-    folder_path = os.path.join(path, 'somewhere')
+    egg_info_folder = os.path.join(path, f"{package_name}.egg-info")
+    folder_path = os.path.join(path, "somewhere")
 
     move_top_level_to_folder(path, egg_info_folder, folder_path)
 
@@ -87,7 +87,7 @@ def test_package_dir_on_another_folder(minimal_structure):
 
 def test_no_package_dir_found(minimal_structure):
     path, package_name = minimal_structure
-    shutil.rmtree(os.path.join(path, f'{package_name}.egg-info'))
+    shutil.rmtree(os.path.join(path, f"{package_name}.egg-info"))
 
     sys_exit = False
     try:
@@ -100,8 +100,8 @@ def test_no_package_dir_found(minimal_structure):
 
 def test_no_package_dir_and_no_src_folder(minimal_structure):
     path, package_name = minimal_structure
-    shutil.rmtree(os.path.join(path, f'{package_name}.egg-info'))
-    shutil.rmtree(os.path.join(path, 'src'))
+    shutil.rmtree(os.path.join(path, f"{package_name}.egg-info"))
+    shutil.rmtree(os.path.join(path, "src"))
 
     sys_exit = False
     try:
@@ -116,7 +116,7 @@ def test_egg_info_dir_path(minimal_structure):
     path, package_name = minimal_structure
     metadata = PackageMetadata(path)
 
-    egg_info_path = os.path.join(path, f'{package_name}.egg-info')
+    egg_info_path = os.path.join(path, f"{package_name}.egg-info")
 
     assert metadata.egg_info_dir == egg_info_path
 
@@ -148,8 +148,8 @@ def test_package_missing_pkg_info_file(minimal_structure):
 
     pkg_info = os.path.join(
         path,
-        f'{package_name}.egg-info',
-        'PKG-INFO',
+        f"{package_name}.egg-info",
+        "PKG-INFO",
     )
     os.remove(pkg_info)
 
@@ -169,12 +169,12 @@ def test_package_broken_pkg_info_file(minimal_structure):
 
     pkg_info_path = os.path.join(
         path,
-        f'{package_name}.egg-info',
-        'PKG-INFO',
+        f"{package_name}.egg-info",
+        "PKG-INFO",
     )
     os.remove(pkg_info_path)
-    with open(pkg_info_path, 'w') as pkg_info_file:
-        pkg_info_file.write('\n'.join(['Name: bla']))
+    with open(pkg_info_path, "w") as pkg_info_file:
+        pkg_info_file.write("\n".join(["Name: bla"]))
 
     metadata = PackageMetadata(path)
     sys_exit = False
@@ -191,8 +191,8 @@ def test_get_dependencies(minimal_structure):
     metadata = PackageMetadata(path)
 
     names = [x.name for x in metadata.get_required_dependencies()]
-    assert 'one' in names
-    assert 'two' in names
+    assert "one" in names
+    assert "two" in names
 
 
 def test_get_no_dependencies(minimal_structure):
@@ -200,8 +200,8 @@ def test_get_no_dependencies(minimal_structure):
 
     requires_file_path = os.path.join(
         path,
-        f'{package_name}.egg-info',
-        'requires.txt',
+        f"{package_name}.egg-info",
+        "requires.txt",
     )
     os.remove(requires_file_path)
 
@@ -215,17 +215,17 @@ def test_dependencies_with_extras(minimal_structure):
     path, package_name = minimal_structure
     requires_file_path = os.path.join(
         path,
-        f'{package_name}.egg-info',
-        'requires.txt',
+        f"{package_name}.egg-info",
+        "requires.txt",
     )
-    with open(requires_file_path, 'w') as requires:
+    with open(requires_file_path, "w") as requires:
         requires.write(
-            '\n'.join(
+            "\n".join(
                 [
-                    'one [with_extra]',
-                    'another[with_extra]',
-                    'yet[one,two,three,extras]',
-                    'something[only, two, with, spaces]',
+                    "one [with_extra]",
+                    "another[with_extra]",
+                    "yet[one,two,three,extras]",
+                    "something[only, two, with, spaces]",
                 ]
             )
         )
@@ -234,23 +234,23 @@ def test_dependencies_with_extras(minimal_structure):
     names = [x.name for x in metadata.get_required_dependencies()]
 
     assert len(names) == 4
-    assert 'one' in names
-    assert 'another' in names
-    assert 'yet' in names
-    assert 'something' in names
+    assert "one" in names
+    assert "another" in names
+    assert "yet" in names
+    assert "something" in names
 
 
 def test_dependencies_with_version_specifiers(minimal_structure):
     path, package_name = minimal_structure
     requires_file_path = os.path.join(
         path,
-        f'{package_name}.egg-info',
-        'requires.txt',
+        f"{package_name}.egg-info",
+        "requires.txt",
     )
-    with open(requires_file_path, 'w') as requires:
+    with open(requires_file_path, "w") as requires:
         requires.write(
-            '\n'.join(
-                ['one > 8.5', 'another<=3.4', 'yet==5.2', 'something >=2.2.1,<2.3dev']
+            "\n".join(
+                ["one > 8.5", "another<=3.4", "yet==5.2", "something >=2.2.1,<2.3dev"]
             )
         )
 
@@ -258,9 +258,9 @@ def test_dependencies_with_version_specifiers(minimal_structure):
     names = [x.name for x in metadata.get_required_dependencies()]
 
     assert len(names) == 4
-    assert 'one' in names
-    assert 'another' in names
-    assert 'yet' in names
+    assert "one" in names
+    assert "another" in names
+    assert "yet" in names
 
 
 def test_get_extra_dependencies(minimal_structure):
@@ -268,18 +268,18 @@ def test_get_extra_dependencies(minimal_structure):
 
     requires_file_path = os.path.join(
         path,
-        f'{package_name}.egg-info',
-        'requires.txt',
+        f"{package_name}.egg-info",
+        "requires.txt",
     )
-    with open(requires_file_path, 'w') as requires_file:
-        requires_file.write('\n'.join(['one', '', '[test]', 'pytest', 'mock']))
+    with open(requires_file_path, "w") as requires_file:
+        requires_file.write("\n".join(["one", "", "[test]", "pytest", "mock"]))
 
     metadata = PackageMetadata(path)
     extras = list(metadata.get_extras_dependencies())
     extra_packages = [x.name for x in extras[0][1]]
     assert len(extras) == 1
-    assert 'pytest' in extra_packages
-    assert 'mock' in extra_packages
+    assert "pytest" in extra_packages
+    assert "mock" in extra_packages
 
 
 def test_no_extras(minimal_structure):
@@ -300,7 +300,7 @@ def test_top_level_txt_file_found(minimal_structure):
 
 def test_no_top_level_txt_file_found(minimal_structure):
     path, package_name = minimal_structure
-    os.remove(os.path.join(path, f'{package_name}.egg-info', 'top_level.txt'))
+    os.remove(os.path.join(path, f"{package_name}.egg-info", "top_level.txt"))
 
     sys_exit = False
     metadata = PackageMetadata(path)
@@ -330,9 +330,9 @@ def test_top_level_is_module(minimal_structure):
     path, package_name = minimal_structure
     top_level_path = os.path.join(path, package_name)
     os.removedirs(top_level_path)
-    top_level_module_path = f'{top_level_path}.py'
-    with open(top_level_module_path, 'w') as top_level_file:
-        top_level_file.write('Does not matter')
+    top_level_module_path = f"{top_level_path}.py"
+    with open(top_level_module_path, "w") as top_level_file:
+        top_level_file.write("Does not matter")
 
     metadata = PackageMetadata(path)
 
@@ -343,18 +343,18 @@ def test_top_level_multiple(minimal_structure):
     path, package_name = minimal_structure
     top_level_file = os.path.join(
         path,
-        f'{package_name}.egg-info',
-        'top_level.txt',
+        f"{package_name}.egg-info",
+        "top_level.txt",
     )
-    with open(top_level_file, 'w') as top_level:
-        top_level.write('one\n')
-        top_level.write('two\n')
-        top_level.write('three\n')
+    with open(top_level_file, "w") as top_level:
+        top_level.write("one\n")
+        top_level.write("two\n")
+        top_level.write("three\n")
 
     top_level_folders = [
-        f'{path}/one',
-        f'{path}/two',
-        f'{path}/three',
+        f"{path}/one",
+        f"{path}/two",
+        f"{path}/three",
     ]
     for new_top_level in top_level_folders:
         os.makedirs(new_top_level)

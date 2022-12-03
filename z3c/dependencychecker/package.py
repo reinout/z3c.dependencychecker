@@ -22,16 +22,16 @@ class PackageMetadata:
     """
 
     def __init__(self, path):
-        logger.debug('Reading package metadata for %s...', path)
+        logger.debug("Reading package metadata for %s...", path)
         self._path = path
         self._working_set = self._generate_working_set_with_ourselves()
 
     @cached_property
     def distribution_root(self):
-        if 'setup.py' not in os.listdir(self._path):
+        if "setup.py" not in os.listdir(self._path):
             logger.error(
-                'setup.py was not found in %s. '
-                'Without it dependencychecker can not work.',
+                "setup.py was not found in %s. "
+                "Without it dependencychecker can not work.",
                 self._path,
             )
             sys.exit(1)
@@ -41,7 +41,7 @@ class PackageMetadata:
     def setup_py_path(self):
         return os.path.join(
             self.distribution_root,
-            'setup.py',
+            "setup.py",
         )
 
     @cached_property
@@ -57,18 +57,18 @@ class PackageMetadata:
             folder_found = self._find_egg_info_in_folder(path)
             if folder_found:
                 logger.debug(
-                    '.egg-info folder found at %s folder',
+                    ".egg-info folder found at %s folder",
                     path,
                 )
                 return path
 
-        logger.error('.egg-info folder could not be found')
+        logger.error(".egg-info folder could not be found")
         sys.exit(1)
 
     @staticmethod
     def _find_egg_info_in_folder(path):
         with change_dir(path):
-            results = glob.glob('*.egg-info')
+            results = glob.glob("*.egg-info")
         return results
 
     @cached_property
@@ -82,9 +82,9 @@ class PackageMetadata:
     @cached_property
     def name(self):
         path, filename = os.path.split(self.egg_info_dir)
-        name = filename[: -len('.egg-info')]
+        name = filename[: -len(".egg-info")]
         logger.debug(
-            'Package name is %s',
+            "Package name is %s",
             name,
         )
 
@@ -110,9 +110,9 @@ class PackageMetadata:
             return package
         except ValueError:
             logger.error(
-                'Package %s could not be found.\n'
-                'You might need to put it in development mode,\n'
-                'i.e. python setup.py develop',
+                "Package %s could not be found.\n"
+                "You might need to put it in development mode,\n"
+                "i.e. python setup.py develop",
                 self.name,
             )
             sys.exit(1)
@@ -142,12 +142,12 @@ class PackageMetadata:
     def top_level(self):
         path = os.path.join(
             self.egg_info_dir,
-            'top_level.txt',
+            "top_level.txt",
         )
         if not os.path.exists(path):
             logger.error(
-                'top_level.txt could not be found on %s.\n'
-                'It is needed for dependencychecker to work properly.',
+                "top_level.txt could not be found on %s.\n"
+                "It is needed for dependencychecker to work properly.",
                 self.egg_info_dir,
             )
             sys.exit(1)
@@ -156,25 +156,25 @@ class PackageMetadata:
             content = top_level_file.read().strip()
 
         top_levels = []
-        for candidate in content.split('\n'):
+        for candidate in content.split("\n"):
             possible_top_level = os.path.join(
                 self.package_dir,
                 candidate,
             )
 
             if os.path.exists(possible_top_level):
-                logger.debug('Found top level %s', possible_top_level)
+                logger.debug("Found top level %s", possible_top_level)
                 top_levels.append(possible_top_level)
                 continue
 
-            single_module = f'{possible_top_level}.py'
+            single_module = f"{possible_top_level}.py"
             if os.path.exists(single_module):
-                logger.debug('Found top level %s', single_module)
+                logger.debug("Found top level %s", single_module)
                 top_levels.append(single_module)
                 continue
 
             logger.warning(
-                'Top level %s not found but referenced by top_level.txt',
+                "Top level %s not found but referenced by top_level.txt",
                 possible_top_level,
             )
 
@@ -182,8 +182,8 @@ class PackageMetadata:
             return top_levels
 
         logger.error(
-            'There are paths found in %s%stop_level.txt that do not exist.\n'
-            'Maybe you need to put the package in development again?',
+            "There are paths found in %s%stop_level.txt that do not exist.\n"
+            "Maybe you need to put the package in development again?",
             self.egg_info_dir,
             os.sep,
         )
@@ -229,28 +229,28 @@ class Package:
         """
         config = self._load_user_config()
         for package, packages_provided in config.items():
-            if package == 'ignore-packages':
+            if package == "ignore-packages":
                 if isinstance(packages_provided, list):
                     self.imports.add_ignored_packages(packages_provided)
                 else:
                     logger.warning(
-                        'ignore-packages key in pyproject.toml needs to '
-                        'be a list, even for a single package to be ignored.'
+                        "ignore-packages key in pyproject.toml needs to "
+                        "be a list, even for a single package to be ignored."
                     )
             elif isinstance(packages_provided, list):
                 self.imports.add_user_mapping(package, packages_provided)
 
     def analyze_package(self):
         for top_folder in self.metadata.top_level:
-            logger.debug('Analyzing package top_level %s...', top_folder)
+            logger.debug("Analyzing package top_level %s...", top_folder)
             for module_obj in MODULES:
                 logger.debug(
-                    'Starting analyzing files using %s...',
+                    "Starting analyzing files using %s...",
                     module_obj,
                 )
                 for source_file in module_obj.create_from_files(top_folder):
                     logger.debug(
-                        'Searching dependencies (with %s) in file %s...',
+                        "Searching dependencies (with %s) in file %s...",
                         module_obj.__name__,
                         source_file.path,
                     )
@@ -258,10 +258,10 @@ class Package:
 
     def _load_user_config(self):
         config_file_path = os.sep.join(
-            [self.metadata.distribution_root, 'pyproject.toml']
+            [self.metadata.distribution_root, "pyproject.toml"]
         )
         try:
             config = toml.load(config_file_path)
-            return config['tool']['dependencychecker']
+            return config["tool"]["dependencychecker"]
         except (OSError, KeyError):
             return {}

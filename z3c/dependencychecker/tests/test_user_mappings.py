@@ -3,7 +3,7 @@ import os
 from z3c.dependencychecker.dotted_name import DottedName
 from z3c.dependencychecker.package import Package
 
-EMPTY_FILE = ''
+EMPTY_FILE = ""
 IGNORE_OTHER_KEYS = """[servers]
 one = "1.2.3.4"
 """
@@ -37,18 +37,18 @@ def _write_user_config(path, content):
     file_path = os.sep.join(
         [
             path,
-            'pyproject.toml',
+            "pyproject.toml",
         ]
     )
-    with open(file_path, 'w') as config_file:
+    with open(file_path, "w") as config_file:
         config_file.write(content)
 
 
 def _update_requires_txt(path, package_name, packages):
-    file_path = os.sep.join([path, f'{package_name}.egg-info', 'requires.txt'])
-    with open(file_path, 'w') as config_file:
+    file_path = os.sep.join([path, f"{package_name}.egg-info", "requires.txt"])
+    with open(file_path, "w") as config_file:
         for package in packages:
-            config_file.write(f'{package}\n')
+            config_file.write(f"{package}\n")
 
 
 def test_no_file(minimal_structure):
@@ -114,13 +114,13 @@ def test_one_user_mapping(minimal_structure):
         path,
         package_name,
         [
-            'Zope2',
+            "Zope2",
         ],
     )
     package = Package(path)
     package.inspect()
-    five_dotted_name = DottedName('Products.Five')
-    zope_dotted_name = DottedName('Zope2')
+    five_dotted_name = DottedName("Products.Five")
+    zope_dotted_name = DottedName("Zope2")
 
     assert len(package.imports.user_mappings) == 1
     assert zope_dotted_name in package.imports.user_mappings
@@ -138,13 +138,13 @@ def test_filter_out_mappings_on_test(minimal_structure):
     _update_requires_txt(
         path,
         package_name,
-        ['plone.reload', '[test]', 'Zope2'],
+        ["plone.reload", "[test]", "Zope2"],
     )
     package = Package(path)
     package.inspect()
-    five_dotted_name = DottedName('Products.Five')
-    plone_reload_dotted_name = DottedName('plone.reload')
-    zope_dotted_name = DottedName('Zope2')
+    five_dotted_name = DottedName("Products.Five")
+    plone_reload_dotted_name = DottedName("plone.reload")
+    zope_dotted_name = DottedName("Zope2")
 
     assert len(package.imports.user_mappings) == 1
     assert zope_dotted_name in package.imports.user_mappings
@@ -163,14 +163,14 @@ def test_more_user_mappings(minimal_structure):
         path,
         package_name,
         [
-            'Zope2',
-            'Zope4',
+            "Zope2",
+            "Zope4",
         ],
     )
     package = Package(path)
     package.inspect()
-    zope2_dotted_name = DottedName('Zope2')
-    zope4_dotted_name = DottedName('Zope4')
+    zope2_dotted_name = DottedName("Zope2")
+    zope4_dotted_name = DottedName("Zope4")
 
     assert len(package.imports.user_mappings) == 2
     assert zope2_dotted_name in package.imports.user_mappings
@@ -186,12 +186,12 @@ def test_subtables(minimal_structure):
         path,
         package_name,
         [
-            'Zope2',
+            "Zope2",
         ],
     )
     package = Package(path)
     package.inspect()
-    zope2_dotted_name = DottedName('Zope2')
+    zope2_dotted_name = DottedName("Zope2")
 
     assert len(package.imports.user_mappings) == 1
     assert zope2_dotted_name in package.imports.user_mappings
@@ -211,12 +211,12 @@ def test_ignore_packages(minimal_structure):
     _update_requires_txt(
         path,
         package_name,
-        ['Zope2', 'plone.reload', 'django-toolbar'],
+        ["Zope2", "plone.reload", "django-toolbar"],
     )
     package = Package(path)
     package.inspect()
-    django_toolbar = DottedName('django-toolbar')
-    plone_reload = DottedName('plone.reload')
+    django_toolbar = DottedName("django-toolbar")
+    plone_reload = DottedName("plone.reload")
     ignored_packages = package.imports.ignored_packages
 
     assert len(package.imports.user_mappings) == 0

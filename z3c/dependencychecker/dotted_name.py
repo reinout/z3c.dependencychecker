@@ -13,7 +13,7 @@ class DottedName:
         is_test=False,
     ):
         self.name = name
-        self.safe_name = name.lower().replace('-', '_')
+        self.safe_name = name.lower().replace("-", "_")
 
         self.file_path = file_path
         self.is_test = is_test
@@ -30,7 +30,7 @@ class DottedName:
 
     @cached_property
     def namespaces(self):
-        return self.safe_name.split('.')
+        return self.safe_name.split(".")
 
     @cached_property
     def is_namespaced(self):
@@ -48,7 +48,7 @@ class DottedName:
         return self.safe_name == other.safe_name
 
     def __repr__(self):
-        return f'<DottedName {self.name}>'
+        return f"<DottedName {self.name}>"
 
     def __hash__(self):
         digest = hashlib.sha256(self.safe_name.encode()).hexdigest()

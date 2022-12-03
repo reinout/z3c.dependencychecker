@@ -32,17 +32,17 @@ def parse_command_line():
     usage = 'Usage: %prog [path]\n(path defaults to package name, fallback is "src/")'
     parser = optparse.OptionParser(usage=usage, version=_version())
     parser.add_option(
-        '-v',
-        '--verbose',
-        action='store_true',
-        dest='verbose',
+        "-v",
+        "--verbose",
+        action="store_true",
+        dest="verbose",
         default=False,
-        help='Show debug output',
+        help="Show debug output",
     )
     parser.add_option(
-        '--exit-zero',
-        action='store_false',
-        dest='exit_status',
+        "--exit-zero",
+        action="store_false",
+        dest="exit_status",
         default=True,
         help='Exit with status code "0" even if there are errors.',
     )
@@ -51,7 +51,7 @@ def parse_command_line():
 
 
 def _version():
-    ourselves = pkg_resources.require('z3c.dependencychecker')[0]
+    ourselves = pkg_resources.require("z3c.dependencychecker")[0]
     return ourselves.version
 
 
@@ -61,7 +61,7 @@ def set_log_level(verbose):
         level = logging.DEBUG
 
     logging.basicConfig(
-        level=level, stream=sys.stdout, format='%(levelname)s: %(message)s'
+        level=level, stream=sys.stdout, format="%(levelname)s: %(message)s"
     )
 
 
@@ -75,13 +75,13 @@ def get_path(args):
     path = os.getcwd()
 
     if len(args) < 1:
-        logger.debug('path used: %s', path)
+        logger.debug("path used: %s", path)
         return path
 
     path = os.path.abspath(args[0])
     if os.path.isdir(path):
-        logger.debug('path used: %s', path)
+        logger.debug("path used: %s", path)
         return path
 
-    logger.error('Given path is not a folder: %s', args[0])
+    logger.error("Given path is not a folder: %s", args[0])
     sys.exit(1)

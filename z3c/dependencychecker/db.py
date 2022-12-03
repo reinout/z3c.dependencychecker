@@ -59,13 +59,13 @@ class ImportsDatabase:
             self._filter_out_python_standard_library,
         )
         for single_import in imports:
-            logger.debug('    Import found: %s', single_import.name)
+            logger.debug("    Import found: %s", single_import.name)
 
             unknown_import = self._apply_filters([single_import], filters)
             if unknown_import:
                 self.imports_used.append(single_import)
             else:
-                logger.debug('    Import ignored: %s', single_import.name)
+                logger.debug("    Import ignored: %s", single_import.name)
 
     def add_user_mapping(self, package_name, provided_names):
         package = DottedName(package_name)
@@ -73,8 +73,8 @@ class ImportsDatabase:
 
         if package not in self._all_requirements():
             logger.info(
-                'Ignoring package %s as is not a dependency of the '
-                'package being analyzed',
+                "Ignoring package %s as is not a dependency of the "
+                "package being analyzed",
                 package,
             )
             return
@@ -289,9 +289,9 @@ class ImportsDatabase:
 
     def _filter_out_known_packages(self, dotted_name):
         to_ignore = (
-            DottedName('setuptools'),
-            DottedName('pkg_resources'),
-            DottedName('distribute'),
+            DottedName("setuptools"),
+            DottedName("pkg_resources"),
+            DottedName("distribute"),
         )
         return self._discard_if_found_obj_in_list(dotted_name, to_ignore)
 
@@ -361,7 +361,7 @@ class ImportsDatabase:
 
             python_version = sys.version_info
             libraries = stdlib_list(
-                '{}.{}'.format(
+                "{}.{}".format(
                     python_version[0],
                     python_version[1],
                 )
@@ -371,7 +371,7 @@ class ImportsDatabase:
         return fake_std_libraries
 
     def _get_test_extra(self):
-        candidates = ('test', 'tests')
+        candidates = ("test", "tests")
         for candidate in candidates:
             if candidate in self._extras_requirements:
                 return self._extras_requirements[candidate]
@@ -385,7 +385,7 @@ class ImportsDatabase:
             for provided_package in self.reverse_user_mappings:
                 if single_import in provided_package:
                     logger.debug(
-                        'Skip %s as is part of user mapping %s',
+                        "Skip %s as is part of user mapping %s",
                         single_import,
                         self.reverse_user_mappings[provided_package],
                     )
