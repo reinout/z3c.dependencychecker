@@ -39,7 +39,7 @@ jobs:
         run: isort --check-only setup.py z3c/
       - name: Run black
         if: matrix.python-version == '3.11'
-        run: black --check --skip-string-normalization setup.py z3c/
+        run: black --check setup.py z3c/
       # linters
       - name: Lint with codespell
         if: matrix.python-version == '3.11'
