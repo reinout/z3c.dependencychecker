@@ -15,10 +15,10 @@ from z3c.dependencychecker.utils import change_dir
 
 
 def test_usage_non_existing_option():
-    arguments = ['dependencychecker', '--non-existing']
+    arguments = ["dependencychecker", "--non-existing"]
     sys_exit = False
     try:
-        with mock.patch.object(sys, 'argv', arguments):
+        with mock.patch.object(sys, "argv", arguments):
             parse_command_line()
     except SystemExit:
         sys_exit = True
@@ -27,15 +27,15 @@ def test_usage_non_existing_option():
 
 
 def test_usage_set_verbose():
-    arguments = ['dependencychecker', '--verbose']
-    with mock.patch.object(sys, 'argv', arguments):
+    arguments = ["dependencychecker", "--verbose"]
+    with mock.patch.object(sys, "argv", arguments):
         options, args = parse_command_line()
 
     assert options.verbose
 
 
 def test_version():
-    assert _version().endswith('.dev0')
+    assert _version().endswith(".dev0")
 
 
 def test_set_debug_logging():
@@ -103,10 +103,10 @@ def test_get_path_given_path_not_a_folder():
 def test_exit_zero_not_set(minimal_structure):
     path, _ = minimal_structure
 
-    arguments = ['dependencychecker', path]
+    arguments = ["dependencychecker", path]
     exit_code = 0
     try:
-        with mock.patch.object(sys, 'argv', arguments):
+        with mock.patch.object(sys, "argv", arguments):
             main()
     except SystemExit as exc:
         exit_code = exc.code
@@ -117,10 +117,10 @@ def test_exit_zero_not_set(minimal_structure):
 def test_exit_zero_set(minimal_structure):
     path, _ = minimal_structure
 
-    arguments = ['dependencychecker', '--exit-zero', path]
+    arguments = ["dependencychecker", "--exit-zero", path]
     exit_code = 0
     try:
-        with mock.patch.object(sys, 'argv', arguments):
+        with mock.patch.object(sys, "argv", arguments):
             main()
     except SystemExit as exc:
         exit_code = exc.code

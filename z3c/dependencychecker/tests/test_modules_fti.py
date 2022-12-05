@@ -50,7 +50,7 @@ def _get_fti_imports_on_file(folder, source):
     temporal_file = write_source_file_at(
         (folder.strpath,),
         source_code=full_content,
-        filename='configure.zcml',
+        filename="configure.zcml",
     )
 
     fti_file = FTIFile(folder.strpath, temporal_file)
@@ -66,10 +66,10 @@ def test_create_from_files_nothing(minimal_structure):
 
 def test_create_from_files_deep_nested(minimal_structure):
     path, package_name = minimal_structure
-    src_path = os.path.join(path, 'src')
+    src_path = os.path.join(path, "src")
     write_source_file_at(
-        [src_path, 'a', 'b', 'c', 'types'],
-        filename='test.xml',
+        [src_path, "a", "b", "c", "types"],
+        filename="test.xml",
     )
 
     modules_found = list(FTIFile.create_from_files(src_path))
@@ -98,7 +98,7 @@ def test_one_behavior(tmpdir):
 
 def test_one_behavior_details(tmpdir):
     dotted_names = _get_fti_imports_on_file(tmpdir, ONE_BEHAVIOR)
-    assert dotted_names == ['my.behavior']
+    assert dotted_names == ["my.behavior"]
 
 
 def test_more_behaviors(tmpdir):
@@ -108,9 +108,9 @@ def test_more_behaviors(tmpdir):
 
 def test_more_behaviors_details(tmpdir):
     dotted_names = _get_fti_imports_on_file(tmpdir, MORE_BEHAVIORS)
-    assert 'my.behavior1' in dotted_names
-    assert 'my.behavior2' in dotted_names
-    assert 'my.behavior3' in dotted_names
+    assert "my.behavior1" in dotted_names
+    assert "my.behavior2" in dotted_names
+    assert "my.behavior3" in dotted_names
 
 
 def test_klass(tmpdir):
@@ -120,7 +120,7 @@ def test_klass(tmpdir):
 
 def test_klass_details(tmpdir):
     dotted_names = _get_fti_imports_on_file(tmpdir, KLASS)
-    assert 'my.class.package' in dotted_names
+    assert "my.class.package" in dotted_names
 
 
 def test_schema(tmpdir):
@@ -130,7 +130,7 @@ def test_schema(tmpdir):
 
 def test_schema_details(tmpdir):
     dotted_names = _get_fti_imports_on_file(tmpdir, SCHEMA)
-    assert 'my.path.to.schema' in dotted_names
+    assert "my.path.to.schema" in dotted_names
 
 
 def test_something_to_ignore(tmpdir):

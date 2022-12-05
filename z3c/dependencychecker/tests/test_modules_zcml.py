@@ -44,7 +44,7 @@ def _get_zcml_imports_on_file(folder, source):
     temporal_file = write_source_file_at(
         (folder.strpath,),
         source_code=full_content,
-        filename='configure.zcml',
+        filename="configure.zcml",
     )
 
     zcml_file = ZCMLFile(folder.strpath, temporal_file)
@@ -60,8 +60,8 @@ def test_create_from_files_nothing(minimal_structure):
 
 def test_create_from_files_deep_nested(minimal_structure):
     path, package_name = minimal_structure
-    src_path = os.path.join(path, 'src')
-    write_source_file_at([src_path, 'a', 'b'], filename='configure.zcml')
+    src_path = os.path.join(path, "src")
+    write_source_file_at([src_path, "a", "b"], filename="configure.zcml")
 
     modules_found = list(ZCMLFile.create_from_files(src_path))
     assert len(modules_found) == 1
@@ -74,7 +74,7 @@ def test_include(tmpdir):
 
 def test_include_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, INCLUDE)
-    assert dotted_names == ['my.package.include']
+    assert dotted_names == ["my.package.include"]
 
 
 def test_adapter_factory(tmpdir):
@@ -84,7 +84,7 @@ def test_adapter_factory(tmpdir):
 
 def test_adapter_factory_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, ADAPTER_FACTORY)
-    assert dotted_names == ['my.package.factory']
+    assert dotted_names == ["my.package.factory"]
 
 
 def test_adapter_for(tmpdir):
@@ -94,7 +94,7 @@ def test_adapter_for(tmpdir):
 
 def test_adapter_for_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, ADAPTER_FOR)
-    assert dotted_names == ['my.package.for']
+    assert dotted_names == ["my.package.for"]
 
 
 def test_adapter_for_multiple(tmpdir):
@@ -104,9 +104,9 @@ def test_adapter_for_multiple(tmpdir):
 
 def test_adapter_for_multiple_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, ADAPTER_FOR_MULTIPLE)
-    assert 'my.package.for' in dotted_names
-    assert 'another.package.foo' in dotted_names
-    assert 'yet.another.one' in dotted_names
+    assert "my.package.for" in dotted_names
+    assert "another.package.foo" in dotted_names
+    assert "yet.another.one" in dotted_names
 
 
 def test_adapter_provides(tmpdir):
@@ -116,7 +116,7 @@ def test_adapter_provides(tmpdir):
 
 def test_adapter_provides_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, ADAPTER_PROVIDES)
-    assert dotted_names == ['my.package.provides']
+    assert dotted_names == ["my.package.provides"]
 
 
 def test_utility_component(tmpdir):
@@ -126,7 +126,7 @@ def test_utility_component(tmpdir):
 
 def test_utility_component_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, UTILITY_COMPONENT)
-    assert dotted_names == ['my.package.component']
+    assert dotted_names == ["my.package.component"]
 
 
 def test_utility_provides(tmpdir):
@@ -136,7 +136,7 @@ def test_utility_provides(tmpdir):
 
 def test_utility_provides_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, UTILITY_PROVIDES)
-    assert dotted_names == ['my.package.provides']
+    assert dotted_names == ["my.package.provides"]
 
 
 def test_browser_page_class(tmpdir):
@@ -146,7 +146,7 @@ def test_browser_page_class(tmpdir):
 
 def test_browser_page_class_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, BROWSER_PAGE_CLASS)
-    assert dotted_names == ['my.package.class']
+    assert dotted_names == ["my.package.class"]
 
 
 def test_browser_page_for(tmpdir):
@@ -156,7 +156,7 @@ def test_browser_page_for(tmpdir):
 
 def test_browser_page_for_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, BROWSER_PAGE_FOR)
-    assert dotted_names == ['my.package.for']
+    assert dotted_names == ["my.package.for"]
 
 
 def test_browser_page_layer(tmpdir):
@@ -166,7 +166,7 @@ def test_browser_page_layer(tmpdir):
 
 def test_browser_page_layer_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, BROWSER_PAGE_LAYER)
-    assert dotted_names == ['my.package.layer']
+    assert dotted_names == ["my.package.layer"]
 
 
 def test_subscriber_for(tmpdir):
@@ -176,7 +176,7 @@ def test_subscriber_for(tmpdir):
 
 def test_subscriber_for_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, SUBSCRIBER_FOR)
-    assert dotted_names == ['my.package.for']
+    assert dotted_names == ["my.package.for"]
 
 
 def test_subscriber_for_multiple(tmpdir):
@@ -187,8 +187,8 @@ def test_subscriber_for_multiple(tmpdir):
 def test_subscriber_for_multiple_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, SUBSCRIBER_FOR_MULTIPLE)
     assert dotted_names == [
-        'my.package.for',
-        'another.package',
+        "my.package.for",
+        "another.package",
     ]
 
 
@@ -199,7 +199,7 @@ def test_subscriber_handler(tmpdir):
 
 def test_subscriber_handler_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, SUBSCRIBER_HANDLER)
-    assert dotted_names == ['my.package.handler']
+    assert dotted_names == ["my.package.handler"]
 
 
 def test_securitypolicy_component(tmpdir):
@@ -209,7 +209,7 @@ def test_securitypolicy_component(tmpdir):
 
 def test_securitypolicy_component_details(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, SECURITYPOLICY_COMPONENT)
-    assert dotted_names == ['my.package.component']
+    assert dotted_names == ["my.package.component"]
 
 
 def test_gs_registerprofile_provides(tmpdir):
@@ -225,7 +225,7 @@ def test_gs_registerprofile_provides_details(tmpdir):
         tmpdir,
         GS_REGISTERPROFILE_PROVIDES,
     )
-    assert dotted_names == ['my.package.provides']
+    assert dotted_names == ["my.package.provides"]
 
 
 def test_ignore_local_import(tmpdir):

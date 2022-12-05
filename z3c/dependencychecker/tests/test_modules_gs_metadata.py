@@ -32,7 +32,7 @@ def _get_dependencies_on_file(folder, source):
     temporal_file = write_source_file_at(
         (folder.strpath,),
         source_code=full_content,
-        filename='configure.zcml',
+        filename="configure.zcml",
     )
 
     gs_metadata = GSMetadata(folder.strpath, temporal_file)
@@ -48,10 +48,10 @@ def test_create_from_files_nothing(minimal_structure):
 
 def test_create_from_files_deep_nested(minimal_structure):
     path, package_name = minimal_structure
-    src_path = os.path.join(path, 'src')
+    src_path = os.path.join(path, "src")
     write_source_file_at(
-        [src_path, 'a', 'b', 'c'],
-        filename='metadata.xml',
+        [src_path, "a", "b", "c"],
+        filename="metadata.xml",
     )
 
     modules_found = list(GSMetadata.create_from_files(src_path))
@@ -93,7 +93,7 @@ def test_one_dependency(tmpdir):
 
 def test_one_dependency_details(tmpdir):
     dotted_names = _get_dependencies_on_file(tmpdir, ONE_DEPENDENCY)
-    assert dotted_names == ['plone.app.caching']
+    assert dotted_names == ["plone.app.caching"]
 
 
 def test_more_dependencies(tmpdir):
@@ -103,5 +103,5 @@ def test_more_dependencies(tmpdir):
 
 def test_more_dependencies_details(tmpdir):
     dotted_names = _get_dependencies_on_file(tmpdir, MORE_DEPENDENCIES)
-    assert 'plone.app.caching' in dotted_names
-    assert 'plone.app.dexterity' in dotted_names
+    assert "plone.app.caching" in dotted_names
+    assert "plone.app.dexterity" in dotted_names

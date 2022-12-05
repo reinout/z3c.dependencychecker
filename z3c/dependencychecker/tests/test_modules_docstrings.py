@@ -1,7 +1,7 @@
 from z3c.dependencychecker.modules import PythonDocstrings
 from z3c.dependencychecker.tests.utils import write_source_file_at
 
-NO_DOC = 'class MyClass(object): ...'
+NO_DOC = "class MyClass(object): ..."
 INVALID_PYTHON = '''
 """
 >>> and some text here that breaks the parser
@@ -93,7 +93,7 @@ def test_docstring_in_module(tmpdir):
 
 def test_docstring_in_module_details(tmpdir):
     dotted_names = _get_dependencies_on_file(tmpdir, DOC_IN_MODULE)
-    assert dotted_names == ['zope.component']
+    assert dotted_names == ["zope.component"]
 
 
 def test_docstring_in_function(tmpdir):
@@ -103,7 +103,7 @@ def test_docstring_in_function(tmpdir):
 
 def test_docstring_in_function_details(tmpdir):
     dotted_names = _get_dependencies_on_file(tmpdir, DOC_IN_FUNCTION)
-    assert dotted_names == ['zope.component.adapter']
+    assert dotted_names == ["zope.component.adapter"]
 
 
 def test_docstring_in_class(tmpdir):
@@ -113,7 +113,7 @@ def test_docstring_in_class(tmpdir):
 
 def test_docstring_in_class_details(tmpdir):
     dotted_names = _get_dependencies_on_file(tmpdir, DOC_IN_CLASS)
-    assert dotted_names == ['zope.component.utility']
+    assert dotted_names == ["zope.component.utility"]
 
 
 def test_docstring_in_method(tmpdir):
@@ -123,7 +123,7 @@ def test_docstring_in_method(tmpdir):
 
 def test_docstring_in_method_details(tmpdir):
     dotted_names = _get_dependencies_on_file(tmpdir, DOC_IN_METHOD)
-    assert dotted_names == ['zope.interface']
+    assert dotted_names == ["zope.interface"]
 
 
 def test_docstring_multiple_imports_same_line(tmpdir):
@@ -139,8 +139,8 @@ def test_docstring_multiple_imports_same_line_details(tmpdir):
         tmpdir,
         MULTIPLE_IMPORTS_SAME_LINE,
     )
-    assert 'zope.interface.Interface' in dotted_names
-    assert 'zope.interface.Attribute' in dotted_names
+    assert "zope.interface.Interface" in dotted_names
+    assert "zope.interface.Attribute" in dotted_names
 
 
 def test_docstring_multiple_imports_different_line(tmpdir):
@@ -156,8 +156,8 @@ def test_docstring_multiple_imports_same_different_line_details(tmpdir):
         tmpdir,
         MULTIPLE_IMPORTS_DIFFERENT_LINES,
     )
-    assert 'zope.component.adapter' in dotted_names
-    assert 'zope.component.utility' in dotted_names
+    assert "zope.component.adapter" in dotted_names
+    assert "zope.component.utility" in dotted_names
 
 
 def test_docstring_multiple_imports_with_invalid_lines(tmpdir):
@@ -173,5 +173,5 @@ def test_docstring_multiple_imports_with_invalid_lines_details(tmpdir):
         tmpdir,
         MULTIPLE_IMPORTS_DIFFERENT_LINES_WITH_INVALID_CODE_LINES_BETWEEN,
     )
-    assert 'zope.component.adapter' in dotted_names
-    assert 'zope.component.utility' in dotted_names
+    assert "zope.component.adapter" in dotted_names
+    assert "zope.component.utility" in dotted_names

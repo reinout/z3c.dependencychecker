@@ -3,8 +3,8 @@ import os
 
 def write_source_file_at(
     path_parts,
-    filename='test.py',
-    source_code='import unknown.dependency',
+    filename="test.py",
+    source_code="import unknown.dependency",
 ):
     folder_path = os.path.join(*path_parts)
 
@@ -14,7 +14,7 @@ def write_source_file_at(
         pass
 
     file_path = os.path.join(folder_path, filename)
-    with open(file_path, 'w') as new_file:
+    with open(file_path, "w") as new_file:
         new_file.write(source_code)
 
     return file_path
@@ -28,7 +28,7 @@ def get_extras_requirements_names(database):
     return database._extras_requirements.keys()
 
 
-def get_requirements_names_for_extra(database, extra=''):
+def get_requirements_names_for_extra(database, extra=""):
     return [requirement.name for requirement in database._extras_requirements[extra]]
 
 

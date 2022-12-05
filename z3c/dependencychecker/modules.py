@@ -62,19 +62,19 @@ class PythonModule(BaseModule):
         Return this very same class, which would allow to call the scan()
         method to get an iterator over all this file's imports.
         """
-        if top_dir.endswith('.py'):
+        if top_dir.endswith(".py"):
             yield cls(top_dir, top_dir)
             return
 
         for path, folders, filenames in os.walk(top_dir):
-            if '__init__.py' not in filenames:
+            if "__init__.py" not in filenames:
                 # Don't descend further into the tree.
                 # Clear folders variable in-place.
                 folders[:] = []
                 continue
 
             for filename in filenames:
-                if filename.endswith('.py'):
+                if filename.endswith(".py"):
                     yield cls(
                         top_dir,
                         os.path.join(path, filename),
@@ -104,10 +104,10 @@ class PythonModule(BaseModule):
             if self._is_relative_import(node):
                 return
             for name in node.names:
-                if name.name == '*':
+                if name.name == "*":
                     dotted_name = node.module
                 else:
-                    dotted_name = f'{node.module}.{name.name}'
+                    dotted_name = f"{node.module}.{name.name}"
                 yield DottedName(
                     dotted_name,
                     file_path=self.path,
@@ -127,13 +127,13 @@ class ZCMLFile(BaseModule):
     """
 
     ELEMENTS = {
-        'include': ('package',),
-        'adapter': ('for', 'factory', 'provides'),
-        'utility': ('provides', 'component'),
-        'browser:page': ('class', 'for', 'layer'),
-        'subscriber': ('handler', 'for'),
-        'securityPolicy': ('component',),
-        'genericsetup:registerProfile': ('provides',),
+        "include": ("package",),
+        "adapter": ("for", "factory", "provides"),
+        "utility": ("provides", "component"),
+        "browser:page": ("class", "for", "layer"),
+        "subscriber": ("handler", "for"),
+        "securityPolicy": ("component",),
+        "genericsetup:registerProfile": ("provides",),
     }
 
     @classmethod
@@ -143,12 +143,12 @@ class ZCMLFile(BaseModule):
         Return this very same class, which would allow to call the scan()
         method to get an iterator over all this file's imports.
         """
-        if top_dir.endswith('.py'):
+        if top_dir.endswith(".py"):
             return
 
         for path, _folders, filenames in os.walk(top_dir):
             for filename in filenames:
-                if filename.endswith('.zcml'):
+                if filename.endswith(".zcml"):
                     yield cls(
                         top_dir,
                         os.path.join(path, filename),
@@ -166,11 +166,11 @@ class ZCMLFile(BaseModule):
     def _extract_dotted_name(self, node, attr):
         if attr in node.keys():
             candidate_text = node.get(attr)
-            for dotted_name in candidate_text.split(' '):
-                if not dotted_name or dotted_name.startswith('.'):
+            for dotted_name in candidate_text.split(" "):
+                if not dotted_name or dotted_name.startswith("."):
                     continue
 
-                if dotted_name == '*':
+                if dotted_name == "*":
                     continue
 
                 yield DottedName(
@@ -181,14 +181,14 @@ class ZCMLFile(BaseModule):
 
     @staticmethod
     def _build_namespaced_element(element):
-        if ':' in element:
-            namespace, name = element.split(':')
-            return '{{http://namespaces.zope.org/{0}}}{1}'.format(
+        if ":" in element:
+            namespace, name = element.split(":")
+            return "{{http://namespaces.zope.org/{0}}}{1}".format(
                 namespace,
                 name,
             )
 
-        return f'{{http://namespaces.zope.org/zope}}{element}'
+        return f"{{http://namespaces.zope.org/zope}}{element}"
 
 
 class FTIFile(BaseModule):
@@ -198,7 +198,7 @@ class FTIFile(BaseModule):
     Zope/Plone based projects to define its content types.
     """
 
-    TYPES_FOLDER = f'{os.sep}types'
+    TYPES_FOLDER = f"{os.sep}types"
 
     @classmethod
     def create_from_files(cls, top_dir):
@@ -207,12 +207,12 @@ class FTIFile(BaseModule):
         Return this very same class, which would allow to call the scan()
         method to get an iterator over all this file's imports.
         """
-        if top_dir.endswith('.py'):
+        if top_dir.endswith(".py"):
             return
 
         for path, _folders, filenames in os.walk(top_dir):
             for filename in filenames:
-                if filename.endswith('.xml') and cls.TYPES_FOLDER in path:
+                if filename.endswith(".xml") and cls.TYPES_FOLDER in path:
                     yield cls(
                         top_dir,
                         os.path.join(path, filename),
@@ -221,18 +221,18 @@ class FTIFile(BaseModule):
     def scan(self):
         tree = ElementTree.parse(self.path).getroot()
 
-        for node in tree.iter('property'):
-            if 'name' in node.keys():
-                name = node.get('name')
-                if name == 'behaviors':
-                    for subnode in node.iter('element'):
-                        if 'value' in subnode.keys():
+        for node in tree.iter("property"):
+            if "name" in node.keys():
+                name = node.get("name")
+                if name == "behaviors":
+                    for subnode in node.iter("element"):
+                        if "value" in subnode.keys():
                             yield DottedName(
-                                subnode.get('value'),
+                                subnode.get("value"),
                                 file_path=self.path,
                                 is_test=self.testing,
                             )
-                elif name in ('klass', 'schema'):
+                elif name in ("klass", "schema"):
                     if node.text:
                         yield DottedName(
                             node.text.strip(),
@@ -248,7 +248,7 @@ class GSMetadata(BaseModule):
     profile dependencies between projects.
     """
 
-    PROFILE_RE = re.compile(r'profile-(?P<dotted_name>[\w.]+):[\w\W]+')
+    PROFILE_RE = re.compile(r"profile-(?P<dotted_name>[\w.]+):[\w\W]+")
 
     @classmethod
     def create_from_files(cls, top_dir):
@@ -257,12 +257,12 @@ class GSMetadata(BaseModule):
         Return this very same class, which would allow to call the scan()
         method to get an iterator over all this file's imports.
         """
-        if top_dir.endswith('.py'):
+        if top_dir.endswith(".py"):
             return
 
         for path, _folders, filenames in os.walk(top_dir):
             for filename in filenames:
-                if filename == 'metadata.xml':
+                if filename == "metadata.xml":
                     yield cls(
                         top_dir,
                         os.path.join(path, filename),
@@ -271,13 +271,13 @@ class GSMetadata(BaseModule):
     def scan(self):
         tree = ElementTree.parse(self.path).getroot()
 
-        for node in tree.iter('dependency'):
+        for node in tree.iter("dependency"):
             if not node.text:
                 continue
             result = self.PROFILE_RE.search(node.text.strip())
             if result:
                 yield DottedName(
-                    result.group('dotted_name'),
+                    result.group("dotted_name"),
                     file_path=self.path,
                     is_test=self.testing,
                 )
@@ -307,7 +307,7 @@ class PythonDocstrings(PythonModule):
         if not docstring:
             return
 
-        for line in docstring.split('\n'):
+        for line in docstring.split("\n"):
             code = self._extract_code(line)
             if code:
                 try:
@@ -327,8 +327,8 @@ class PythonDocstrings(PythonModule):
 
     @staticmethod
     def _extract_code(line):
-        if '>>>' in line:
-            position = line.find('>>>') + 3
+        if ">>>" in line:
+            position = line.find(">>>") + 3
             return line[position:].strip()
 
 
@@ -352,12 +352,12 @@ class DocFiles(PythonDocstrings):
         Return this very same class, which would allow to call the scan()
         method to get an iterator over all this file's imports.
         """
-        if top_dir.endswith('.py'):
+        if top_dir.endswith(".py"):
             return
 
         for path, _folders, filenames in os.walk(top_dir):
             for filename in filenames:
-                if filename.endswith('.txt') or filename.endswith('.rst'):
+                if filename.endswith(".txt") or filename.endswith(".rst"):
                     yield cls(
                         top_dir,
                         os.path.join(path, filename),
@@ -402,12 +402,12 @@ class DjangoSettings(PythonModule):
         Return this very same class, which would allow to call the scan()
         method to get an iterator over all this file's imports.
         """
-        if top_dir.endswith('.py'):
+        if top_dir.endswith(".py"):
             return
 
         for path, _folders, filenames in os.walk(top_dir):
             for filename in filenames:
-                if fnmatch.fnmatch(filename, '*settings.py'):
+                if fnmatch.fnmatch(filename, "*settings.py"):
                     yield cls(
                         top_dir,
                         os.path.join(path, filename),
@@ -439,7 +439,7 @@ class DjangoSettings(PythonModule):
         if (
             len(node.targets) == 1
             and isinstance(node.targets[0], ast.Name)
-            and node.targets[0].id == 'INSTALLED_APPS'
+            and node.targets[0].id == "INSTALLED_APPS"
         ):
             return True
 
@@ -450,7 +450,7 @@ class DjangoSettings(PythonModule):
         if (
             len(node.targets) == 1
             and isinstance(node.targets[0], ast.Name)
-            and node.targets[0].id == 'TEST_RUNNER'
+            and node.targets[0].id == "TEST_RUNNER"
         ):
             return True
 
