@@ -4,8 +4,8 @@ Changelog of z3c.dependencychecker
 2.9 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Ignore `Zope` package, as otherwise it swallows all `zope.` namespace packages.
+  [gforcada]
 
 2.8 (2022-11-30)
 ----------------
