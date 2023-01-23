@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-2.9 (unreleased)
+2.9 (2023-01-23)
 ----------------
 
 - Ignore `Zope` package, as otherwise it swallows all `zope.` namespace packages.
