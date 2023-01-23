@@ -4,6 +4,8 @@ import sys
 import tempfile
 from unittest import mock
 
+import pytest
+
 from z3c.dependencychecker.main import (
     _version,
     get_path,
@@ -16,14 +18,9 @@ from z3c.dependencychecker.utils import change_dir
 
 def test_usage_non_existing_option():
     arguments = ["dependencychecker", "--non-existing"]
-    sys_exit = False
-    try:
+    with pytest.raises(SystemExit):
         with mock.patch.object(sys, "argv", arguments):
             parse_command_line()
-    except SystemExit:
-        sys_exit = True
-
-    assert sys_exit
 
 
 def test_usage_set_verbose():
@@ -104,25 +101,15 @@ def test_exit_zero_not_set(minimal_structure):
     path, _ = minimal_structure
 
     arguments = ["dependencychecker", path]
-    exit_code = 0
-    try:
+    with pytest.raises(SystemExit):
         with mock.patch.object(sys, "argv", arguments):
             main()
-    except SystemExit as exc:
-        exit_code = exc.code
-
-    assert exit_code == 1
 
 
 def test_exit_zero_set(minimal_structure):
     path, _ = minimal_structure
 
     arguments = ["dependencychecker", "--exit-zero", path]
-    exit_code = 0
-    try:
+    with pytest.raises(SystemExit):
         with mock.patch.object(sys, "argv", arguments):
             main()
-    except SystemExit as exc:
-        exit_code = exc.code
-
-    assert exit_code == 0
