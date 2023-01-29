@@ -4,8 +4,8 @@ Changelog of z3c.dependencychecker
 2.10 (unreleased)
 -----------------
 
-- Nothing changed yet.
-
+- Do not ignore `Zope` user mappings, fixes previous release.
+  [gforcada
 
 2.9 (2023-01-23)
 ----------------
