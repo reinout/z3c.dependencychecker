@@ -33,6 +33,9 @@ ignore-packages = 'oops'
 IGNORE_PACKAGES = """[tool.dependencychecker]
 ignore-packages = ['django-toolbar', 'plone.reload']
 """
+ZOPE_MAPPING = """[tool.dependencychecker]
+Zope = ['django-toolbar', 'plone.reload']
+"""
 
 
 def _write_user_config(path, content):
@@ -62,12 +65,13 @@ def test_no_file(minimal_structure):
 
 @pytest.mark.parametrize(
     "config",
-    (EMPTY_FILE,
-     IGNORE_OTHER_KEYS,
-     ONLY_TOOL_TABLE,
-     EMPTY_DEPENDENCY_TABLE_NESTED,
-     EMPTY_DEPENDENCY_TABLE_MERGED
-     )
+    (
+        EMPTY_FILE,
+        IGNORE_OTHER_KEYS,
+        ONLY_TOOL_TABLE,
+        EMPTY_DEPENDENCY_TABLE_NESTED,
+        EMPTY_DEPENDENCY_TABLE_MERGED,
+    ),
 )
 def test_valid_configuration(minimal_structure, config):
     path, package_name = minimal_structure
@@ -202,3 +206,12 @@ def test_ignore_packages(minimal_structure):
     assert len(ignored_packages) == 2
     assert django_toolbar in ignored_packages
     assert plone_reload in ignored_packages
+
+
+def test_no_ignore_zope_user_mapping(minimal_structure):
+    path, package_name = minimal_structure
+    _write_user_config(path, ZOPE_MAPPING)
+    package = Package(path)
+    package.inspect()
+
+    assert len(package.imports.user_mappings) == 1
