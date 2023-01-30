@@ -1,5 +1,7 @@
 import os
 
+import pytest
+
 from z3c.dependencychecker.dotted_name import DottedName
 from z3c.dependencychecker.package import Package
 
@@ -31,6 +33,9 @@ ignore-packages = 'oops'
 IGNORE_PACKAGES = """[tool.dependencychecker]
 ignore-packages = ['django-toolbar', 'plone.reload']
 """
+ZOPE_MAPPING = """[tool.dependencychecker]
+Zope = ['django-toolbar', 'plone.reload']
+"""
 
 
 def _write_user_config(path, content):
@@ -58,41 +63,19 @@ def test_no_file(minimal_structure):
     assert package.imports.user_mappings == {}
 
 
-def test_empty_file(minimal_structure):
+@pytest.mark.parametrize(
+    "config",
+    (
+        EMPTY_FILE,
+        IGNORE_OTHER_KEYS,
+        ONLY_TOOL_TABLE,
+        EMPTY_DEPENDENCY_TABLE_NESTED,
+        EMPTY_DEPENDENCY_TABLE_MERGED,
+    ),
+)
+def test_valid_configuration(minimal_structure, config):
     path, package_name = minimal_structure
-    _write_user_config(path, EMPTY_FILE)
-    package = Package(path)
-    package.set_user_mappings()
-    assert package.imports.user_mappings == {}
-
-
-def test_ignore_other_keys(minimal_structure):
-    path, package_name = minimal_structure
-    _write_user_config(path, IGNORE_OTHER_KEYS)
-    package = Package(path)
-    package.set_user_mappings()
-    assert package.imports.user_mappings == {}
-
-
-def test_only_tool_table(minimal_structure):
-    path, package_name = minimal_structure
-    _write_user_config(path, ONLY_TOOL_TABLE)
-    package = Package(path)
-    package.set_user_mappings()
-    assert package.imports.user_mappings == {}
-
-
-def test_empty_dependency_table_nested(minimal_structure):
-    path, package_name = minimal_structure
-    _write_user_config(path, EMPTY_DEPENDENCY_TABLE_NESTED)
-    package = Package(path)
-    package.set_user_mappings()
-    assert package.imports.user_mappings == {}
-
-
-def test_empty_dependency_table_merged(minimal_structure):
-    path, package_name = minimal_structure
-    _write_user_config(path, EMPTY_DEPENDENCY_TABLE_MERGED)
+    _write_user_config(path, config)
     package = Package(path)
     package.set_user_mappings()
     assert package.imports.user_mappings == {}
@@ -223,3 +206,12 @@ def test_ignore_packages(minimal_structure):
     assert len(ignored_packages) == 2
     assert django_toolbar in ignored_packages
     assert plone_reload in ignored_packages
+
+
+def test_no_ignore_zope_user_mapping(minimal_structure):
+    path, package_name = minimal_structure
+    _write_user_config(path, ZOPE_MAPPING)
+    package = Package(path)
+    package.inspect()
+
+    assert len(package.imports.user_mappings) == 1
