@@ -4,14 +4,15 @@ Changelog of z3c.dependencychecker
 2.11 (unreleased)
 -----------------
 
-- Nothing changed yet.
-
+- Ignore `node_modules` and `__pycache__` folders
+  when scanning for files with dependencies.
+  [gforcada]
 
 2.10 (2023-01-30)
 -----------------
 
 - Do not ignore `Zope` user mappings, fixes previous release.
-  [gforcada
+  [gforcada]
 
 2.9 (2023-01-23)
 ----------------
