@@ -27,6 +27,8 @@ TEST_IN_PATH_REGEX = re.compile(TEST_REGEX, re.VERBOSE)
 
 logger = logging.getLogger(__name__)
 
+FOLDERS_TO_IGNORE = ("node_modules", "__pycache__")
+
 
 class BaseModule:
     def __init__(self, package_path, full_path):
@@ -146,7 +148,8 @@ class ZCMLFile(BaseModule):
         if top_dir.endswith(".py"):
             return
 
-        for path, _folders, filenames in os.walk(top_dir):
+        for path, folders, filenames in os.walk(top_dir):
+            folders[:] = [d for d in folders if d not in FOLDERS_TO_IGNORE]
             for filename in filenames:
                 if filename.endswith(".zcml"):
                     yield cls(
@@ -210,7 +213,8 @@ class FTIFile(BaseModule):
         if top_dir.endswith(".py"):
             return
 
-        for path, _folders, filenames in os.walk(top_dir):
+        for path, folders, filenames in os.walk(top_dir):
+            folders[:] = [d for d in folders if d not in FOLDERS_TO_IGNORE]
             for filename in filenames:
                 if filename.endswith(".xml") and cls.TYPES_FOLDER in path:
                     yield cls(
@@ -260,7 +264,8 @@ class GSMetadata(BaseModule):
         if top_dir.endswith(".py"):
             return
 
-        for path, _folders, filenames in os.walk(top_dir):
+        for path, folders, filenames in os.walk(top_dir):
+            folders[:] = [d for d in folders if d not in FOLDERS_TO_IGNORE]
             for filename in filenames:
                 if filename == "metadata.xml":
                     yield cls(
@@ -355,7 +360,8 @@ class DocFiles(PythonDocstrings):
         if top_dir.endswith(".py"):
             return
 
-        for path, _folders, filenames in os.walk(top_dir):
+        for path, folders, filenames in os.walk(top_dir):
+            folders[:] = [d for d in folders if d not in FOLDERS_TO_IGNORE]
             for filename in filenames:
                 if filename.endswith(".txt") or filename.endswith(".rst"):
                     yield cls(
@@ -405,7 +411,8 @@ class DjangoSettings(PythonModule):
         if top_dir.endswith(".py"):
             return
 
-        for path, _folders, filenames in os.walk(top_dir):
+        for path, folders, filenames in os.walk(top_dir):
+            folders[:] = [d for d in folders if d not in FOLDERS_TO_IGNORE]
             for filename in filenames:
                 if fnmatch.fnmatch(filename, "*settings.py"):
                     yield cls(
