@@ -12,8 +12,6 @@ Missing requirements
      Products.GenericSetup.interfaces.EXTENSION
      missing.req
      other.generic.setup.dependency
-     plone.app.content.interfaces.INameFromTitle
-     plone.app.dexterity.behaviors.metadata.IBasic
      plone.random1.interfaces.IMySchema
      plone.random2.content.MyType
      some_django_app

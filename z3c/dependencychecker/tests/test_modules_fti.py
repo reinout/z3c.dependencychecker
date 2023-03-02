@@ -20,18 +20,6 @@ BEHAVIORS_WITHOUT_VALUE = """
   <element class="my.behavior"/>
 </property>
 """
-ONE_BEHAVIOR = """
-<property name="behaviors">
-  <element value="my.behavior"/>
-</property>
-"""
-MORE_BEHAVIORS = """
-<property name="behaviors">
-  <element value="my.behavior1"/>
-  <element value="my.behavior2"/>
-  <element value="my.behavior3"/>
-</property>
-"""
 KLASS = """
 <property name="klass">my.class.package</property>
 """
@@ -89,28 +77,6 @@ def test_no_behavior(tmpdir):
 def test_behavior_without_value(tmpdir):
     dotted_names = _get_fti_imports_on_file(tmpdir, BEHAVIORS_WITHOUT_VALUE)
     assert len(dotted_names) == 0
-
-
-def test_one_behavior(tmpdir):
-    dotted_names = _get_fti_imports_on_file(tmpdir, ONE_BEHAVIOR)
-    assert len(dotted_names) == 1
-
-
-def test_one_behavior_details(tmpdir):
-    dotted_names = _get_fti_imports_on_file(tmpdir, ONE_BEHAVIOR)
-    assert dotted_names == ["my.behavior"]
-
-
-def test_more_behaviors(tmpdir):
-    dotted_names = _get_fti_imports_on_file(tmpdir, MORE_BEHAVIORS)
-    assert len(dotted_names) == 3
-
-
-def test_more_behaviors_details(tmpdir):
-    dotted_names = _get_fti_imports_on_file(tmpdir, MORE_BEHAVIORS)
-    assert "my.behavior1" in dotted_names
-    assert "my.behavior2" in dotted_names
-    assert "my.behavior3" in dotted_names
 
 
 def test_klass(tmpdir):
