@@ -8,6 +8,9 @@ Changelog of z3c.dependencychecker
   when scanning for files with dependencies.
   [gforcada]
 
+- Do not scan Plone FTI files for behaviors with dotted names.
+  [gforcada]
+
 2.10 (2023-01-30)
 -----------------
 
