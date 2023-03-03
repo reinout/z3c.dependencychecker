@@ -228,15 +228,7 @@ class FTIFile(BaseModule):
         for node in tree.iter("property"):
             if "name" in node.keys():
                 name = node.get("name")
-                if name == "behaviors":
-                    for subnode in node.iter("element"):
-                        if "value" in subnode.keys():
-                            yield DottedName(
-                                subnode.get("value"),
-                                file_path=self.path,
-                                is_test=self.testing,
-                            )
-                elif name in ("klass", "schema"):
+                if name in ("klass", "schema"):
                     if node.text:
                         yield DottedName(
                             node.text.strip(),
