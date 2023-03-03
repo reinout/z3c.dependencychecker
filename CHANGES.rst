@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-2.11 (unreleased)
+2.11 (2023-03-03)
 -----------------
 
 - Ignore `node_modules` and `__pycache__` folders

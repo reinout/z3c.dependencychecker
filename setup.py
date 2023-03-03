@@ -3,7 +3,7 @@ import os.path
 
 from setuptools import find_packages, setup
 
-version = "2.11.dev0"
+version = "2.11"
 
 
 def read(filename):
