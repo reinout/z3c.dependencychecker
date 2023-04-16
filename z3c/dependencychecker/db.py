@@ -59,13 +59,13 @@ class ImportsDatabase:
             self._filter_out_python_standard_library,
         )
         for single_import in imports:
-            logger.debug("    Import found: %s", single_import.name)
 
             unknown_import = self._apply_filters([single_import], filters)
             if unknown_import:
+                logger.debug("    Import found: %s", single_import.name)
                 self.imports_used.append(single_import)
             else:
-                logger.debug("    Import ignored: %s", single_import.name)
+                logger.debug("    Import found & ignored: %s", single_import.name)
 
     def add_user_mapping(self, package_name, provided_names):
         package = DottedName(package_name)
