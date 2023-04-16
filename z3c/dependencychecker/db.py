@@ -71,7 +71,7 @@ class ImportsDatabase:
         package = DottedName(package_name)
         packages_provided = [DottedName(name) for name in provided_names]
 
-        if package.name != "Zope" and package not in self._all_requirements():
+        if package not in self._all_requirements():
             logger.info(
                 "Ignoring user mapping %s as is not a dependency of the "
                 "package being analyzed",
