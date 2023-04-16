@@ -73,12 +73,13 @@ class ImportsDatabase:
 
         if package.name != "Zope" and package not in self._all_requirements():
             logger.info(
-                "Ignoring package %s as is not a dependency of the "
+                "Ignoring user mapping %s as is not a dependency of the "
                 "package being analyzed",
                 package,
             )
             return
 
+        logger.debug("Using user mapping %s", package)
         self.user_mappings[package] = set(packages_provided)
 
         for single_package in packages_provided:
