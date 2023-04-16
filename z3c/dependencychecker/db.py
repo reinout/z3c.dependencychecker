@@ -339,7 +339,7 @@ class ImportsDatabase:
         # called some lines below
         iterable = (item for item in obj_list if obj in item)
 
-        # any builtin stops consuming the iterator as soon as an element of the
+        # `any` stops consuming the iterator as soon as an element of the
         # iterable is True
         if any(iterable):
             # if 'obj' is found, the pipeline needs to stop and discard the
