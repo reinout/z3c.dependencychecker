@@ -3,6 +3,15 @@ from functools import total_ordering
 
 from cached_property import cached_property
 
+# An umbrella distribution is a Pypi distribution, like `Zope`,
+# that the importable packages that it provides have different namespaces,
+# that the umbrella distribution name.
+# Zope provides Products.OFSP, App, Shared, Testing and other namespaces,
+# but does not provide a Zope namespace.
+#
+# They should never match a dotted name when compared.
+UMBRELLA_DISTRIBUTIONS = {"zope"}
+
 
 @total_ordering
 class DottedName:
@@ -64,6 +73,12 @@ class DottedName:
         implementation.
         """
         if not isinstance(item, DottedName):
+            return False
+
+        if (
+            self.safe_name in UMBRELLA_DISTRIBUTIONS
+            or item.safe_name in UMBRELLA_DISTRIBUTIONS
+        ):
             return False
 
         if self.safe_name == item.safe_name:
