@@ -1,78 +1,34 @@
+import pytest
+
 from z3c.dependencychecker.dotted_name import DottedName
 
 
 def test_fallback():
     test_import = object()
     requirement = DottedName("plone.app.dexterity")
-    result = test_import in requirement
-    assert not result
+    assert test_import not in requirement
 
 
-def test_same_name_no_namespaces():
-    test_import = DottedName("Plone")
-    requirement = DottedName("Plone")
-    result = test_import in requirement
-    assert result
-
-
-def test_different_name_no_namespaces():
-    test_import = DottedName("Plone")
-    requirement = DottedName("Zope")
-    result = test_import in requirement
-    assert not result
-
-
-def test_no_substring_match_beginning():
-    test_import = DottedName("plo")
-    requirement = DottedName("plone.app.imaging")
-    result = test_import in requirement
-    assert not result
-
-
-def test_no_substring_match_beginning_reverse_check():
-    test_import = DottedName("reinout.happy")
-    requirement = DottedName("re")
-    result = test_import in requirement
-    assert not result
-
-
-def test_no_substring_match_middle():
-    test_import = DottedName("ima")
-    requirement = DottedName("plone.app.imaging")
-    result = test_import in requirement
-    assert not result
-
-
-def test_no_substring_match_end():
-    test_import = DottedName("imaging")
-    requirement = DottedName("plone.app.imaging")
-    result = test_import in requirement
-    assert not result
-
-
-def test_subpackage():
-    test_import = DottedName("plone.app.imaging.interfaces.IImage")
-    requirement = DottedName("plone.app.imaging")
-    result = test_import in requirement
-    assert result
-
-
-def test_same_number_of_namespaces_but_different():
-    test_import = DottedName("plone.app.dexterity")
-    requirement = DottedName("plone.app.imaging")
-    result = test_import in requirement
-    assert not result
-
-
-def test_share_only_part_of_namespace():
-    test_import = DottedName("plone.app.dexterity.interfaces")
-    requirement = DottedName("plone.app.imaging")
-    result = test_import in requirement
-    assert not result
-
-
-def test_both_sides_are_tested():
-    test_import = DottedName("plone.app.dexterity")
-    requirement = DottedName("plone.app.imaging.interfaces")
-    result = test_import in requirement
-    assert not result
+@pytest.mark.parametrize(
+    "test_import,requirement,is_contained",
+    (
+        ("Plone", "Plone", True),
+        ("Plone", "Zope", False),
+        ("plo", "plone.app.imaging", False),
+        ("reinout.happy", "re", False),
+        ("ima", "plone.app.imaging", False),
+        ("imaging", "plone.app.imaging", False),
+        ("plone.app.imaging.interfaces.IImage", "plone.app.imaging", True),
+        ("plone.app.dexterity", "plone.app.imaging", False),
+        ("plone.app.dexterity.interfaces", "plone.app.imaging", False),
+        ("plone.app.dexterity", "plone.app.imaging.interfaces", False),
+    ),
+)
+def test_containment(test_import, requirement, is_contained):
+    """Check DottedName.__contains__ dunder logic"""
+    test_dotted_name = DottedName(test_import)
+    requirement_dotted_name = DottedName(requirement)
+    if is_contained:
+        assert test_dotted_name in requirement_dotted_name
+    else:
+        assert test_dotted_name not in requirement_dotted_name
