@@ -39,7 +39,7 @@ class PackageMetadata:
                 break
         else:
             logger.error(
-                "setup.py was not found in %s. "
+                "No distribution configuration file was not found in %s. "
                 "Without it dependencychecker can not work.",
                 self._path,
             )
@@ -123,7 +123,7 @@ class PackageMetadata:
             logger.error(
                 "Package %s could not be found.\n"
                 "You might need to put it in development mode,\n"
-                "i.e. python setup.py develop",
+                "i.e. python setup.py develop or python -m build",
                 self.name,
             )
             sys.exit(1)
@@ -138,7 +138,7 @@ class PackageMetadata:
             )
 
     def get_extras_dependencies(self):
-        """Get this packages' extras dependencies defined in setup.py"""
+        """Get this packages' extras dependencies defined in its configuration"""
         this_package = self._get_ourselves_from_working_set()
 
         for extra_name in this_package.extras:
@@ -221,12 +221,12 @@ class Package:
         self.analyze_package()
 
     def set_declared_dependencies(self):
-        """Add this packages' dependencies defined in setup.py to the database"""
+        """Add this packages' dependencies defined in its configuration to the database"""
         self.imports.add_requirements(self.metadata.get_required_dependencies())
 
     def set_declared_extras_dependencies(self):
-        """Add this packages' extras dependencies defined in setup.py to the
-        database
+        """Add this packages' extras dependencies defined in its configuration
+        to the database
         """
         for extra, dotted_names in self.metadata.get_extras_dependencies():
             self.imports.add_extra_requirements(extra, dotted_names)
