@@ -1,5 +1,7 @@
 import os
 
+import pytest
+
 from z3c.dependencychecker.modules import ZCMLFile
 from z3c.dependencychecker.tests.utils import write_source_file_at
 
@@ -38,6 +40,25 @@ GS_REGISTERPROFILE_PROVIDES = (
 IGNORE_LOCAL_IMPORT = '<adapter factory=".package.factory" />'
 ASTERISK = '<adapter for="*" />'
 
+RELATIVE_IMPORT = ".IRuleAssignable"
+ABSOLUTE_IMPORT_1 = "plone.interfaces.IContent"
+ABSOLUTE_IMPORT_2 = "zope.interfaces.IFolder"
+ASTERISK_IMPORT = "*"
+
+# list all possible combinations of how the imports can look like
+# and how many of them are expected to be considered valid imports
+# by z3c.dependencychecker
+TEST_IMPORTS_MATRIX = (
+    (0, f"{RELATIVE_IMPORT}"),
+    (0, f"{ASTERISK_IMPORT}"),
+    (0, f"{ASTERISK_IMPORT} {RELATIVE_IMPORT}"),
+    (1, f"{ABSOLUTE_IMPORT_1}"),
+    (1, f"{ABSOLUTE_IMPORT_2} {RELATIVE_IMPORT}"),
+    (1, f"{ASTERISK_IMPORT} {ABSOLUTE_IMPORT_1}"),
+    (2, f"{ABSOLUTE_IMPORT_1} {ABSOLUTE_IMPORT_2}"),
+    (2, f"{ABSOLUTE_IMPORT_1} {ABSOLUTE_IMPORT_2} {ASTERISK_IMPORT}"),
+)
+
 
 def _get_zcml_imports_on_file(folder, source):
     full_content = ZCML_TEMPLATE.format(source)
@@ -50,6 +71,14 @@ def _get_zcml_imports_on_file(folder, source):
     zcml_file = ZCMLFile(folder.strpath, temporal_file)
     dotted_names = [x.name for x in zcml_file.scan()]
     return dotted_names
+
+
+def _verify_dotted_names(dotted_names, imports, found):
+    assert len(dotted_names) == found
+    for an_import in imports.split(" "):
+        if an_import in (RELATIVE_IMPORT, ASTERISK_IMPORT):
+            continue
+        assert an_import in dotted_names
 
 
 def test_create_from_files_nothing(minimal_structure):
@@ -236,3 +265,11 @@ def test_ignore_local_import(tmpdir):
 def test_ignore_asterisk_import(tmpdir):
     dotted_names = _get_zcml_imports_on_file(tmpdir, ASTERISK)
     assert len(dotted_names) == 0
+
+
+@pytest.mark.parametrize("result,imports", TEST_IMPORTS_MATRIX)
+def test_zcml_implements(tmpdir, result, imports):
+    """Check that the ZCML <implements directive is scanned."""
+    zcml_stanza = f'<implements interface="{imports}" />'
+    dotted_names = _get_zcml_imports_on_file(tmpdir, zcml_stanza)
+    _verify_dotted_names(dotted_names, imports, result)

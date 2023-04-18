@@ -136,6 +136,7 @@ class ZCMLFile(BaseModule):
         "subscriber": ("handler", "for"),
         "securityPolicy": ("component",),
         "genericsetup:registerProfile": ("provides",),
+        "implements": ("interface",),
     }
 
     @classmethod
