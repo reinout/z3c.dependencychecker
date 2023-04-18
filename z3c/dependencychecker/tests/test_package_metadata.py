@@ -263,23 +263,6 @@ def test_dependencies_with_version_specifiers(minimal_structure):
     assert "yet" in names
 
 
-def test_dependencies_ignore_zope(minimal_structure):
-    path, package_name = minimal_structure
-    requires_file_path = os.path.join(
-        path,
-        f"{package_name}.egg-info",
-        "requires.txt",
-    )
-    with open(requires_file_path, "w") as requires:
-        requires.write("\n".join(["Zope", "one"]))
-
-    metadata = PackageMetadata(path)
-    names = [x.name for x in metadata.get_required_dependencies()]
-
-    assert len(names) == 1
-    assert "one" in names
-
-
 def test_get_extra_dependencies(minimal_structure):
     path, package_name = minimal_structure
 

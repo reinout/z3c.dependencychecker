@@ -121,9 +121,6 @@ class PackageMetadata:
         this_package = self._get_ourselves_from_working_set()
         requirements = this_package.requires()
         for requirement in requirements:
-            if requirement.project_name == "Zope":
-                logger.debug("Ignoring 'Zope' requirement")
-                continue
             yield DottedName.from_requirement(
                 requirement,
                 file_path=self.setup_py_path,

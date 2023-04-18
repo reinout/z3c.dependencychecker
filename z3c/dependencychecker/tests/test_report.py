@@ -1,5 +1,7 @@
 from unittest import mock
 
+import pytest
+
 from z3c.dependencychecker.package import Package
 from z3c.dependencychecker.report import Report
 from z3c.dependencychecker.tests.utils import write_source_file_at
@@ -627,3 +629,152 @@ def test_exit_status_set(minimal_structure):
     assert report.exit_status == 0
     report.print_report()
     assert report.exit_status == 1
+
+
+# These 'lines' are instructions for the parametrized test below. A filename + the desired contents.
+PKG_REQUIRES_LINE = ("requires.txt", "zope.interface")
+ZOPE_MAP_REQUIRES_LINE = ("requires.txt", "Zope")
+MAPPING_LINE = ("pyproject.toml", '[tool.dependencychecker]\nZope = ["zope.interface"]')
+CODE_LINE = ("__init__.py", "import zope.interface.Interface")
+
+
+@pytest.mark.parametrize(
+    "files_data,is_missing",
+    (
+        # no install_requires
+        #
+        # - no user mapping, with/out code
+        ((), False),
+        ((CODE_LINE,), True),
+        # - user mapping with/out code
+        ((MAPPING_LINE,), False),
+        ((MAPPING_LINE, CODE_LINE), True),
+        #
+        # zope.interface in install requires
+        #
+        # - no user mapping, with/out code
+        ((PKG_REQUIRES_LINE,), False),
+        ((PKG_REQUIRES_LINE, CODE_LINE), False),
+        # - user mapping with/out code
+        ((PKG_REQUIRES_LINE, MAPPING_LINE), False),
+        ((PKG_REQUIRES_LINE, MAPPING_LINE, CODE_LINE), False),
+        #
+        # Zope (user mapping) in install requires
+        #
+        # - no user mapping, with/out code
+        ((ZOPE_MAP_REQUIRES_LINE,), False),
+        ((ZOPE_MAP_REQUIRES_LINE, CODE_LINE), True),
+        # - user mapping with/out code
+        ((ZOPE_MAP_REQUIRES_LINE, MAPPING_LINE), False),
+        ((ZOPE_MAP_REQUIRES_LINE, MAPPING_LINE, CODE_LINE), False),
+    ),
+)
+def test_missing_requirements_report_zope_interface(
+    capsys, minimal_structure, files_data, is_missing
+):
+    """Test the following cases matrix combinations:
+
+    - on setup.py, one of the following:
+      - nothing
+      - zope.interface
+      - Zope
+    - on user mapping, one of the following:
+      - nothing
+      - Zope = ['zope.interface']
+    - on actual code, one of the following:
+      - nothing
+      - import zope.interface.Interface
+
+    That makes 12 combinations. See the matrix above.
+    """
+    path, package_name = minimal_structure
+
+    for filename, content in files_data:
+        if filename == "requires.txt":
+            folder = (path, package_name + ".egg-info")
+        elif filename == "pyproject.toml":
+            folder = (path,)
+        else:
+            folder = (path, package_name)
+
+        write_source_file_at(folder, filename, content)
+
+    package = Package(path)
+    package.inspect()
+    report = Report(package)
+    report.missing_requirements()
+    out, err = capsys.readouterr()
+
+    if is_missing:
+        assert "Missing requirements\n====================" in out
+        assert "zope.interface.Interface" in out
+    else:
+        assert "Missing requirements\n====================" not in out
+
+
+ZPUB_MAP_LINE = ("pyproject.toml", '[tool.dependencychecker]\nZope = ["ZPublisher"]')
+ZPUB_CODE_LINE = ("__init__.py", "import ZPublisher.BaseRequest.RequestContainer")
+
+
+@pytest.mark.parametrize(
+    "files_data,is_missing",
+    (
+        # no install_requires
+        #
+        # - no user mapping, with/out code
+        ((), False),
+        ((ZPUB_CODE_LINE,), True),
+        # - user mapping with/out code
+        ((ZPUB_MAP_LINE,), False),
+        ((ZPUB_MAP_LINE, ZPUB_CODE_LINE), True),
+        #
+        # Zope (user mapping) in install requires
+        #
+        # - no user mapping, with/out code
+        ((ZOPE_MAP_REQUIRES_LINE,), False),
+        ((ZOPE_MAP_REQUIRES_LINE, ZPUB_CODE_LINE), True),
+        # - user mapping with/out code
+        ((ZOPE_MAP_REQUIRES_LINE, ZPUB_MAP_LINE), False),
+        ((ZOPE_MAP_REQUIRES_LINE, ZPUB_MAP_LINE, ZPUB_CODE_LINE), False),
+    ),
+)
+def test_missing_requirements_report_zpublisher(
+    capsys, minimal_structure, files_data, is_missing
+):
+    """Test the following cases matrix combinations:
+
+    - on setup.py, one of the following:
+      - nothing
+      - Zope
+    - on user mapping, one of the following:
+      - nothing
+      - Zope = ['ZPublisher']
+    - on actual code, one of the following:
+      - nothing
+      - import ZPublisher.BaseRequest.RequestContainer
+
+    That makes 8 combinations. See the matrix above.
+    """
+    path, package_name = minimal_structure
+
+    for filename, content in files_data:
+        if filename == "requires.txt":
+            folder = (path, package_name + ".egg-info")
+        elif filename == "pyproject.toml":
+            folder = (path,)
+        else:
+            folder = (path, package_name)
+
+        write_source_file_at(folder, filename, content)
+
+    package = Package(path)
+    package.inspect()
+    report = Report(package)
+    report.missing_requirements()
+    out, err = capsys.readouterr()
+
+    if is_missing:
+        assert "Missing requirements\n====================" in out
+        assert "ZPublisher.BaseRequest.RequestContainer" in out
+    else:
+        assert "Missing requirements\n====================" not in out
