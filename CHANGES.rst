@@ -7,6 +7,9 @@ Changelog of z3c.dependencychecker
 - Fix, hopefully finally, the Zope user mapping use case.
   [gforcada]
 
+- Add `Plone` as an umbrella distribution, alongside `Zope`.
+  [gforcada]
+
 2.11 (2023-03-03)
 -----------------
 
