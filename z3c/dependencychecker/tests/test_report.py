@@ -631,6 +631,7 @@ def test_exit_status_set(minimal_structure):
     assert report.exit_status == 1
 
 
+# These 'lines' are instructions for the parametrized test below. A filename + the desired contents.
 PKG_REQUIRES_LINE = ("requires.txt", "zope.interface")
 ZOPE_MAP_REQUIRES_LINE = ("requires.txt", "Zope")
 MAPPING_LINE = ("pyproject.toml", '[tool.dependencychecker]\nZope = ["zope.interface"]')
