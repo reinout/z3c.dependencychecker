@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 
 FOLDERS_TO_IGNORE = ("node_modules", "__pycache__", "venv")
 
+HAS_REPORTED_CONDITIONAL_IMPORTS = False
 
 class BaseModule:
     def __init__(self, package_path, full_path):
@@ -117,10 +118,30 @@ class PythonModule(BaseModule):
                     file_path=self.path,
                     is_test=self.testing,
                 )
+        elif isinstance(node, ast.Try):
+            if not HAS_REPORTED_CONDITIONAL_IMPORTS:
+                self._is_a_conditional_import(node)
 
     @staticmethod
     def _is_relative_import(import_node):
         return import_node.level > 0
+
+    def _is_a_conditional_import(self, node):
+        global HAS_REPORTED_CONDITIONAL_IMPORTS
+        for handler in node.handlers:
+            type_info = getattr(handler, 'type', False)
+            if type_info:
+                exception_id = getattr(type_info, 'id', False)
+                if exception_id == 'ImportError':
+                    print('This distribution has conditional imports')
+                    HAS_REPORTED_CONDITIONAL_IMPORTS = True
+                    break
+
+                value = getattr(type_info, 'value', False)
+                if value and value.id == 'pkg_resources' and type_info.attr == 'DistributionNotFound':
+                    print('This distribution has conditional imports')
+                    HAS_REPORTED_CONDITIONAL_IMPORTS = True
+                    break
 
 
 class ZCMLFile(BaseModule):
