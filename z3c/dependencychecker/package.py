@@ -12,6 +12,12 @@ from z3c.dependencychecker.dotted_name import DottedName
 from z3c.dependencychecker.modules import MODULES
 from z3c.dependencychecker.utils import change_dir
 
+METADATA_FILES = (
+    "setup.py",
+    "setup.cfg",
+    "pyproject.toml",
+)
+
 logger = logging.getLogger(__name__)
 
 
@@ -28,7 +34,10 @@ class PackageMetadata:
 
     @cached_property
     def distribution_root(self):
-        if "setup.py" not in os.listdir(self._path):
+        for metadata_file in METADATA_FILES:
+            if metadata_file in os.listdir(self._path):
+                break
+        else:
             logger.error(
                 "setup.py was not found in %s. "
                 "Without it dependencychecker can not work.",
@@ -38,11 +47,13 @@ class PackageMetadata:
         return self._path
 
     @cached_property
-    def setup_py_path(self):
-        return os.path.join(
-            self.distribution_root,
-            "setup.py",
-        )
+    def metadata_file_path(self):
+        for metadata_file in METADATA_FILES:
+            if metadata_file in os.listdir(self._path):
+                return os.path.join(
+                    self.distribution_root,
+                    metadata_file,
+                )
 
     @cached_property
     def package_dir(self):
@@ -123,7 +134,7 @@ class PackageMetadata:
         for requirement in requirements:
             yield DottedName.from_requirement(
                 requirement,
-                file_path=self.setup_py_path,
+                file_path=self.metadata_file_path,
             )
 
     def get_extras_dependencies(self):
@@ -133,7 +144,7 @@ class PackageMetadata:
         for extra_name in this_package.extras:
             extra_requirements = this_package.requires(extras=(extra_name,))
             dotted_names = (
-                DottedName.from_requirement(req, file_path=self.setup_py_path)
+                DottedName.from_requirement(req, file_path=self.metadata_file_path)
                 for req in extra_requirements
                 if req.project_name != "Zope"
             )
