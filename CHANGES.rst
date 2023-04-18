@@ -10,6 +10,9 @@ Changelog of z3c.dependencychecker
 - Add `Plone` as an umbrella distribution, alongside `Zope`.
   [gforcada]
 
+- Scan the `<implements` directive on `ZCML` files.
+  [gforcada]
+
 2.11 (2023-03-03)
 -----------------
 
