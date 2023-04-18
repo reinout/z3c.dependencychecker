@@ -13,6 +13,10 @@ Changelog of z3c.dependencychecker
 - Scan the `<implements` directive on `ZCML` files.
   [gforcada]
 
+- Handle new distributions that no longer have a `setup.py`.
+  Consider `pyproject.toml` and `setup.cfg` alongside `setup.py`.
+  [gforcada]
+
 2.11 (2023-03-03)
 -----------------
 
