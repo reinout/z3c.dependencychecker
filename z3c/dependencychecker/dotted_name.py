@@ -4,8 +4,8 @@ from functools import total_ordering
 from cached_property import cached_property
 
 # An umbrella distribution is a Pypi distribution, like `Zope`,
-# that the importable packages that it provides have different namespaces,
-# that the umbrella distribution name.
+# of which the importable packages that it provides have different namespaces
+# than the umbrella distribution name.
 # Zope provides Products.OFSP, App, Shared, Testing and other namespaces,
 # but does not provide a Zope namespace.
 #
