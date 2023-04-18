@@ -12,7 +12,11 @@ def test_fallback():
 @pytest.mark.parametrize(
     "test_import,requirement,is_contained",
     (
-        ("Plone", "Plone", True),
+        # umbrella distributions should never match
+        ("Plone", "Plone", False),
+        ("Zope", "Zope", False),
+        # all other names match with themselves
+        ("z3c", "z3c", True),
         ("Plone", "Zope", False),
         ("plo", "plone.app.imaging", False),
         ("reinout.happy", "re", False),
