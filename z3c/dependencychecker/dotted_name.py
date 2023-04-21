@@ -10,7 +10,7 @@ from cached_property import cached_property
 # but does not provide a Zope namespace.
 #
 # They should never match a dotted name when compared.
-UMBRELLA_DISTRIBUTIONS = {"zope"}
+UMBRELLA_DISTRIBUTIONS = {"zope", "plone"}
 
 
 @total_ordering
