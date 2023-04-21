@@ -12,6 +12,12 @@ from z3c.dependencychecker.dotted_name import DottedName
 from z3c.dependencychecker.modules import MODULES
 from z3c.dependencychecker.utils import change_dir
 
+METADATA_FILES = (
+    "setup.py",
+    "setup.cfg",
+    "pyproject.toml",
+)
+
 logger = logging.getLogger(__name__)
 
 
@@ -28,9 +34,12 @@ class PackageMetadata:
 
     @cached_property
     def distribution_root(self):
-        if "setup.py" not in os.listdir(self._path):
+        for metadata_file in METADATA_FILES:
+            if metadata_file in os.listdir(self._path):
+                break
+        else:
             logger.error(
-                "setup.py was not found in %s. "
+                "No pyproject.toml/setup.py/.cfg was found in %s. "
                 "Without it dependencychecker can not work.",
                 self._path,
             )
@@ -38,11 +47,13 @@ class PackageMetadata:
         return self._path
 
     @cached_property
-    def setup_py_path(self):
-        return os.path.join(
-            self.distribution_root,
-            "setup.py",
-        )
+    def metadata_file_path(self):
+        for metadata_file in METADATA_FILES:
+            if metadata_file in os.listdir(self._path):
+                return os.path.join(
+                    self.distribution_root,
+                    metadata_file,
+                )
 
     @cached_property
     def package_dir(self):
@@ -112,7 +123,7 @@ class PackageMetadata:
             logger.error(
                 "Package %s could not be found.\n"
                 "You might need to put it in development mode,\n"
-                "i.e. python setup.py develop",
+                "i.e. python setup.py develop or python -m build",
                 self.name,
             )
             sys.exit(1)
@@ -123,17 +134,17 @@ class PackageMetadata:
         for requirement in requirements:
             yield DottedName.from_requirement(
                 requirement,
-                file_path=self.setup_py_path,
+                file_path=self.metadata_file_path,
             )
 
     def get_extras_dependencies(self):
-        """Get this packages' extras dependencies defined in setup.py"""
+        """Get this packages' extras dependencies defined in its configuration"""
         this_package = self._get_ourselves_from_working_set()
 
         for extra_name in this_package.extras:
             extra_requirements = this_package.requires(extras=(extra_name,))
             dotted_names = (
-                DottedName.from_requirement(req, file_path=self.setup_py_path)
+                DottedName.from_requirement(req, file_path=self.metadata_file_path)
                 for req in extra_requirements
                 if req.project_name != "Zope"
             )
@@ -210,12 +221,12 @@ class Package:
         self.analyze_package()
 
     def set_declared_dependencies(self):
-        """Add this packages' dependencies defined in setup.py to the database"""
+        """Add this packages' dependencies defined in its configuration to the database"""
         self.imports.add_requirements(self.metadata.get_required_dependencies())
 
     def set_declared_extras_dependencies(self):
-        """Add this packages' extras dependencies defined in setup.py to the
-        database
+        """Add this packages' extras dependencies defined in its configuration
+        to the database
         """
         for extra, dotted_names in self.metadata.get_extras_dependencies():
             self.imports.add_extra_requirements(extra, dotted_names)

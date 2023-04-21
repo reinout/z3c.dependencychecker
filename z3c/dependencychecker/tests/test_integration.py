@@ -42,8 +42,8 @@ Unneeded test requirements
      zope.testing
 
 Note: requirements are taken from the egginfo dir, so you need
-to re-run buildout (or setup.py or whatever) for changes in
-setup.py to have effect.
+to re-generate it, via `python -m build`, setuptools, zc.buildout
+or any other means.
 
 """
 

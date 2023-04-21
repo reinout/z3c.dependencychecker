@@ -3,8 +3,9 @@ import shutil
 import tempfile
 
 import pkg_resources
+import pytest
 
-from z3c.dependencychecker.package import PackageMetadata
+from z3c.dependencychecker.package import METADATA_FILES, PackageMetadata
 
 
 def test_no_setup_py_file_found():
@@ -25,11 +26,18 @@ def test_distribution_root(minimal_structure):
     assert metadata.distribution_root == path
 
 
-def test_setup_py_path(minimal_structure):
+@pytest.mark.parametrize("filename", METADATA_FILES)
+def test_metadata_file_path(minimal_structure, filename):
     path, package_name = minimal_structure
-    metadata = PackageMetadata(path)
+    setup_py_path = os.path.join(path, "setup.py")
+    os.remove(setup_py_path)
 
-    assert metadata.setup_py_path == os.path.join(path, "setup.py")
+    file_path = os.path.join(path, filename)
+    with open(file_path, "w") as file_handler:
+        file_handler.write("hi")
+
+    metadata = PackageMetadata(path)
+    assert metadata.metadata_file_path == file_path
 
 
 def test_package_dir_on_distribution_root(minimal_structure):

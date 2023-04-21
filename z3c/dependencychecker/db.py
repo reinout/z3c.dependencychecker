@@ -40,7 +40,7 @@ class ImportsDatabase:
             )
 
             logger.warning(
-                'extra requirement "%s" is declared twice in setup.py',
+                'extra requirement "%s" is declared twice',
                 extra_name,
             )
         else:

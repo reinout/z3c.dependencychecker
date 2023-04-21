@@ -27,7 +27,7 @@ long_description = f"""
 setup(
     name="z3c.dependencychecker",
     version=version,
-    description="Reports on missing or unneeded setup.py dependencies",
+    description="Reports on missing or unneeded python dependencies",
     long_description=long_description,
     long_description_content_type="text/x-rst; charset=UTF-8",
     # Get strings from https://pypi.org/classifiers/

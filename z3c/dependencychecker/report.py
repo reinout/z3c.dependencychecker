@@ -56,8 +56,8 @@ class Report:
     def print_notice():
         print("")
         print("Note: requirements are taken from the egginfo dir, so you need")
-        print("to re-run buildout (or setup.py or whatever) for changes in")
-        print("setup.py to have effect.")
+        print("to re-generate it, via `python -m build`, setuptools, zc.buildout")
+        print("or any other means.")
         print("")
 
     def _print_metric(self, title, method):

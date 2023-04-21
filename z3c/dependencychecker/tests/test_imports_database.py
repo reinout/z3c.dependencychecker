@@ -73,7 +73,7 @@ def test_warning_extra_declared_twice(caplog):
     database.add_extra_requirements("test", [DottedName("two")])
 
     last_log = caplog.records[-1]
-    message = 'extra requirement "test" is declared twice in setup.py'
+    message = 'extra requirement "test" is declared twice'
     assert message == last_log.message
 
 
