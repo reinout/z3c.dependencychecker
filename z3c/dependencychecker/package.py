@@ -39,7 +39,7 @@ class PackageMetadata:
                 break
         else:
             logger.error(
-                "No distribution configuration file was found in %s. "
+                "No pyproject.toml/setup.py/.cfg was found in %s. "
                 "Without it dependencychecker can not work.",
                 self._path,
             )
