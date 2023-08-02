@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-2.12 (unreleased)
+2.12 (2023-08-02)
 -----------------
 
 - Fix, hopefully finally, the Zope user mapping use case.
