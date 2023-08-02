@@ -1,6 +1,12 @@
 Changelog of z3c.dependencychecker
 ==================================
 
+2.13 (unreleased)
+-----------------
+
+- Nothing changed yet.
+
+
 2.12 (2023-08-02)
 -----------------
 
