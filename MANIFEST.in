@@ -5,3 +5,4 @@ exclude bootstrap.py
 exclude buildout.cfg
 exclude .*
 exclude requirements*.txt
+exclude requirements.in
