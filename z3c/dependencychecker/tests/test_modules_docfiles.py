@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 from z3c.dependencychecker.modules import DocFiles
 from z3c.dependencychecker.tests.utils import write_source_file_at
@@ -52,28 +52,28 @@ class MyClass(object):',
 
 
 def _get_dependencies_on_file(folder, source):
+    folder = Path(folder)
     temporal_file = write_source_file_at(
-        (folder.strpath,),
+        folder,
         source_code=source,
     )
 
-    doc_file = DocFiles(folder.strpath, temporal_file)
+    doc_file = DocFiles(folder, temporal_file)
     dotted_names = [x.name for x in doc_file.scan()]
     return dotted_names
 
 
 def test_create_from_files_nothing(minimal_structure):
     path, package_name = minimal_structure
-    src_path = os.path.join(path, "src")
-    modules_found = list(DocFiles.create_from_files(src_path))
+    modules_found = list(DocFiles.create_from_files(path / "src"))
     assert len(modules_found) == 0
 
 
 def test_create_from_files_deep_nested_txt(minimal_structure):
     path, package_name = minimal_structure
-    src_path = os.path.join(path, "src")
+    src_path = path / "src"
     write_source_file_at(
-        [src_path, "a", "b", "c"],
+        src_path / "a" / "b" / "c",
         filename="bla.txt",
     )
 
@@ -83,9 +83,9 @@ def test_create_from_files_deep_nested_txt(minimal_structure):
 
 def test_create_from_files_deep_nested_rst(minimal_structure):
     path, package_name = minimal_structure
-    src_path = os.path.join(path, "src")
+    src_path = path / "src"
     write_source_file_at(
-        [src_path, "a", "b", "c"],
+        src_path / "a" / "b" / "c",
         filename="bla.rst",
     )
 
@@ -114,11 +114,12 @@ def test_code_found_details(tmpdir):
 
 
 def test_always_testing(tmpdir):
+    tmpdir = Path(tmpdir)
     temporal_file = write_source_file_at(
-        (tmpdir.strpath,), source_code=">>> import foo", filename="file.rst"
+        tmpdir, source_code=">>> import foo", filename="file.rst"
     )
 
-    doc_file = DocFiles(tmpdir.strpath, temporal_file)
+    doc_file = DocFiles(tmpdir, temporal_file)
     dotted_names = list(doc_file.scan())
     assert len(dotted_names) == 1
     assert dotted_names[0].is_test

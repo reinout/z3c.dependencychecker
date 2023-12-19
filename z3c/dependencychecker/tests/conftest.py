@@ -11,6 +11,7 @@ import random
 import shutil
 import string
 import tempfile
+from pathlib import Path
 
 import pkg_resources
 import pytest
@@ -21,12 +22,12 @@ from z3c.dependencychecker.package import ImportsDatabase
 
 @pytest.fixture
 def fake_project():
-    temp_folder = tempfile.mkdtemp(prefix="depcheck")
+    temp_folder = Path(tempfile.mkdtemp(prefix="depcheck"))
     fake_package_files = pkg_resources.resource_filename(
         "z3c.dependencychecker.tests",
         "sample1",
     )
-    package_folder = os.path.join(temp_folder, "sample1")
+    package_folder = temp_folder / "sample1"
     shutil.copytree(fake_package_files, package_folder)
     # To prevent the sample .py files to be picked up by ourselves or other
     # tools, I'm postfixing them with ``_in``, now we get to rename them.
@@ -39,8 +40,8 @@ def fake_project():
             if new_filename == "_it__.py":
                 # Oopsie :-) The replace works too well...
                 new_filename = "__init__.py"
-            source = os.path.join(dirpath, filename)
-            target = os.path.join(dirpath, new_filename)
+            source = Path(dirpath) / filename
+            target = Path(dirpath) / new_filename
             os.rename(source, target)
 
     yield package_folder
@@ -52,12 +53,12 @@ def minimal_structure():
     """Creates a folder structure that contains the minimal files needed
     to make Package class be able to initialize without errors
     """
-    folder = tempfile.mkdtemp()
+    folder = Path(tempfile.mkdtemp())
     _add_setup_py(folder)
     package_name = _add_egg_info(folder)
 
-    src_folder = os.path.join(folder, "src")
-    os.makedirs(src_folder)
+    src_folder = folder / "src"
+    src_folder.mkdir(parents=True, exist_ok=True)
 
     yield folder, package_name
 
@@ -65,18 +66,14 @@ def minimal_structure():
 
 
 def _add_setup_py(folder):
-    with open(os.path.join(folder, "setup.py"), "w") as setup_py_file:
-        setup_py_file.write("hi")
+    (folder / "setup.py").write_text("hi")
 
 
 def _add_egg_info(folder):
     package_name = "".join(random.choice(string.ascii_lowercase) for _ in range(10))
 
-    egg_info_folder_path = os.path.join(
-        folder,
-        f"{package_name}.egg-info",
-    )
-    os.makedirs(egg_info_folder_path)
+    egg_info_folder_path = folder / f"{package_name}.egg-info"
+    egg_info_folder_path.mkdir(parents=True, exist_ok=True)
 
     _write_pkg_info_file(egg_info_folder_path)
     _write_requires_file(egg_info_folder_path)
@@ -86,31 +83,21 @@ def _add_egg_info(folder):
 
 
 def _write_pkg_info_file(folder):
-    with open(os.path.join(folder, "PKG-INFO"), "w") as pkg_info:
-        lines = "\n".join(
-            ["Metadata-Version: 1.0", "Name: testpackage", "Version: 1.0.dev0"]
-        )
-        pkg_info.write(lines)
+    lines = "\n".join(
+        ["Metadata-Version: 1.0", "Name: testpackage", "Version: 1.0.dev0"]
+    )
+    (folder / "PKG-INFO").write_text(lines)
 
 
 def _write_requires_file(folder):
-    with open(os.path.join(folder, "requires.txt"), "w") as requires_file:
-        lines = "\n".join(["one", "two"])
-        requires_file.write(lines)
+    (folder / "requires.txt").write_text("\n".join(["one", "two"]))
 
 
-def _write_top_level_file(folder_path, package_name):
-    file_path = os.path.join(folder_path, "top_level.txt")
-    with open(file_path, "w") as top_level_file:
-        lines = "\n".join([package_name])
-        top_level_file.write(lines)
+def _write_top_level_file(folder, package_name):
+    (folder / "top_level.txt").write_text("\n".join([package_name]))
 
-    sources_top_folder = os.path.join(
-        folder_path,
-        "..",
-        package_name,
-    )
-    os.makedirs(sources_top_folder)
+    sources_top_folder = folder.parent / package_name
+    sources_top_folder.mkdir(parents=True, exist_ok=True)
 
 
 @pytest.fixture

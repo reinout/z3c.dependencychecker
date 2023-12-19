@@ -2,6 +2,7 @@ import logging
 import os
 import sys
 import tempfile
+from pathlib import Path
 from unittest import mock
 
 import pytest
@@ -77,7 +78,7 @@ def test_get_path_no_path_given():
 
 def test_get_path_path_given():
     """If a path is given, that's the path being returned"""
-    folder = tempfile.mkdtemp()
+    folder = Path(tempfile.mkdtemp())
     arguments = [folder]
     path = get_path(arguments)
 
@@ -100,7 +101,7 @@ def test_get_path_given_path_not_a_folder():
 def test_exit_zero_not_set(minimal_structure):
     path, _ = minimal_structure
 
-    arguments = ["dependencychecker", path]
+    arguments = ["dependencychecker", str(path)]
     with pytest.raises(SystemExit):
         with mock.patch.object(sys, "argv", arguments):
             main()
@@ -109,7 +110,7 @@ def test_exit_zero_not_set(minimal_structure):
 def test_exit_zero_set(minimal_structure):
     path, _ = minimal_structure
 
-    arguments = ["dependencychecker", "--exit-zero", path]
+    arguments = ["dependencychecker", "--exit-zero", str(path)]
     with pytest.raises(SystemExit):
         with mock.patch.object(sys, "argv", arguments):
             main()

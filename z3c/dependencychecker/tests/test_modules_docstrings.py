@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from z3c.dependencychecker.modules import PythonDocstrings
 from z3c.dependencychecker.tests.utils import write_source_file_at
 
@@ -66,12 +68,13 @@ class MyClass(object):
 
 
 def _get_dependencies_on_file(folder, source):
+    folder = Path(folder)
     temporal_file = write_source_file_at(
-        (folder.strpath,),
+        folder,
         source_code=source,
     )
 
-    docstring = PythonDocstrings(folder.strpath, temporal_file)
+    docstring = PythonDocstrings(folder, temporal_file)
     dotted_names = [x.name for x in docstring.scan()]
     return dotted_names
 
