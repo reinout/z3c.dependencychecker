@@ -27,7 +27,7 @@ TEST_IN_PATH_REGEX = re.compile(TEST_REGEX, re.VERBOSE)
 
 logger = logging.getLogger(__name__)
 
-FOLDERS_TO_IGNORE = ("node_modules", "__pycache__")
+FOLDERS_TO_IGNORE = ("node_modules", "__pycache__", "venv", ".venv")
 
 
 class BaseModule:
