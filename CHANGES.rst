@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-2.13 (unreleased)
+2.13 (2023-12-19)
 -----------------
 
 - Drop python 3.7 support, as our dependencies require 3.8 at least.
