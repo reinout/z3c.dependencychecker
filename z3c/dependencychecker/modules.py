@@ -358,6 +358,12 @@ class DocFiles(PythonDocstrings):
                     )
 
     def scan(self):
+        try:
+            yield from self._scan()
+        except UnicodeDecodeError:
+            logger.error("Unicode Problems parsing %s", self.path)
+
+    def _scan(self):
         with open(self.path) as doc_file:
             for line in doc_file:
                 code = self._extract_code(line)
