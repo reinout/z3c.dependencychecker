@@ -69,12 +69,7 @@ class PythonModule(BaseModule):
             return
 
         for path, folders, filenames in os.walk(top_dir):
-            if "__init__.py" not in filenames:
-                # Don't descend further into the tree.
-                # Clear folders variable in-place.
-                folders[:] = []
-                continue
-
+            folders[:] = [d for d in folders if d not in FOLDERS_TO_IGNORE]
             for filename in filenames:
                 if filename.endswith(".py"):
                     yield cls(
