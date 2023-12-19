@@ -4,8 +4,11 @@ Changelog of z3c.dependencychecker
 2.13 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Drop python 3.7 support, as our dependencies require 3.8 at least.
+  [gforcada]
 
+- Add python 3.12 support.
+  [gforcada]
 
 2.12 (2023-08-02)
 -----------------
