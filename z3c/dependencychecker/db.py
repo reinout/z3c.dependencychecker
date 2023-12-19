@@ -59,7 +59,6 @@ class ImportsDatabase:
             self._filter_out_python_standard_library,
         )
         for single_import in imports:
-
             unknown_import = self._apply_filters([single_import], filters)
             if unknown_import:
                 logger.debug("    Import found: %s", single_import.name)

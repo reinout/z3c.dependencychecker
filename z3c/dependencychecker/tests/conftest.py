@@ -31,7 +31,7 @@ def fake_project():
     # To prevent the sample .py files to be picked up by ourselves or other
     # tools, I'm postfixing them with ``_in``, now we get to rename them.
     # Same for zcml files.
-    for (dirpath, dirnames, filenames) in os.walk(package_folder):
+    for dirpath, dirnames, filenames in os.walk(package_folder):
         for filename in filenames + dirnames:
             if not filename.endswith("_in"):
                 continue
