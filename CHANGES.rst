@@ -4,8 +4,8 @@ Changelog of z3c.dependencychecker
 2.14.1 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+- Use `pathlib.Path` everywhere to make it easier to reason about paths.
+  [gforcada]
 
 2.14 (2023-12-28)
 -----------------
