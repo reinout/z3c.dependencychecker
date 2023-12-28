@@ -27,7 +27,7 @@ TEST_IN_PATH_REGEX = re.compile(TEST_REGEX, re.VERBOSE)
 
 logger = logging.getLogger(__name__)
 
-FOLDERS_TO_IGNORE = ("node_modules", "__pycache__")
+FOLDERS_TO_IGNORE = ("node_modules", "__pycache__", "venv", ".venv")
 
 
 class BaseModule:
@@ -69,12 +69,7 @@ class PythonModule(BaseModule):
             return
 
         for path, folders, filenames in os.walk(top_dir):
-            if "__init__.py" not in filenames:
-                # Don't descend further into the tree.
-                # Clear folders variable in-place.
-                folders[:] = []
-                continue
-
+            folders[:] = [d for d in folders if d not in FOLDERS_TO_IGNORE]
             for filename in filenames:
                 if filename.endswith(".py"):
                     yield cls(

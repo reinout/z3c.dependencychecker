@@ -35,7 +35,15 @@ def _get_imports_of_python_module(folder, source):
 def test_create_from_files_nothing(minimal_structure):
     path, package_name = minimal_structure
     modules_found = list(PythonModule.create_from_files(path))
-    assert len(modules_found) == 0
+    assert len(modules_found) == 1
+
+
+def test_nested_structure_pep420(minimal_structure):
+    path, package_name = minimal_structure
+    src_path = os.path.join(path, "src")
+    write_source_file_at([src_path, "a", "b"], filename="bla.py")
+    modules_found = list(PythonModule.create_from_files(src_path))
+    assert len(modules_found) == 1
 
 
 def test_create_from_files_single_file():
@@ -46,6 +54,7 @@ def test_create_from_files_single_file():
 
 
 def test_create_from_files_no_init(minimal_structure):
+    """But as we are respecting PEP 420 the python modules are found."""
     path, package_name = minimal_structure
     src_path = os.path.join(path, "src")
     assert len(os.listdir(src_path)) == 0
@@ -54,7 +63,7 @@ def test_create_from_files_no_init(minimal_structure):
     assert len(os.listdir(src_path)) == 1
 
     modules_found = list(PythonModule.create_from_files(src_path))
-    assert len(modules_found) == 0
+    assert len(modules_found) == 1
 
 
 def test_create_from_files_ignore_no_python(minimal_structure):
