@@ -349,14 +349,12 @@ class DocFiles(PythonDocstrings):
         if top_dir.endswith(".py"):
             return
 
-        for path, folders, filenames in os.walk(top_dir):
-            folders[:] = [d for d in folders if d not in FOLDERS_TO_IGNORE]
-            for filename in filenames:
-                if filename.endswith(".txt") or filename.endswith(".rst"):
-                    yield cls(
-                        top_dir,
-                        os.path.join(path, filename),
-                    )
+        for path, filename in cls.walk_and_filter_folder(top_dir):
+            if filename.endswith(".txt") or filename.endswith(".rst"):
+                yield cls(
+                    top_dir,
+                    os.path.join(path, filename),
+                )
 
     def scan(self):
         with open(self.path) as doc_file:
@@ -400,14 +398,12 @@ class DjangoSettings(PythonModule):
         if top_dir.endswith(".py"):
             return
 
-        for path, folders, filenames in os.walk(top_dir):
-            folders[:] = [d for d in folders if d not in FOLDERS_TO_IGNORE]
-            for filename in filenames:
-                if fnmatch.fnmatch(filename, "*settings.py"):
-                    yield cls(
-                        top_dir,
-                        os.path.join(path, filename),
-                    )
+        for path, filename in cls.walk_and_filter_folder(top_dir):
+            if fnmatch.fnmatch(filename, "*settings.py"):
+                yield cls(
+                    top_dir,
+                    os.path.join(path, filename),
+                )
 
     def scan(self):
         for node in ast.walk(self._get_tree()):
