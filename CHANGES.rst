@@ -4,8 +4,8 @@ Changelog of z3c.dependencychecker
 2.14.2 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+- Refactored other `modules.py` classes that needed the same fix from previous release.
+  [gforcada]
 
 2.14.1 (2023-12-28)
 -------------------
