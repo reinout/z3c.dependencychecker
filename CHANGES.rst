@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-2.14.1 (unreleased)
+2.14.1 (2023-12-28)
 -------------------
 
 - Ignore any dot leading folder (like `.tox` or `.git`) while scanning for files.
