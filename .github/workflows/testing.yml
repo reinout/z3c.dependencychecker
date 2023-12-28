@@ -33,7 +33,7 @@ jobs:
       # formatters
       - name: Run pyupgrade
         if: matrix.python-version == '3.11'
-        run: pyupgrade --py37-plus setup.py `find z3c -name "*.py"`
+        run: pyupgrade --py38-plus setup.py `find z3c -name "*.py"`
       - name: Run isort
         if: matrix.python-version == '3.11'
         run: isort --check-only setup.py z3c/
