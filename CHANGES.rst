@@ -4,8 +4,8 @@ Changelog of z3c.dependencychecker
 2.14.1 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+- Ignore any dot leading folder (like `.tox` or `.git`) while scanning for files.
+  [gforcada]
 
 2.14 (2023-12-28)
 -----------------

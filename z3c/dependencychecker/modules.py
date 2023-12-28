@@ -27,7 +27,7 @@ TEST_IN_PATH_REGEX = re.compile(TEST_REGEX, re.VERBOSE)
 
 logger = logging.getLogger(__name__)
 
-FOLDERS_TO_IGNORE = ("node_modules", "__pycache__", "venv", ".venv")
+FOLDERS_TO_IGNORE = ("node_modules", "__pycache__", "venv")
 
 
 class BaseModule:
@@ -50,6 +50,15 @@ class BaseModule:
     def scan(self):
         raise NotImplementedError
 
+    def walk_and_filter_folder(folder):
+        for path, folders, filenames in os.walk(folder):
+            # ignore known folder names
+            folders[:] = [d for d in folders if d not in FOLDERS_TO_IGNORE]
+            # ignore all folders that start with a dot
+            folders[:] = fnmatch.filter(folders, "[!.]*")
+            for filename in filenames:
+                yield path, filename
+
 
 class PythonModule(BaseModule):
     @classmethod
@@ -68,14 +77,12 @@ class PythonModule(BaseModule):
             yield cls(top_dir, top_dir)
             return
 
-        for path, folders, filenames in os.walk(top_dir):
-            folders[:] = [d for d in folders if d not in FOLDERS_TO_IGNORE]
-            for filename in filenames:
-                if filename.endswith(".py"):
-                    yield cls(
-                        top_dir,
-                        os.path.join(path, filename),
-                    )
+        for path, filename in cls.walk_and_filter_folder(top_dir):
+            if filename.endswith(".py"):
+                yield cls(
+                    top_dir,
+                    os.path.join(path, filename),
+                )
 
     def scan(self):
         for node in ast.walk(self._get_tree()):
@@ -144,14 +151,12 @@ class ZCMLFile(BaseModule):
         if top_dir.endswith(".py"):
             return
 
-        for path, folders, filenames in os.walk(top_dir):
-            folders[:] = [d for d in folders if d not in FOLDERS_TO_IGNORE]
-            for filename in filenames:
-                if filename.endswith(".zcml"):
-                    yield cls(
-                        top_dir,
-                        os.path.join(path, filename),
-                    )
+        for path, filename in cls.walk_and_filter_folder(top_dir):
+            if filename.endswith(".zcml"):
+                yield cls(
+                    top_dir,
+                    os.path.join(path, filename),
+                )
 
     def scan(self):
         tree = ElementTree.parse(self.path).getroot()
@@ -209,14 +214,12 @@ class FTIFile(BaseModule):
         if top_dir.endswith(".py"):
             return
 
-        for path, folders, filenames in os.walk(top_dir):
-            folders[:] = [d for d in folders if d not in FOLDERS_TO_IGNORE]
-            for filename in filenames:
-                if filename.endswith(".xml") and cls.TYPES_FOLDER in path:
-                    yield cls(
-                        top_dir,
-                        os.path.join(path, filename),
-                    )
+        for path, filename in cls.walk_and_filter_folder(top_dir):
+            if filename.endswith(".xml") and cls.TYPES_FOLDER in path:
+                yield cls(
+                    top_dir,
+                    os.path.join(path, filename),
+                )
 
     def scan(self):
         tree = ElementTree.parse(self.path).getroot()
@@ -252,14 +255,12 @@ class GSMetadata(BaseModule):
         if top_dir.endswith(".py"):
             return
 
-        for path, folders, filenames in os.walk(top_dir):
-            folders[:] = [d for d in folders if d not in FOLDERS_TO_IGNORE]
-            for filename in filenames:
-                if filename == "metadata.xml":
-                    yield cls(
-                        top_dir,
-                        os.path.join(path, filename),
-                    )
+        for path, filename in cls.walk_and_filter_folder(top_dir):
+            if filename == "metadata.xml":
+                yield cls(
+                    top_dir,
+                    os.path.join(path, filename),
+                )
 
     def scan(self):
         tree = ElementTree.parse(self.path).getroot()
