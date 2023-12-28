@@ -1,8 +1,8 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-2.13.1 (unreleased)
--------------------
+2.14 (2023-12-28)
+-----------------
 
 - Add support for distributions using implicit namespaces (PEP 420).
   [gforcada]
