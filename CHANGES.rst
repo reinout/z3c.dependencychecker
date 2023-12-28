@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-2.14.2 (unreleased)
+2.14.2 (2023-12-28)
 -------------------
 
 - Refactored other `modules.py` classes that needed the same fix from previous release.
