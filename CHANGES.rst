@@ -1,10 +1,22 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-2.14.1 (unreleased)
+2.14.4 (unreleased)
 -------------------
 
 - Use `pathlib.Path` everywhere to make it easier to reason about paths.
+  [gforcada]
+
+2.14.3 (2023-12-28)
+-------------------
+
+- Refactored other `modules.py` classes that needed the same fix from previous release.
+  [gforcada]
+
+2.14.1 (2023-12-28)
+-------------------
+
+- Ignore any dot leading folder (like `.tox` or `.git`) while scanning for files.
   [gforcada]
 
 2.14 (2023-12-28)
