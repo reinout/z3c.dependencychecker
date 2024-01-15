@@ -1,4 +1,5 @@
 from pathlib import Path
+from unittest import mock
 
 from z3c.dependencychecker.modules import DocFiles
 from z3c.dependencychecker.tests.utils import write_source_file_at
@@ -79,6 +80,20 @@ def test_create_from_files_deep_nested_txt(minimal_structure):
 
     modules_found = list(DocFiles.create_from_files(src_path))
     assert len(modules_found) == 1
+
+
+def test_unicode_decode_error():
+    docfiles = DocFiles("somewhere", "some_file")
+    docfiles._scan = mock.MagicMock
+    # Thanks to
+    # https://gehrcke.de/2015/12/how-to-raise-unicodedecodeerror-in-python-3/
+    # for the error syntax :-)
+    o = b"\x00\x00"
+    docfiles._scan.side_effect = UnicodeDecodeError(
+        "funnycodec", o, 1, 2, "This is just a fake reason!"
+    )
+    # The unicode error logs an error but continues otherwise.
+    assert list(docfiles.scan()) == []
 
 
 def test_create_from_files_deep_nested_rst(minimal_structure):
