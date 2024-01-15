@@ -4,7 +4,11 @@ Changelog of z3c.dependencychecker
 2.14.4 (unreleased)
 -------------------
 
-- Use `pathlib.Path` everywhere to make it easier to reason about paths.
+- Use `pathlib.Path` everywhere to make it easier to reason about
+  paths.  Note that python 3.10 somehow manages to complain about
+  ``AttributeError: 'PosixPath' object has no attribute
+  'startswith'``, even though 3.8/.9/.11/.12 and pypy work fine. So if
+  you get that error, use a different python version...
   [gforcada]
 
 2.14.3 (2023-12-28)
