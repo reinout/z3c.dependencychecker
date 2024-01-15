@@ -356,7 +356,7 @@ class ImportsDatabase:
             libraries = list(
                 set(list(sys.stdlib_module_names) + list(sys.builtin_module_names))
             )
-        else:
+        else:  # pragma: no cover
             from stdlib_list import stdlib_list
 
             python_version = sys.version_info
