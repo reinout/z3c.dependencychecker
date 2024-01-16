@@ -351,7 +351,7 @@ class ImportsDatabase:
 
     @staticmethod
     def _build_std_library():
-        if PY_10_OR_HIGHER:
+        if PY_10_OR_HIGHER:  # pragma: no cover
             # see https://github.com/jackmaney/python-stdlib-list/issues/55
             libraries = list(
                 set(list(sys.stdlib_module_names) + list(sys.builtin_module_names))
