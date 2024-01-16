@@ -93,7 +93,7 @@ def test_unicode_decode_error():
             raise UnicodeDecodeError(
                 "funnycodec", o, 1, 2, "This is just a fake reason!"
             )
-        yield "dummy yieldto make it an iterable"
+        yield "dummy yieldto make it an iterable"  # pragma: no cover
 
     docfiles._scan = mock_scan
     # The unicode error logs an error but continues otherwise.
