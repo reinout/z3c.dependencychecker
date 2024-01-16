@@ -81,8 +81,9 @@ def test_get_path_path_given():
     folder = Path(tempfile.mkdtemp())
     arguments = [folder]
     path = get_path(arguments)
-
-    assert path == folder
+    # .resolve() below makes it absolute: osx has /private/var/... !=
+    # /var/... otherwise...
+    assert path.resolve() == folder.resolve()
 
 
 def test_get_path_given_path_not_a_folder():
