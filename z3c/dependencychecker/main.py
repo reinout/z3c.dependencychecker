@@ -2,6 +2,7 @@ import logging
 import optparse
 import os
 import sys
+from pathlib import Path
 
 import pkg_resources
 
@@ -72,14 +73,14 @@ def get_path(args):
     If no path is given on the command line arguments, the current working
     directory is used instead.
     """
-    path = os.getcwd()
+    path = Path(os.getcwd())
 
     if len(args) < 1:
         logger.debug("path used: %s", path)
         return path
 
-    path = os.path.abspath(args[0])
-    if os.path.isdir(path):
+    path = Path(args[0]).resolve()
+    if path.is_dir():
         logger.debug("path used: %s", path)
         return path
 

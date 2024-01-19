@@ -1,7 +1,7 @@
 import glob
 import logging
-import os
 import sys
+from pathlib import Path
 
 import pkg_resources
 import toml
@@ -34,8 +34,10 @@ class PackageMetadata:
 
     @cached_property
     def distribution_root(self):
+        folder_files = list(self._path.iterdir())
         for metadata_file in METADATA_FILES:
-            if metadata_file in os.listdir(self._path):
+            file_path = self._path / metadata_file
+            if file_path in folder_files:
                 break
         else:
             logger.error(
@@ -48,22 +50,17 @@ class PackageMetadata:
 
     @cached_property
     def metadata_file_path(self):
+        folder_files = list(self._path.iterdir())
         for metadata_file in METADATA_FILES:
-            if metadata_file in os.listdir(self._path):
-                return os.path.join(
-                    self.distribution_root,
-                    metadata_file,
-                )
+            file_path = self._path / metadata_file
+            if file_path in folder_files:
+                return self.distribution_root / metadata_file
 
     @cached_property
     def package_dir(self):
         """Check where the .egg-info is located"""
         try_paths = [self.distribution_root]
-        top_level_elements = [
-            os.path.join(self.distribution_root, folder)
-            for folder in os.listdir(self.distribution_root)
-        ]
-        try_paths += [folder for folder in top_level_elements if os.path.isdir(folder)]
+        try_paths += [x for x in self.distribution_root.iterdir() if x.is_dir()]
         for path in try_paths:
             folder_found = self._find_egg_info_in_folder(path)
             if folder_found:
@@ -85,15 +82,11 @@ class PackageMetadata:
     @cached_property
     def egg_info_dir(self):
         results = self._find_egg_info_in_folder(self.package_dir)
-        return os.path.join(
-            self.package_dir,
-            results[0],
-        )
+        return self.package_dir / results[0]
 
     @cached_property
     def name(self):
-        path, filename = os.path.split(self.egg_info_dir)
-        name = filename[: -len(".egg-info")]
+        name = self.egg_info_dir.stem
         logger.debug(
             "Package name is %s",
             name,
@@ -152,11 +145,8 @@ class PackageMetadata:
 
     @cached_property
     def top_level(self):
-        path = os.path.join(
-            self.egg_info_dir,
-            "top_level.txt",
-        )
-        if not os.path.exists(path):
+        path = self.egg_info_dir / "top_level.txt"
+        if not path.exists():
             logger.error(
                 "top_level.txt could not be found on %s.\n"
                 "It is needed for dependencychecker to work properly.",
@@ -164,23 +154,19 @@ class PackageMetadata:
             )
             sys.exit(1)
 
-        with open(path) as top_level_file:
-            content = top_level_file.read().strip()
+        content = path.read_text().strip()
 
         top_levels = []
         for candidate in content.split("\n"):
-            possible_top_level = os.path.join(
-                self.package_dir,
-                candidate,
-            )
+            possible_top_level = self.package_dir / candidate
 
-            if os.path.exists(possible_top_level):
+            if possible_top_level.exists():
                 logger.debug("Found top level %s", possible_top_level)
                 top_levels.append(possible_top_level)
                 continue
 
-            single_module = f"{possible_top_level}.py"
-            if os.path.exists(single_module):
+            single_module = Path(f"{possible_top_level}.py")
+            if single_module.exists():
                 logger.debug("Found top level %s", single_module)
                 top_levels.append(single_module)
                 continue
@@ -194,10 +180,9 @@ class PackageMetadata:
             return top_levels
 
         logger.error(
-            "There are paths found in %s%stop_level.txt that do not exist.\n"
+            "There are paths found in %s that do not exist.\n"
             "Maybe you need to put the package in development again?",
-            self.egg_info_dir,
-            os.sep,
+            self.egg_info_dir / "top_level.txt",
         )
         sys.exit(1)
 
@@ -254,6 +239,7 @@ class Package:
 
     def analyze_package(self):
         for top_folder in self.metadata.top_level:
+            top_folder = Path(top_folder)
             logger.debug("Analyzing package top_level %s...", top_folder)
             for module_obj in MODULES:
                 logger.debug(
@@ -269,9 +255,7 @@ class Package:
                     self.imports.add_imports(source_file.scan())
 
     def _load_user_config(self):
-        config_file_path = os.sep.join(
-            [self.metadata.distribution_root, "pyproject.toml"]
-        )
+        config_file_path = self.metadata.distribution_root / "pyproject.toml"
         try:
             config = toml.load(config_file_path)
             return config["tool"]["dependencychecker"]

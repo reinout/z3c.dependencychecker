@@ -38,7 +38,7 @@ class BaseModule:
 
     @staticmethod
     def _get_relative_path(package_path, full_path):
-        return full_path[len(package_path) :]
+        return str(full_path)[len(str(package_path)) :]
 
     def _is_test_module(self):
         return bool(re.search(TEST_IN_PATH_REGEX, self._relative_path))
@@ -73,7 +73,7 @@ class PythonModule(BaseModule):
         Return this very same class, which would allow to call the scan()
         method to get an iterator over all this file's imports.
         """
-        if top_dir.endswith(".py"):
+        if top_dir.suffix == ".py":
             yield cls(top_dir, top_dir)
             return
 
@@ -148,7 +148,7 @@ class ZCMLFile(BaseModule):
         Return this very same class, which would allow to call the scan()
         method to get an iterator over all this file's imports.
         """
-        if top_dir.endswith(".py"):
+        if top_dir.suffix == ".py":
             return
 
         for path, filename in cls.walk_and_filter_folder(top_dir):
@@ -211,7 +211,7 @@ class FTIFile(BaseModule):
         Return this very same class, which would allow to call the scan()
         method to get an iterator over all this file's imports.
         """
-        if top_dir.endswith(".py"):
+        if top_dir.suffix == ".py":
             return
 
         for path, filename in cls.walk_and_filter_folder(top_dir):
@@ -252,7 +252,7 @@ class GSMetadata(BaseModule):
         Return this very same class, which would allow to call the scan()
         method to get an iterator over all this file's imports.
         """
-        if top_dir.endswith(".py"):
+        if top_dir.suffix == ".py":
             return
 
         for path, filename in cls.walk_and_filter_folder(top_dir):
@@ -346,7 +346,7 @@ class DocFiles(PythonDocstrings):
         Return this very same class, which would allow to call the scan()
         method to get an iterator over all this file's imports.
         """
-        if top_dir.endswith(".py"):
+        if top_dir.suffix == ".py":
             return
 
         for path, filename in cls.walk_and_filter_folder(top_dir):
@@ -357,6 +357,12 @@ class DocFiles(PythonDocstrings):
                 )
 
     def scan(self):
+        try:
+            yield from self._scan()
+        except UnicodeDecodeError:
+            logger.error("Unicode Problems parsing %s", self.path)
+
+    def _scan(self):
         with open(self.path) as doc_file:
             for line in doc_file:
                 code = self._extract_code(line)
@@ -395,7 +401,7 @@ class DjangoSettings(PythonModule):
         Return this very same class, which would allow to call the scan()
         method to get an iterator over all this file's imports.
         """
-        if top_dir.endswith(".py"):
+        if top_dir.suffix == ".py":
             return
 
         for path, filename in cls.walk_and_filter_folder(top_dir):

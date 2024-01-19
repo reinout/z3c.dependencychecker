@@ -1,5 +1,3 @@
-import os
-
 import pytest
 
 from z3c.dependencychecker.dotted_name import DottedName
@@ -36,18 +34,11 @@ ignore-packages = ['django-toolbar', 'plone.reload']
 
 
 def _write_user_config(path, content):
-    file_path = os.sep.join(
-        [
-            path,
-            "pyproject.toml",
-        ]
-    )
-    with open(file_path, "w") as config_file:
-        config_file.write(content)
+    (path / "pyproject.toml").write_text(content)
 
 
 def _update_requires_txt(path, package_name, packages):
-    file_path = os.sep.join([path, f"{package_name}.egg-info", "requires.txt"])
+    file_path = path / f"{package_name}.egg-info" / "requires.txt"
     with open(file_path, "w") as config_file:
         for package in packages:
             config_file.write(f"{package}\n")

@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 import pytest
 
@@ -38,13 +38,14 @@ TEST_IMPORTS_MATRIX = (
 
 def _get_zcml_imports_on_file(folder, source):
     full_content = ZCML_TEMPLATE.format(source)
+    folder = Path(folder.strpath)
     temporal_file = write_source_file_at(
-        (folder.strpath,),
+        folder,
         source_code=full_content,
         filename="configure.zcml",
     )
 
-    zcml_file = ZCMLFile(folder.strpath, temporal_file)
+    zcml_file = ZCMLFile(folder, temporal_file)
     dotted_names = [x.name for x in zcml_file.scan()]
     return dotted_names
 
@@ -65,8 +66,8 @@ def test_create_from_files_nothing(minimal_structure):
 
 def test_create_from_files_deep_nested(minimal_structure):
     path, package_name = minimal_structure
-    src_path = os.path.join(path, "src")
-    write_source_file_at([src_path, "a", "b"], filename="configure.zcml")
+    src_path = path / "src"
+    write_source_file_at(src_path / "a" / "b", filename="configure.zcml")
 
     modules_found = list(ZCMLFile.create_from_files(src_path))
     assert len(modules_found) == 1

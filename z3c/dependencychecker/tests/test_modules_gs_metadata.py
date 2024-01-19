@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 from z3c.dependencychecker.modules import GSMetadata
 from z3c.dependencychecker.tests.utils import write_source_file_at
@@ -29,13 +29,14 @@ MORE_DEPENDENCIES = """
 
 def _get_dependencies_on_file(folder, source):
     full_content = XML_TEMPLATE.format(source)
+    folder = Path(folder)
     temporal_file = write_source_file_at(
-        (folder.strpath,),
+        folder,
         source_code=full_content,
         filename="configure.zcml",
     )
 
-    gs_metadata = GSMetadata(folder.strpath, temporal_file)
+    gs_metadata = GSMetadata(folder, temporal_file)
     dotted_names = [x.name for x in gs_metadata.scan()]
     return dotted_names
 
@@ -48,9 +49,9 @@ def test_create_from_files_nothing(minimal_structure):
 
 def test_create_from_files_deep_nested(minimal_structure):
     path, package_name = minimal_structure
-    src_path = os.path.join(path, "src")
+    src_path = path / "src"
     write_source_file_at(
-        [src_path, "a", "b", "c"],
+        src_path / "a" / "b" / "c",
         filename="metadata.xml",
     )
 

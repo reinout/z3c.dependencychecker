@@ -1,5 +1,5 @@
-import os
 import tempfile
+from pathlib import Path
 
 from z3c.dependencychecker.modules import DjangoSettings
 from z3c.dependencychecker.tests.utils import write_source_file_at
@@ -15,12 +15,13 @@ TEST_RUNNER_ASSIGNMENT_TO_STRING = 'TEST_RUNNER = "random8"'
 
 
 def _get_imports_of_python_module(folder, source):
+    folder = Path(folder)
     temporal_file = write_source_file_at(
-        (folder.strpath,),
+        folder,
         source_code=source,
     )
 
-    django_settings = DjangoSettings(folder.strpath, temporal_file)
+    django_settings = DjangoSettings(folder, temporal_file)
     dotted_names = [x.name for x in django_settings.scan()]
     return dotted_names
 
@@ -33,23 +34,23 @@ def test_create_from_files_nothing(minimal_structure):
 
 def test_create_from_files_single_file_random_name():
     _, tmp_file = tempfile.mkstemp(".py")
-    modules_found = list(DjangoSettings.create_from_files(tmp_file))
+    modules_found = list(DjangoSettings.create_from_files(Path(tmp_file)))
     assert len(modules_found) == 0
 
 
 def test_create_from_files_single_file_settings_name(minimal_structure):
     path, package_name = minimal_structure
-    src_path = os.path.join(path, "src")
-    write_source_file_at([src_path], filename="some_settings.py")
+    src_path = path / "src"
+    write_source_file_at(src_path, filename="some_settings.py")
     modules_found = list(DjangoSettings.create_from_files(src_path))
     assert len(modules_found) == 1
 
 
 def test_create_from_files_deep_nested(minimal_structure):
     path, package_name = minimal_structure
-    src_path = os.path.join(path, "src")
+    src_path = path / "src"
     write_source_file_at(
-        [src_path, "a", "b", "c"],
+        src_path / "a" / "b" / "c",
         filename="anothersettings.py",
     )
     modules_found = list(DjangoSettings.create_from_files(src_path))
