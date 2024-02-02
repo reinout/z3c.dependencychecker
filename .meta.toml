@@ -10,7 +10,7 @@ test_runner = "pytest"
 
 [pyproject]
 extra_lines = """
-[tool.zest-releaser]
-create-wheel = yes
-extra-message = [ci skip]
+[tool.zestreleaser]
+create-wheel = true
+extra-message = "[ci skip]"
 """
