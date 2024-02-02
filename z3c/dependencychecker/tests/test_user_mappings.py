@@ -1,7 +1,8 @@
-import pytest
-
 from z3c.dependencychecker.dotted_name import DottedName
 from z3c.dependencychecker.package import Package
+
+import pytest
+
 
 EMPTY_FILE = ""
 IGNORE_OTHER_KEYS = """[servers]

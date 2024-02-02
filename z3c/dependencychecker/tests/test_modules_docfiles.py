@@ -1,7 +1,7 @@
 from pathlib import Path
-
 from z3c.dependencychecker.modules import DocFiles
 from z3c.dependencychecker.tests.utils import write_source_file_at
+
 
 NO_DOC = """
 Random title

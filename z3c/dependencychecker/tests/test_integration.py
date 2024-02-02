@@ -1,10 +1,10 @@
-import sys
-from unittest import mock
-
 from pkg_resources import load_entry_point
-
+from unittest import mock
 from z3c.dependencychecker.main import main
 from z3c.dependencychecker.utils import change_dir
+
+import sys
+
 
 MAIN_OUTPUT = """
 Missing requirements

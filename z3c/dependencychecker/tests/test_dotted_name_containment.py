@@ -1,6 +1,6 @@
-import pytest
-
 from z3c.dependencychecker.dotted_name import DottedName
+
+import pytest
 
 
 def test_fallback():

@@ -1,13 +1,13 @@
+from pathlib import Path
+from z3c.dependencychecker.package import Package
+from z3c.dependencychecker.report import Report
+
 import logging
 import optparse
 import os
-import sys
-from pathlib import Path
-
 import pkg_resources
+import sys
 
-from z3c.dependencychecker.package import Package
-from z3c.dependencychecker.report import Report
 
 logger = logging.getLogger(__name__)
 

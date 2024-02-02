@@ -1,7 +1,7 @@
 from pathlib import Path
-
 from z3c.dependencychecker.modules import PythonDocstrings
 from z3c.dependencychecker.tests.utils import write_source_file_at
+
 
 NO_DOC = "class MyClass(object): ..."
 INVALID_PYTHON = '''

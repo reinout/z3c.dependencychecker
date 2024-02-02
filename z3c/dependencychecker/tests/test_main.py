@@ -1,20 +1,17 @@
-import logging
-import os
-import sys
-import tempfile
 from pathlib import Path
 from unittest import mock
-
-import pytest
-
-from z3c.dependencychecker.main import (
-    _version,
-    get_path,
-    main,
-    parse_command_line,
-    set_log_level,
-)
+from z3c.dependencychecker.main import _version
+from z3c.dependencychecker.main import get_path
+from z3c.dependencychecker.main import main
+from z3c.dependencychecker.main import parse_command_line
+from z3c.dependencychecker.main import set_log_level
 from z3c.dependencychecker.utils import change_dir
+
+import logging
+import os
+import pytest
+import sys
+import tempfile
 
 
 def test_usage_non_existing_option():
