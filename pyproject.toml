@@ -113,6 +113,9 @@ ignore = [
 #  """
 ##
 
+[tool.zest-releaser]
+create-wheel = yes
+extra-message = [ci skip]
 
 ##
 # Add extra configuration options in .meta.toml:

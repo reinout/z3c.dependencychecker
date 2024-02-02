@@ -4,3 +4,13 @@
 [meta]
 template = "default"
 commit-id = "5d3e918e"
+
+[tox]
+test_runner = "pytest"
+
+[pyproject]
+extra_lines = """
+[tool.zest-releaser]
+create-wheel = yes
+extra-message = [ci skip]
+"""
