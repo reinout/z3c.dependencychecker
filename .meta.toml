@@ -9,10 +9,13 @@ commit-id = "5d3e918e"
 test_runner = "pytest"
 
 [pyproject]
-check_manifest_ignores = """
-    "z3c/dependencychecker/tests/sample1/src/sample1.egg-info_in/PKG-INFO",
-"""
 extra_lines = """
+# ignore-bad-ideas ends up, by happy accident, right at the end of tool.check-manifest,
+# where it belongs. Not sure if it stays that way.
+ignore-bad-ideas = [
+    "z3c/dependencychecker/tests/sample1/src/sample1.egg-info_in/PKG-INFO",
+    ]
+
 [tool.zestreleaser]
 create-wheel = true
 extra-message = "[ci skip]"

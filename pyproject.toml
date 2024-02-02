@@ -102,7 +102,6 @@ ignore = [
     "tox.ini",
     ".flake8",
     "mx.ini",
-    "z3c/dependencychecker/tests/sample1/src/sample1.egg-info_in/PKG-INFO",
 
 ]
 ##
@@ -113,6 +112,12 @@ ignore = [
 #      "*.pyc",
 #  """
 ##
+
+# ignore-bad-ideas ends up, by happy accident, right at the end of tool.check-manifest,
+# where it belongs. Not sure if it stays that way.
+ignore-bad-ideas = [
+    "z3c/dependencychecker/tests/sample1/src/sample1.egg-info_in/PKG-INFO",
+    ]
 
 [tool.zestreleaser]
 create-wheel = true
