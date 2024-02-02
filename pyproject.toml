@@ -102,6 +102,7 @@ ignore = [
     "tox.ini",
     ".flake8",
     "mx.ini",
+    "z3c/dependencychecker/tests/sample1/src/sample1.egg-info_in/PKG-INFO",
 
 ]
 ##
