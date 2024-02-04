@@ -9,6 +9,7 @@ commit-id = "5d3e918e"
 test_runner = "pytest"
 
 [pyproject]
+dependencies_ignores = "['stdlib_list',]"
 extra_lines = """
 # ignore-bad-ideas ends up, by happy accident, right at the end of tool.check-manifest,
 # where it belongs. Not sure if it stays that way.
