@@ -14,6 +14,7 @@ root = true
 
 
 [*]
+# Default settings for all files.
 # Unix-style newlines with a newline ending every file
 end_of_line = lf
 insert_final_newline = true
