@@ -3,7 +3,7 @@
 # See the inline comments on how to expand/tweak this configuration file
 [meta]
 template = "default"
-commit-id = "d25c4611"
+commit-id = "bf23101c"
 
 [tox]
 test_runner = "pytest"
