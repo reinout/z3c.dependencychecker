@@ -130,20 +130,17 @@ Local development setup
 
 Create a virtualenv and install the requirements::
 
-  $ python3 -m venv .
-  $ bin/pip install -r requirements.txt
+  $ python3 -m venv venv
+  $ . venv/bin/activate
+  $ pip install -r requirements.txt
 
 If you changed the actual requirements in ``setup.py`` or the development
 requirements in ``requirements.in``, re-generate ``requirements.txt``::
 
-  $ bin/pip-compile requirements.in
+  $ pip-compile requirements.in
 
-To run the tests (there's some pytest configuration in ``setup.cfg``)::
+To run the tests we use the setup of plone/meta. So stuff like::
 
-  $ bin/pytest
-
-Some checks that are run by github actions::
-
-  $ bin/black
-  $ bin/codespell setup.py z3c/
-  $ bin/flake8 setup.py z3c/
+  $ tox -e test
+  $ tox -e format
+  $ pre-commit run --all
