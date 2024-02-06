@@ -3,7 +3,7 @@
 # See the inline comments on how to expand/tweak this configuration file
 [meta]
 template = "default"
-commit-id = "599bad1e"
+commit-id = "d25c4611"
 
 [tox]
 test_runner = "pytest"
@@ -11,13 +11,12 @@ use_pytest_plone = false
 
 [pyproject]
 dependencies_ignores = "['stdlib_list',]"
-extra_lines = """
-# ignore-bad-ideas ends up, by happy accident, right at the end of tool.check-manifest,
-# where it belongs. Not sure if it stays that way.
+check_manifest_extra_lines = """
 ignore-bad-ideas = [
     "z3c/dependencychecker/tests/sample1/src/sample1.egg-info_in/PKG-INFO",
     ]
-
+"""
+extra_lines = """
 [tool.zestreleaser]
 create-wheel = true
 extra-message = "[ci skip]"
