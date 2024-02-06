@@ -6,6 +6,7 @@ our test suite.
 Keeping it here ensures that pytest finds it without extra setup and eases
 reusability.
 """
+
 from pathlib import Path
 from z3c.dependencychecker.dotted_name import DottedName
 from z3c.dependencychecker.package import ImportsDatabase
