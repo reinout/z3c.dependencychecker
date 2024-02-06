@@ -3,10 +3,11 @@
 # See the inline comments on how to expand/tweak this configuration file
 [meta]
 template = "default"
-commit-id = "17ce00cc"
+commit-id = "599bad1e"
 
 [tox]
 test_runner = "pytest"
+use_pytest_plone = false
 
 [pyproject]
 dependencies_ignores = "['stdlib_list',]"
