@@ -1,12 +1,12 @@
-import os
-import shutil
-import tempfile
 from pathlib import Path
+from z3c.dependencychecker.package import METADATA_FILES
+from z3c.dependencychecker.package import PackageMetadata
 
+import os
 import pkg_resources
 import pytest
-
-from z3c.dependencychecker.package import METADATA_FILES, PackageMetadata
+import shutil
+import tempfile
 
 
 def test_no_setup_py_file_found():

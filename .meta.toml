@@ -1,0 +1,23 @@
+# Generated from:
+# https://github.com/plone/meta/tree/main/config/default
+# See the inline comments on how to expand/tweak this configuration file
+[meta]
+template = "default"
+commit-id = "bf23101c"
+
+[tox]
+test_runner = "pytest"
+use_pytest_plone = false
+
+[pyproject]
+dependencies_ignores = "['stdlib_list',]"
+check_manifest_extra_lines = """
+ignore-bad-ideas = [
+    "z3c/dependencychecker/tests/sample1/src/sample1.egg-info_in/PKG-INFO",
+    ]
+"""
+extra_lines = """
+[tool.zestreleaser]
+create-wheel = true
+extra-message = "[ci skip]"
+"""

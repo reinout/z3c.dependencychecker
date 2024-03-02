@@ -30,25 +30,7 @@ jobs:
         run: pip --version
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
-      # formatters
-      - name: Run pyupgrade
-        if: matrix.python-version == '3.11'
-        run: pyupgrade --py38-plus setup.py `find z3c -name "*.py"`
-      - name: Run isort
-        if: matrix.python-version == '3.11'
-        run: isort --check-only setup.py z3c/
-      - name: Run black
-        if: matrix.python-version == '3.11'
-        run: black --check setup.py z3c/
-      # linters
-      - name: Lint with codespell
-        if: matrix.python-version == '3.11'
-        run: codespell *.rst setup.py z3c/
-      - name: Lint with flake8
-        if: matrix.python-version == '3.11'
-        run: flake8 setup.py z3c/ --count --show-source --statistics
-      # tests and coverage
       - name: Test
-        run: pytest
+        run: coverage run --source=z3c/dependencychecker -m pytest
       - name: Coverage
         run: coveralls --service=github

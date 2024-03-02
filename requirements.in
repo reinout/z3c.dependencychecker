@@ -2,21 +2,7 @@
 -e file:.#z3c.dependencychecker[test]
 
 # Development tools
-black
-codespell
 coveralls
-flake8-blind-except
-flake8-bugbear
-flake8-builtins
-flake8-comprehensions
-flake8-debugger
-flake8-deprecated
-flake8-isort
-flake8-pep3101
-flake8-quotes
-flake8-todo
-isort
 pip-tools
 pytest
 pytest-cov
-pyupgrade

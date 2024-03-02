@@ -1,8 +1,7 @@
 from unittest import mock
+from z3c.dependencychecker.dotted_name import DottedName
 
 import pytest
-
-from z3c.dependencychecker.dotted_name import DottedName
 
 
 def test_minimal():

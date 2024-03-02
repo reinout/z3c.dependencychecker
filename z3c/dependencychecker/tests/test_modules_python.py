@@ -1,10 +1,10 @@
-import tempfile
 from pathlib import Path
-
-import pytest
-
 from z3c.dependencychecker.modules import PythonModule
 from z3c.dependencychecker.tests.utils import write_source_file_at
+
+import pytest
+import tempfile
+
 
 IMPORT = "import foo"
 IMPORT_MULTIPLE = "import foo, bar"

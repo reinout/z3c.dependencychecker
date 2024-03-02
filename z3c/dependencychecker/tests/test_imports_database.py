@@ -1,10 +1,8 @@
 from z3c.dependencychecker.db import ImportsDatabase
 from z3c.dependencychecker.dotted_name import DottedName
-from z3c.dependencychecker.tests.utils import (
-    get_extras_requirements_names,
-    get_requirements_names,
-    get_requirements_names_for_extra,
-)
+from z3c.dependencychecker.tests.utils import get_extras_requirements_names
+from z3c.dependencychecker.tests.utils import get_requirements_names
+from z3c.dependencychecker.tests.utils import get_requirements_names_for_extra
 
 
 def test_no_dependencies():

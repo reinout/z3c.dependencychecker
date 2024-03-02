@@ -1,10 +1,9 @@
 from unittest import mock
-
-import pytest
-
 from z3c.dependencychecker.package import Package
 from z3c.dependencychecker.report import Report
 from z3c.dependencychecker.tests.utils import write_source_file_at
+
+import pytest
 
 
 def test_print_header_nothing(capsys):

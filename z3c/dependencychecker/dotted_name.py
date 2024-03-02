@@ -1,7 +1,8 @@
-import hashlib
+from cached_property import cached_property
 from functools import total_ordering
 
-from cached_property import cached_property
+import hashlib
+
 
 # An umbrella distribution is a Pypi distribution, like `Zope`,
 # of which the importable packages that it provides have different namespaces
