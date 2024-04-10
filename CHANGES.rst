@@ -11,6 +11,10 @@ Changelog of z3c.dependencychecker
   you get that error, use a different python version...
   [gforcada]
 
+- Django settings: look at ``MIDDLEWARE`` and so in addition to ``INSTALLED_APPS``, this
+  helps to detect more required packages.
+
+
 2.14.3 (2023-12-28)
 -------------------
 
