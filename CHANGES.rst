@@ -1,8 +1,8 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-2.14.4 (unreleased)
--------------------
+2.15 (2024-04-11)
+-----------------
 
 - Use `pathlib.Path` everywhere to make it easier to reason about
   paths.  Note that python 3.10 somehow manages to complain about
