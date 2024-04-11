@@ -415,7 +415,7 @@ class DjangoSettings(PythonModule):
     def scan(self):
         for node in ast.walk(self._get_tree()):
             if isinstance(node, ast.Assign):
-                if self._is_installed_apps_assignment(node):
+                if self._is_apps_assignment(node):
                     if isinstance(node.value, (ast.Tuple, ast.List)):
                         for element in node.value.elts:
                             if isinstance(element, ast.Str):
@@ -434,11 +434,13 @@ class DjangoSettings(PythonModule):
                         )
 
     @staticmethod
-    def _is_installed_apps_assignment(node):
+    def _is_apps_assignment(node):
+        # Assignment to INSTALLED_APPS and other lists of apps-like dotted paths
+        APPS_LIKE_LISTS = ["INSTALLED_APPS", "MIDDLEWARE", "AUTHENTICATION_BACKENDS"]
         if (
             len(node.targets) == 1
             and isinstance(node.targets[0], ast.Name)
-            and node.targets[0].id == "INSTALLED_APPS"
+            and node.targets[0].id in APPS_LIKE_LISTS
         ):
             return True
 

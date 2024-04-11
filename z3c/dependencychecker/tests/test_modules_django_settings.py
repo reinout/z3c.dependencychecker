@@ -13,6 +13,7 @@ APPS_ASSIGNMENT_TO_LIST = 'INSTALLED_APPS = ["random3", "random4", ]'
 APPS_ASSIGNMENT_TO_LIST_MIXED = 'INSTALLED_APPS = ["random5", 3, ]'
 TEST_RUNNER_ASSIGNMENT_TO_LIST = 'TEST_RUNNER = ["random6", "random7", ]'
 TEST_RUNNER_ASSIGNMENT_TO_STRING = 'TEST_RUNNER = "random8"'
+MIDDLEWARE_ASSIGNMENT_TO_LIST = 'MIDDLEWARE = ["something"]'
 
 
 def _get_imports_of_python_module(folder, source):
@@ -148,3 +149,11 @@ def test_apps_assignment_to_string_mixed_details(tmpdir):
         TEST_RUNNER_ASSIGNMENT_TO_STRING,
     )
     assert dotted_names[0] == "random8"
+
+
+def test_middleware_assignment_to_list(tmpdir):
+    dotted_names = _get_imports_of_python_module(
+        tmpdir,
+        MIDDLEWARE_ASSIGNMENT_TO_LIST,
+    )
+    assert dotted_names == ["something"]
