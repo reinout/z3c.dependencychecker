@@ -1,3 +1,4 @@
+from importlib.metadata import version
 from pathlib import Path
 from z3c.dependencychecker.package import Package
 from z3c.dependencychecker.report import Report
@@ -5,7 +6,6 @@ from z3c.dependencychecker.report import Report
 import logging
 import optparse
 import os
-import pkg_resources
 import sys
 
 
@@ -52,8 +52,7 @@ def parse_command_line():
 
 
 def _version():
-    ourselves = pkg_resources.require("z3c.dependencychecker")[0]
-    return ourselves.version
+    return version("z3c.dependencychecker")
 
 
 def set_log_level(verbose):
