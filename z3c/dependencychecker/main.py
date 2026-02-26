@@ -5,7 +5,6 @@ from z3c.dependencychecker.report import Report
 
 import logging
 import optparse
-import os
 import sys
 
 
@@ -72,7 +71,7 @@ def get_path(args):
     If no path is given on the command line arguments, the current working
     directory is used instead.
     """
-    path = Path(os.getcwd())
+    path = Path(".").resolve()
 
     if len(args) < 1:
         logger.debug("path used: %s", path)
