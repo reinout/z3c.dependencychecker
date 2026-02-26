@@ -195,6 +195,7 @@ class Package:
     """
 
     def __init__(self, path):
+        self.path = path
         self.metadata = PackageMetadata(path)
         self.imports = ImportsDatabase()
         self.imports.own_dotted_name = DottedName(self.metadata.name)
@@ -255,7 +256,7 @@ class Package:
                     self.imports.add_imports(source_file.scan())
 
     def _load_user_config(self):
-        config_file_path = self.metadata.distribution_root / "pyproject.toml"
+        config_file_path = self.path / "pyproject.toml"
         try:
             config = toml.load(config_file_path)
             return config["tool"]["dependencychecker"]
