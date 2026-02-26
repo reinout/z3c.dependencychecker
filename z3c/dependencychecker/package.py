@@ -240,7 +240,6 @@ class Package:
 
     def analyze_package(self):
         for top_folder in self.metadata.top_level:
-            top_folder = Path(top_folder)
             logger.debug("Analyzing package top_level %s...", top_folder)
             for module_obj in MODULES:
                 logger.debug(
