@@ -6,6 +6,8 @@ Changelog of z3c.dependencychecker
 
 - Minor cleanups and start removing `pkg_resources` usage [gforcada]
 
+- Move distribution to src layout [gforcada]
+
 2.15 (2024-04-11)
 -----------------
 
