@@ -8,6 +8,8 @@ Changelog of z3c.dependencychecker
 
 - Move distribution to src layout [gforcada]
 
+- Switch to native namespace (PEP 420) [gforcada]
+
 2.15 (2024-04-11)
 -----------------
 
