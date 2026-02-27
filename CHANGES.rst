@@ -10,6 +10,8 @@ Changelog of z3c.dependencychecker
 
 - Move tests to top-level [gforcada]
 
+- Switch to native namespace (PEP 420) [gforcada]
+
 2.15 (2024-04-11)
 -----------------
 
