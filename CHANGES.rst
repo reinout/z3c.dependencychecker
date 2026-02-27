@@ -4,8 +4,7 @@ Changelog of z3c.dependencychecker
 2.16 (unreleased)
 -----------------
 
-- Nothing changed yet.
-
+- Minor cleanups and start removing `pkg_resources` usage [gforcada]
 
 2.15 (2024-04-11)
 -----------------
