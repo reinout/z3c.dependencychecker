@@ -195,6 +195,7 @@ class Package:
     """
 
     def __init__(self, path):
+        self.path = path
         self.metadata = PackageMetadata(path)
         self.imports = ImportsDatabase()
         self.imports.own_dotted_name = DottedName(self.metadata.name)
@@ -239,7 +240,6 @@ class Package:
 
     def analyze_package(self):
         for top_folder in self.metadata.top_level:
-            top_folder = Path(top_folder)
             logger.debug("Analyzing package top_level %s...", top_folder)
             for module_obj in MODULES:
                 logger.debug(
@@ -255,7 +255,7 @@ class Package:
                     self.imports.add_imports(source_file.scan())
 
     def _load_user_config(self):
-        config_file_path = self.metadata.distribution_root / "pyproject.toml"
+        config_file_path = self.path / "pyproject.toml"
         try:
             config = toml.load(config_file_path)
             return config["tool"]["dependencychecker"]

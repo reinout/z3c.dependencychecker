@@ -1,11 +1,10 @@
+from importlib.metadata import version
 from pathlib import Path
 from z3c.dependencychecker.package import Package
 from z3c.dependencychecker.report import Report
 
 import logging
 import optparse
-import os
-import pkg_resources
 import sys
 
 
@@ -52,8 +51,7 @@ def parse_command_line():
 
 
 def _version():
-    ourselves = pkg_resources.require("z3c.dependencychecker")[0]
-    return ourselves.version
+    return version("z3c.dependencychecker")
 
 
 def set_log_level(verbose):
@@ -73,7 +71,7 @@ def get_path(args):
     If no path is given on the command line arguments, the current working
     directory is used instead.
     """
-    path = Path(os.getcwd())
+    path = Path(".").resolve()
 
     if len(args) < 1:
         logger.debug("path used: %s", path)
