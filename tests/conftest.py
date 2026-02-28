@@ -10,6 +10,7 @@ reusability.
 from pathlib import Path
 from z3c.dependencychecker.dotted_name import DottedName
 from z3c.dependencychecker.package import ImportsDatabase
+from zipfile import ZipFile
 
 import os
 import pytest
@@ -55,6 +56,14 @@ def minimal_structure():
 
     src_folder = folder / "src"
     src_folder.mkdir(parents=True, exist_ok=True)
+
+    dist_folder = folder / "dist"
+    dist_folder.mkdir(parents=True, exist_ok=True)
+
+    wheel_path = dist_folder / f"{package_name}-3.0-py3-none-any.whl"
+    with ZipFile(wheel_path, "w") as wheel_archive:
+        # it only needs to be a valid zip file
+        wheel_archive.writestr("eggs.txt", "content")
 
     yield folder, package_name
 
