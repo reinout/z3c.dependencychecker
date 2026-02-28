@@ -8,6 +8,8 @@ Changelog of z3c.dependencychecker
 
 - Move distribution to src layout [gforcada]
 
+- Move tests to top-level [gforcada]
+
 2.15 (2024-04-11)
 -----------------
 
