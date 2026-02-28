@@ -1,11 +1,11 @@
+from .utils import get_extras_requirements_names
+from .utils import get_requirements_names
+from .utils import get_requirements_names_for_extra
+from .utils import get_sorted_imports_paths
+from .utils import write_source_file_at
 from pathlib import Path
 from z3c.dependencychecker.package import Package
 from z3c.dependencychecker.package import PackageMetadata
-from z3c.dependencychecker.tests.utils import get_extras_requirements_names
-from z3c.dependencychecker.tests.utils import get_requirements_names
-from z3c.dependencychecker.tests.utils import get_requirements_names_for_extra
-from z3c.dependencychecker.tests.utils import get_sorted_imports_paths
-from z3c.dependencychecker.tests.utils import write_source_file_at
 
 import os
 
