@@ -1,4 +1,5 @@
 recursive-include src *
+recursive-exclude tests *
 include *.rst
 global-exclude *.pyc
 exclude .*
