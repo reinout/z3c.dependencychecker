@@ -52,7 +52,8 @@ def minimal_structure():
     """
     folder = Path(tempfile.mkdtemp())
     _add_setup_py(folder)
-    package_name = _add_egg_info(folder)
+    package_name = "".join(random.choice(string.ascii_lowercase) for _ in range(10))
+    _write_top_level_file(folder, package_name)
 
     src_folder = folder / "src"
     src_folder.mkdir(parents=True, exist_ok=True)
@@ -74,34 +75,8 @@ def _add_setup_py(folder):
     (folder / "setup.py").write_text("hi")
 
 
-def _add_egg_info(folder):
-    package_name = "".join(random.choice(string.ascii_lowercase) for _ in range(10))
-
-    egg_info_folder_path = folder / f"{package_name}.egg-info"
-    egg_info_folder_path.mkdir(parents=True, exist_ok=True)
-
-    _write_pkg_info_file(egg_info_folder_path)
-    _write_requires_file(egg_info_folder_path)
-    _write_top_level_file(egg_info_folder_path, package_name)
-
-    return package_name
-
-
-def _write_pkg_info_file(folder):
-    lines = "\n".join(
-        ["Metadata-Version: 1.0", "Name: testpackage", "Version: 1.0.dev0"]
-    )
-    (folder / "PKG-INFO").write_text(lines)
-
-
-def _write_requires_file(folder):
-    (folder / "requires.txt").write_text("\n".join(["one", "two"]))
-
-
 def _write_top_level_file(folder, package_name):
-    (folder / "top_level.txt").write_text("\n".join([package_name]))
-
-    sources_top_folder = folder.parent / package_name
+    sources_top_folder = folder / package_name
     sources_top_folder.mkdir(parents=True, exist_ok=True)
 
 
@@ -110,3 +85,16 @@ def minimal_database():
     database = ImportsDatabase()
     database.own_dotted_name = DottedName("fake")
     return database
+
+
+@pytest.fixture(autouse=True)
+def mock_inspect_wheel(mocker):
+    """Globally patch inspect_wheel method
+
+    It expects a fully working wheel zip file, which is way too much work for testing.
+
+    Rather, provide (see `utils.dist_info`) a function that generates
+    the JSON format from `inspect_wheel`.
+    """
+    mock_wheel_info = mocker.patch("z3c.dependencychecker.package.inspect_wheel")
+    return mock_wheel_info
