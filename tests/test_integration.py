@@ -1,8 +1,10 @@
-from pkg_resources import load_entry_point
+from .utils import dist_info
+from importlib.metadata import entry_points
 from unittest import mock
 from z3c.dependencychecker.main import main
 from z3c.dependencychecker.utils import change_dir
 
+import pytest
 import sys
 
 
@@ -30,6 +32,7 @@ Missing test requirements
 
 Unneeded requirements
 =====================
+     setuptools
      some.other.extension
      unneeded.req
 
@@ -48,7 +51,37 @@ or any other means.
 """
 
 
-def test_highlevel_integration(capsys, fake_project):
+@pytest.fixture()
+def mock_find_wheel(mocker):
+    """Patch PackageMetadata to ignore that there is no real .whl file"""
+    mock_find_wheel = mocker.patch(
+        "z3c.dependencychecker.package.PackageMetadata._find_wheel_path"
+    )
+    return mock_find_wheel
+
+
+def test_highlevel_integration(
+    capsys, fake_project, mock_inspect_wheel, mock_find_wheel
+):
+    mock_inspect_wheel.return_value = dist_info(
+        name="sample1",
+        requirements=[
+            "|setuptools|",
+            "|zest.releaser|",
+            "|unneeded.req|",
+            "|Needed.By.Test|",
+            "|needed.by.zcml|",
+            "|also.needed.by.zcml|",
+            "|generic.setup.dependency|",
+            "test|my.package|",
+            "test|needed.by.test.zcml|",
+            "test|z3c.testsetup|",
+            "test|zope.testbrowser|",
+            "test|zope.testing|",
+            "someotherextension|some.other.extension|",
+        ],
+    )
+
     with change_dir(fake_project):
         arguments = ["dependencychecker"]
         try:
@@ -62,10 +95,8 @@ def test_highlevel_integration(capsys, fake_project):
 
 
 def test_entry_point_installed():
-    """Check that pkg_resources can find the entry point defined in setup.py"""
-    entry_point = load_entry_point(
-        "z3c.dependencychecker", "console_scripts", "dependencychecker"
-    )
+    """Check that the entry points defined do exist"""
+    entry_point = entry_points(group="console_scripts", name="dependencychecker")
     assert entry_point
 
 
@@ -80,8 +111,7 @@ def test_entry_point_run():
     import z3c.dependencychecker.main
 
     with mock.patch.object(z3c.dependencychecker.main, "main", fake_main):
-        entry_point = load_entry_point(
-            "z3c.dependencychecker", "console_scripts", "dependencychecker"
-        )
+        (entry_point,) = entry_points(group="console_scripts", name="dependencychecker")
+        main_function = entry_point.load()
 
-    assert entry_point() == "All dependencies are fine"
+    assert main_function() == "All dependencies are fine"

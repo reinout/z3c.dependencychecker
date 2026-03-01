@@ -16,8 +16,7 @@ setup(name='sample1',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          # Don't forget to add this by hand to the
-          # src/sample1.egg-info/requires.txt file!
+          # update test_integration.py:test_highlevel_integration test!
           'setuptools',
           'zest.releaser',
           'unneeded.req',
@@ -29,8 +28,7 @@ setup(name='sample1',
           ],
       extras_require = {
           'test': [
-              # Don't forget to add this by hand to the
-              # src/sample1.egg-info/requires.txt file!
+              # update test_integration.py:test_highlevel_integration test!
               'my.package',
               'needed.by.test.zcml',
               'z3c.testsetup>=0.3',
