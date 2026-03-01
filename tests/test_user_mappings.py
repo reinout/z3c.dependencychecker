@@ -1,3 +1,4 @@
+from .utils import dist_info
 from z3c.dependencychecker.dotted_name import DottedName
 from z3c.dependencychecker.package import Package
 
@@ -45,7 +46,7 @@ def _update_requires_txt(path, package_name, packages):
             config_file.write(f"{package}\n")
 
 
-def test_no_file(minimal_structure):
+def test_no_file(minimal_structure, mock_inspect_wheel):
     path, package_name = minimal_structure
     package = Package(path)
     package.set_user_mappings()
@@ -63,15 +64,16 @@ def test_no_file(minimal_structure):
     ),
 )
 def test_valid_configuration(minimal_structure, config):
-    path, package_name = minimal_structure
+    path, _ = minimal_structure
     _write_user_config(path, config)
     package = Package(path)
     package.set_user_mappings()
     assert package.imports.user_mappings == {}
 
 
-def test_ignore_user_mappings(minimal_structure):
+def test_ignore_user_mappings(minimal_structure, mock_inspect_wheel):
     path, package_name = minimal_structure
+    mock_inspect_wheel.return_value = dist_info(name=package_name)
     _write_user_config(path, ONE_MAPPING)
     package = Package(path)
     package.inspect()
@@ -79,16 +81,13 @@ def test_ignore_user_mappings(minimal_structure):
     assert len(package.imports.user_mappings) == 0
 
 
-def test_one_user_mapping(minimal_structure):
+def test_one_user_mapping(minimal_structure, mock_inspect_wheel):
     path, package_name = minimal_structure
-    _write_user_config(path, ONE_MAPPING)
-    _update_requires_txt(
-        path,
-        package_name,
-        [
-            "Zope2",
-        ],
+    mock_inspect_wheel.return_value = dist_info(
+        name=package_name, requirements=["|Zope2|"]
     )
+    _write_user_config(path, ONE_MAPPING)
+
     package = Package(path)
     package.inspect()
     five_dotted_name = DottedName("Products.Five")
@@ -104,14 +103,13 @@ def test_one_user_mapping(minimal_structure):
     } == mappings
 
 
-def test_filter_out_mappings_on_test(minimal_structure):
+def test_filter_out_mappings_on_test(minimal_structure, mock_inspect_wheel):
     path, package_name = minimal_structure
-    _write_user_config(path, ONE_MAPPING)
-    _update_requires_txt(
-        path,
-        package_name,
-        ["plone.reload", "[test]", "Zope2"],
+    mock_inspect_wheel.return_value = dist_info(
+        name=package_name, requirements=["|plone.reload|", "test|Zope2|"]
     )
+
+    _write_user_config(path, ONE_MAPPING)
     package = Package(path)
     package.inspect()
     five_dotted_name = DottedName("Products.Five")
@@ -121,24 +119,20 @@ def test_filter_out_mappings_on_test(minimal_structure):
     assert len(package.imports.user_mappings) == 1
     assert zope_dotted_name in package.imports.user_mappings
 
-    # The next two aren'd in the mapping, so they shouldn't be filtered out:
+    # The next two aren't in the mapping, so they shouldn't be filtered out:
     assert package.imports._filter_out_mappings_on_test(plone_reload_dotted_name)
     assert package.imports._filter_out_mappings_on_test(five_dotted_name)
     # This one is in the mapping, but shouldn't be filtered out as it is a test-only import.
     assert package.imports._filter_out_mappings_on_test(zope_dotted_name)
 
 
-def test_more_user_mappings(minimal_structure):
+def test_more_user_mappings(minimal_structure, mock_inspect_wheel):
     path, package_name = minimal_structure
-    _write_user_config(path, MORE_MAPPINGS)
-    _update_requires_txt(
-        path,
-        package_name,
-        [
-            "Zope2",
-            "Zope4",
-        ],
+    mock_inspect_wheel.return_value = dist_info(
+        name=package_name, requirements=["|Zope2|", "|Zope4|"]
     )
+    _write_user_config(path, MORE_MAPPINGS)
+
     package = Package(path)
     package.inspect()
     zope2_dotted_name = DottedName("Zope2")
@@ -151,16 +145,12 @@ def test_more_user_mappings(minimal_structure):
     assert len(package.imports.user_mappings[zope4_dotted_name]) == 2
 
 
-def test_subtables(minimal_structure):
+def test_subtables(minimal_structure, mock_inspect_wheel):
     path, package_name = minimal_structure
-    _write_user_config(path, SUBTABLES)
-    _update_requires_txt(
-        path,
-        package_name,
-        [
-            "Zope2",
-        ],
+    mock_inspect_wheel.return_value = dist_info(
+        name=package_name, requirements=["|Zope2|"]
     )
+    _write_user_config(path, SUBTABLES)
     package = Package(path)
     package.inspect()
     zope2_dotted_name = DottedName("Zope2")
@@ -169,22 +159,22 @@ def test_subtables(minimal_structure):
     assert zope2_dotted_name in package.imports.user_mappings
 
 
-def test_ignore_packages_no_list(minimal_structure):
+def test_ignore_packages_no_list(minimal_structure, mock_inspect_wheel):
     path, package_name = minimal_structure
+    mock_inspect_wheel.return_value = dist_info(name=package_name)
     _write_user_config(path, IGNORE_PACKAGES_NO_LIST)
     package = Package(path)
     package.inspect()
     assert len(package.imports.user_mappings) == 0
 
 
-def test_ignore_packages(minimal_structure):
+def test_ignore_packages(minimal_structure, mock_inspect_wheel):
     path, package_name = minimal_structure
-    _write_user_config(path, IGNORE_PACKAGES)
-    _update_requires_txt(
-        path,
-        package_name,
-        ["Zope2", "plone.reload", "django-toolbar"],
+    mock_inspect_wheel.return_value = dist_info(
+        name=package_name,
+        requirements=["|Zope2|", "|plone.reload|", "|django-toolbar|"],
     )
+    _write_user_config(path, IGNORE_PACKAGES)
     package = Package(path)
     package.inspect()
     django_toolbar = DottedName("django-toolbar")
