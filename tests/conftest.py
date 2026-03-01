@@ -12,7 +12,6 @@ from z3c.dependencychecker.dotted_name import DottedName
 from z3c.dependencychecker.package import ImportsDatabase
 
 import os
-import pkg_resources
 import pytest
 import random
 import shutil
@@ -23,10 +22,7 @@ import tempfile
 @pytest.fixture
 def fake_project():
     temp_folder = Path(tempfile.mkdtemp(prefix="depcheck"))
-    fake_package_files = pkg_resources.resource_filename(
-        "z3c.dependencychecker.tests",
-        "sample1",
-    )
+    fake_package_files = Path(".") / "tests" / "sample1"
     package_folder = temp_folder / "sample1"
     shutil.copytree(fake_package_files, package_folder)
     # To prevent the sample .py files to be picked up by ourselves or other

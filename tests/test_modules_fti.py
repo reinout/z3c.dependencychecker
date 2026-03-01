@@ -1,6 +1,6 @@
+from .utils import write_source_file_at
 from pathlib import Path
 from z3c.dependencychecker.modules import FTIFile
-from z3c.dependencychecker.tests.utils import write_source_file_at
 
 
 XML_TEMPLATE = """<?xml version="1.0"?>
