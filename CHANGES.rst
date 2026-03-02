@@ -4,7 +4,13 @@ Changelog of z3c.dependencychecker
 2.16 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Minor cleanups and start removing `pkg_resources` usage [gforcada]
+
+- Move distribution to src layout [gforcada]
+
+- Switch to native namespace (PEP 420) [gforcada]
+
+- Move tests to top-level [gforcada]
 
 
 2.15 (2024-04-11)

@@ -1,7 +1,7 @@
+from .utils import write_source_file_at
 from unittest import mock
 from z3c.dependencychecker.package import Package
 from z3c.dependencychecker.report import Report
-from z3c.dependencychecker.tests.utils import write_source_file_at
 
 import pytest
 
