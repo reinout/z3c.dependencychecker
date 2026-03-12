@@ -54,7 +54,6 @@ class ImportsDatabase:
 
     def add_imports(self, imports):
         filters = (
-            self._filter_out_known_packages,
             self._filter_out_own_package,
             self._filter_out_python_standard_library,
         )
@@ -125,7 +124,6 @@ class ImportsDatabase:
         for dotted_name in test_requirements:
             all_but_test_requirements.remove(dotted_name)
         filters = (
-            self._filter_out_known_packages,
             self._filter_out_python_standard_library,
             self._filter_out_used_imports,
             self._filter_out_ignored_imports,
@@ -194,7 +192,6 @@ class ImportsDatabase:
             return []
 
         filters = (
-            self._filter_out_known_packages,
             self._filter_out_python_standard_library,
             self._filter_out_used_imports,
             self._filter_out_ignored_imports,
@@ -286,14 +283,6 @@ class ImportsDatabase:
             dotted_name,
             self.ignored_packages,
         )
-
-    def _filter_out_known_packages(self, dotted_name):
-        to_ignore = (
-            DottedName("setuptools"),
-            DottedName("pkg_resources"),
-            DottedName("distribute"),
-        )
-        return self._discard_if_found_obj_in_list(dotted_name, to_ignore)
 
     @staticmethod
     def _filter_out_testing_imports(dotted_name):
