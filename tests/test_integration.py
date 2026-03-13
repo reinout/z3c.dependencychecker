@@ -46,9 +46,9 @@ Unneeded test requirements
 ==========================
      zope.testing
 
-Note: requirements are taken from the egginfo dir, so you need
-to re-generate it, via `python -m build`, setuptools, zc.buildout
-or any other means.
+Note: requirements are parsed from a built wheel archive
+found in the dist folder.
+Re-generate it, via `python -m build`.
 
 """
 
