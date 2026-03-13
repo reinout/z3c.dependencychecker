@@ -26,6 +26,8 @@ Missing test requirements
 =========================
      plone.dexterity.browser.views.ContentTypeView
      plone.dexterity.interfaces.IContentType
+     pytest
+     pytest_cov
      reinout.hurray
      transaction
      zope.filerepresentation.interfaces.IRawReadFile

@@ -93,6 +93,9 @@ class PackageMetadata:
     @cached_property
     def top_level(self):
         top_level_candidates = self.wheel_info["dist_info"]["top_level"]
+        # on pytest based projects it is common to have a `tests` top level folder
+        # inject it manually. If the folder is not there it will be ignored.
+        top_level_candidates.append("tests")
 
         top_levels = []
         for candidate in top_level_candidates:
@@ -115,6 +118,9 @@ class PackageMetadata:
                 top_levels.append(single_module)
                 continue
 
+            if possible_top_level.stem == "tests":
+                # do not report the manually injected tests folder
+                continue
             logger.warning(
                 "Top level %s\n"
                 "not found but referenced by top_level metadata in wheel.",

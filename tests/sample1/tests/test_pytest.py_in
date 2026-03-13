@@ -1,0 +1,4 @@
+# test that this import is found
+import pytest
+
+pytest # usage
