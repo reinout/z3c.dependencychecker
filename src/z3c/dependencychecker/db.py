@@ -31,9 +31,8 @@ class ImportsDatabase:
         self._requirements = set(requirements)
 
     def add_extra_requirements(self, extra_name, dotted_names):
-        # A bit of extra work needs to be done as pkg_resources API returns
-        # all common requirements as well as the extras when asking for an
-        # extra requirements.
+        # inspect-wheel should not provide duplicated names,
+        # but as a safety net, filter them in case it ever happens
         only_extra_dotted_names = self._filter_duplicates(dotted_names)
         if extra_name in self._extras_requirements.keys():
             self._extras_requirements[extra_name].update(
