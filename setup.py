@@ -1,27 +1,16 @@
+from pathlib import Path
 from setuptools import setup
-
-import codecs
-import os.path
 
 
 version = "3.0a3.dev0"
 
 
-def read(filename):
-    try:
-        with codecs.open(filename, encoding="utf-8") as f:
-            return unicode(f.read())
-    except NameError:
-        with open(filename, encoding="utf-8") as f:
-            return f.read()
-
-
 long_description = f"""
-{read('README.rst')}
+{Path('README.md').read_text()}
 
-{read(os.path.join('src', 'z3c', 'dependencychecker', 'USAGE.rst'))}
+{(Path('src') / 'z3c' / 'dependencychecker' / 'USAGE.md').read_text()}
 
-{read('CHANGES.rst')}
+{Path('CHANGES.md').read_text()}
 """
 
 
@@ -30,7 +19,7 @@ setup(
     version=version,
     description="Reports on missing or unneeded python dependencies",
     long_description=long_description,
-    long_description_content_type="text/x-rst; charset=UTF-8",
+    long_description_content_type="text/markdown",
     # Get strings from https://pypi.org/classifiers/
     classifiers=[
         "Development Status :: 5 - Production/Stable",
