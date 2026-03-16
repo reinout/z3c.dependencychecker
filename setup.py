@@ -8,8 +8,6 @@ version = "3.0a3.dev0"
 long_description = f"""
 {Path('README.md').read_text()}
 
-{(Path('src') / 'z3c' / 'dependencychecker' / 'USAGE.md').read_text()}
-
 {Path('CHANGES.md').read_text()}
 """
 

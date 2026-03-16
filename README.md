@@ -31,6 +31,22 @@ It checks the following locations:
 - Python files, `.txt` and `.rst` files for imports in doctests.
 - Django settings files.
 
+## Installation
+
+Use `pip` or any other python installer:
+
+```bash
+pip install z3c.dependencychecker
+```
+
+## Run
+
+Run the `dependencychecker` script from your
+project's root folder and it will report on your dependencies.
+
+**You must** build your project, as `z3c.dependencychecker` checks an already built
+wheel on `dist/` folder.
+
 ## User mappings
 
 Some packages available on PyPI have a different name than the import
