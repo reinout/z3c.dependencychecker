@@ -418,17 +418,17 @@ class DjangoSettings(PythonModule):
                 if self._is_apps_assignment(node):
                     if isinstance(node.value, (ast.Tuple, ast.List)):
                         for element in node.value.elts:
-                            if isinstance(element, ast.Str):
+                            if isinstance(element, ast.Constant):
                                 yield DottedName(
-                                    element.s,
+                                    element.value,
                                     file_path=self.path,
                                     is_test=self.testing,
                                 )
 
                 if self._is_test_runner_assignment(node):
-                    if isinstance(node.value, ast.Str):
+                    if isinstance(node.value, ast.Constant):
                         yield DottedName(
-                            node.value.s,
+                            node.value.value,  # yes, .value.value
                             file_path=self.path,
                             is_test=True,
                         )
