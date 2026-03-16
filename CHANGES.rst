@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-3.0a1 (unreleased)
+3.0a1 (2026-03-16)
 ------------------
 
 - Completely remove ``pkg_resources`` usage [gforcada]
