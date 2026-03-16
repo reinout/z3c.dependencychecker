@@ -56,9 +56,9 @@ class Report:
     @staticmethod
     def print_notice():
         print("")
-        print("Note: requirements are taken from the egginfo dir, so you need")
-        print("to re-generate it, via `python -m build`, setuptools, zc.buildout")
-        print("or any other means.")
+        print("Note: requirements are parsed from a built wheel archive")
+        print("found in the dist folder.")
+        print("Re-generate it, via `python -m build`.")
         print("")
 
     def _print_metric(self, title, method):

@@ -31,9 +31,8 @@ class ImportsDatabase:
         self._requirements = set(requirements)
 
     def add_extra_requirements(self, extra_name, dotted_names):
-        # A bit of extra work needs to be done as pkg_resources API returns
-        # all common requirements as well as the extras when asking for an
-        # extra requirements.
+        # inspect-wheel should not provide duplicated names,
+        # but as a safety net, filter them in case it ever happens
         only_extra_dotted_names = self._filter_duplicates(dotted_names)
         if extra_name in self._extras_requirements.keys():
             self._extras_requirements[extra_name].update(
@@ -55,7 +54,6 @@ class ImportsDatabase:
 
     def add_imports(self, imports):
         filters = (
-            self._filter_out_known_packages,
             self._filter_out_own_package,
             self._filter_out_python_standard_library,
         )
@@ -126,7 +124,6 @@ class ImportsDatabase:
         for dotted_name in test_requirements:
             all_but_test_requirements.remove(dotted_name)
         filters = (
-            self._filter_out_known_packages,
             self._filter_out_python_standard_library,
             self._filter_out_used_imports,
             self._filter_out_ignored_imports,
@@ -195,7 +192,6 @@ class ImportsDatabase:
             return []
 
         filters = (
-            self._filter_out_known_packages,
             self._filter_out_python_standard_library,
             self._filter_out_used_imports,
             self._filter_out_ignored_imports,
@@ -287,14 +283,6 @@ class ImportsDatabase:
             dotted_name,
             self.ignored_packages,
         )
-
-    def _filter_out_known_packages(self, dotted_name):
-        to_ignore = (
-            DottedName("setuptools"),
-            DottedName("pkg_resources"),
-            DottedName("distribute"),
-        )
-        return self._discard_if_found_obj_in_list(dotted_name, to_ignore)
 
     @staticmethod
     def _filter_out_testing_imports(dotted_name):

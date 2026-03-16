@@ -59,9 +59,10 @@ setup(
         "setuptools",
         "cached-property",
         "toml",
+        "wheel-inspect",
     ],
     extras_require={
-        "test": ["pytest"],
+        "test": ["pytest", "pytest-mock"],
     },
     entry_points={
         "console_scripts": [

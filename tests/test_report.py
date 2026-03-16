@@ -1,3 +1,4 @@
+from .utils import dist_info
 from .utils import write_source_file_at
 from unittest import mock
 from z3c.dependencychecker.package import Package
@@ -43,8 +44,9 @@ def test_missing_requirements_nothing(capsys):
     assert out == ""
 
 
-def test_missing_requirements(capsys, minimal_structure):
+def test_missing_requirements(capsys, minimal_structure, mock_inspect_wheel):
     path, package_name = minimal_structure
+    mock_inspect_wheel.return_value = dist_info(name=package_name)
     write_source_file_at(path / package_name, "__init__.py", "import another.package")
 
     package = Package(path)
@@ -57,8 +59,13 @@ def test_missing_requirements(capsys, minimal_structure):
     assert "another.package" in out
 
 
-def test_missing_requirements_with_user_mapping(capsys, minimal_structure):
+def test_missing_requirements_with_user_mapping(
+    capsys, minimal_structure, mock_inspect_wheel
+):
     path, package_name = minimal_structure
+    mock_inspect_wheel.return_value = dist_info(
+        name=package_name, requirements=["|Zope2|"]
+    )
     write_source_file_at(
         path / package_name,
         "__init__.py",
@@ -91,8 +98,11 @@ def test_missing_requirements_with_user_mapping(capsys, minimal_structure):
     assert "Zope2" not in out
 
 
-def test_missing_requirements_with_ignored_packages(capsys, minimal_structure):
+def test_missing_requirements_with_ignored_packages(
+    capsys, minimal_structure, mock_inspect_wheel
+):
     path, package_name = minimal_structure
+    mock_inspect_wheel.return_value = dist_info(name=package_name)
     write_source_file_at(
         path / package_name,
         "__init__.py",
@@ -121,8 +131,9 @@ def test_missing_requirements_with_ignored_packages(capsys, minimal_structure):
     assert "Three" not in out
 
 
-def test_missing_test_requirements(capsys, minimal_structure):
+def test_missing_test_requirements(capsys, minimal_structure, mock_inspect_wheel):
     path, package_name = minimal_structure
+    mock_inspect_wheel.return_value = dist_info(name=package_name)
     write_source_file_at(
         path / package_name,
         "__init__.py",
@@ -144,8 +155,13 @@ def test_missing_test_requirements(capsys, minimal_structure):
     assert "another.package" in out
 
 
-def test_missing_test_requirements_with_user_mapping(capsys, minimal_structure):
+def test_missing_test_requirements_with_user_mapping(
+    capsys, minimal_structure, mock_inspect_wheel
+):
     path, package_name = minimal_structure
+    mock_inspect_wheel.return_value = dist_info(
+        name=package_name, requirements=["|Zope2|"]
+    )
     write_source_file_at(
         path / package_name,
         "__init__.py",
@@ -155,11 +171,6 @@ def test_missing_test_requirements_with_user_mapping(capsys, minimal_structure):
         path / package_name / "tests",
         "__init__.py",
         "import Products.Five.browser.views.BrowserView",
-    )
-    write_source_file_at(
-        path / f"{package_name}.egg-info",
-        "requires.txt",
-        "Zope2",
     )
     write_source_file_at(
         path,
@@ -180,9 +191,12 @@ def test_missing_test_requirements_with_user_mapping(capsys, minimal_structure):
 
 
 def test_missing_test_requirements_with_user_mapping_on_test_extra(
-    capsys, minimal_structure
+    capsys, minimal_structure, mock_inspect_wheel
 ):
     path, package_name = minimal_structure
+    mock_inspect_wheel.return_value = dist_info(
+        name=package_name, requirements=["test|Zope2|"]
+    )
     write_source_file_at(
         path / package_name,
         "__init__.py",
@@ -192,11 +206,6 @@ def test_missing_test_requirements_with_user_mapping_on_test_extra(
         path / package_name / "tests",
         "__init__.py",
         "import Products.Five.browser.views.BrowserView",
-    )
-    write_source_file_at(
-        path / f"{package_name}.egg-info",
-        "requires.txt",
-        "\n".join(["[test]", "Zope2"]),
     )
     write_source_file_at(
         path,
@@ -216,8 +225,11 @@ def test_missing_test_requirements_with_user_mapping_on_test_extra(
     assert "Zope2" not in out
 
 
-def test_missing_test_requirements_with_ignored_packages(capsys, minimal_structure):
+def test_missing_test_requirements_with_ignored_packages(
+    capsys, minimal_structure, mock_inspect_wheel
+):
     path, package_name = minimal_structure
+    mock_inspect_wheel.return_value = dist_info(name=package_name)
     write_source_file_at(
         path / package_name,
         "__init__.py",
@@ -250,8 +262,11 @@ def test_missing_test_requirements_with_ignored_packages(capsys, minimal_structu
     assert "Products.Five" not in out
 
 
-def test_unneeded_requirements(capsys, minimal_structure):
+def test_unneeded_requirements(capsys, minimal_structure, mock_inspect_wheel):
     path, package_name = minimal_structure
+    mock_inspect_wheel.return_value = dist_info(
+        name=package_name, requirements=["|one|", "|two|"]
+    )
     write_source_file_at(
         path / package_name,
         "__init__.py",
@@ -269,8 +284,13 @@ def test_unneeded_requirements(capsys, minimal_structure):
     assert "two" in out
 
 
-def test_unneeded_requirements_with_ignored_packages(capsys, minimal_structure):
+def test_unneeded_requirements_with_ignored_packages(
+    capsys, minimal_structure, mock_inspect_wheel
+):
     path, package_name = minimal_structure
+    mock_inspect_wheel.return_value = dist_info(
+        name=package_name, requirements=["|one|", "|two|"]
+    )
     write_source_file_at(
         path / package_name,
         "__init__.py",
@@ -298,8 +318,13 @@ def test_unneeded_requirements_with_ignored_packages(capsys, minimal_structure):
     assert "two" in out
 
 
-def test_unneeded_requirements_with_user_mapping(capsys, minimal_structure):
+def test_unneeded_requirements_with_user_mapping(
+    capsys, minimal_structure, mock_inspect_wheel
+):
     path, package_name = minimal_structure
+    mock_inspect_wheel.return_value = dist_info(
+        name=package_name, requirements=["|ZODB|", "|setuptools|", "|one|"]
+    )
     write_source_file_at(
         path / package_name,
         "__init__.py",
@@ -309,11 +334,6 @@ def test_unneeded_requirements_with_user_mapping(capsys, minimal_structure):
         path,
         "pyproject.toml",
         "\n".join(["[tool.dependencychecker]", '"ZODB3" = ["BTrees" ]']),
-    )
-    write_source_file_at(
-        path / f"{package_name}.egg-info",
-        "requires.txt",
-        "\n".join(["ZODB3", "setuptools", "one"]),
     )
 
     package = Package(path)
@@ -327,8 +347,13 @@ def test_unneeded_requirements_with_user_mapping(capsys, minimal_structure):
     assert "one" in out
 
 
-def test_unneeded_requirements_with_user_mapping2(capsys, minimal_structure):
+def test_unneeded_requirements_with_user_mapping2(
+    capsys, minimal_structure, mock_inspect_wheel
+):
     path, package_name = minimal_structure
+    mock_inspect_wheel.return_value = dist_info(
+        name=package_name, requirements=["|ZODB3|", "|setuptools|", "|one|"]
+    )
     write_source_file_at(
         path / package_name,
         "__init__.py",
@@ -338,11 +363,6 @@ def test_unneeded_requirements_with_user_mapping2(capsys, minimal_structure):
         path,
         "pyproject.toml",
         "\n".join(["[tool.dependencychecker]", '"ZODB3" = ["BTrees" ]']),
-    )
-    write_source_file_at(
-        path / f"{package_name}.egg-info",
-        "requires.txt",
-        "\n".join(["ZODB3", "setuptools", "one"]),
     )
 
     package = Package(path)
@@ -356,12 +376,10 @@ def test_unneeded_requirements_with_user_mapping2(capsys, minimal_structure):
     assert "one" in out
 
 
-def test_unneeded_test_requirements(capsys, minimal_structure):
+def test_unneeded_test_requirements(capsys, minimal_structure, mock_inspect_wheel):
     path, package_name = minimal_structure
-    write_source_file_at(
-        path / f"{package_name}.egg-info",
-        "requires.txt",
-        "\n".join(["[test]", "pytest", "mock"]),
+    mock_inspect_wheel.return_value = dist_info(
+        name=package_name, requirements=["test|pytest|", "test|mock|"]
     )
 
     package = Package(path)
@@ -375,12 +393,12 @@ def test_unneeded_test_requirements(capsys, minimal_structure):
     assert "mock" in out
 
 
-def test_unneeded_test_requirements_with_ignore_packages(capsys, minimal_structure):
+def test_unneeded_test_requirements_with_ignore_packages(
+    capsys, minimal_structure, mock_inspect_wheel
+):
     path, package_name = minimal_structure
-    write_source_file_at(
-        path / f"{package_name}.egg-info",
-        "requires.txt",
-        "\n".join(["[test]", "pytest", "mock"]),
+    mock_inspect_wheel.return_value = dist_info(
+        name=package_name, requirements=["test|pytest|", "test|mock|"]
     )
     write_source_file_at(
         path,
@@ -399,12 +417,12 @@ def test_unneeded_test_requirements_with_ignore_packages(capsys, minimal_structu
     assert "mock" not in out
 
 
-def test_unneeded_test_requirements_with_user_mappings(capsys, minimal_structure):
+def test_unneeded_test_requirements_with_user_mappings(
+    capsys, minimal_structure, mock_inspect_wheel
+):
     path, package_name = minimal_structure
-    write_source_file_at(
-        path / f"{package_name}.egg-info",
-        "requires.txt",
-        "\n".join(["[test]", "pytest", "ZODB3"]),
+    mock_inspect_wheel.return_value = dist_info(
+        name=package_name, requirements=["test|pytest|", "test|ZODB3|"]
     )
     write_source_file_at(
         path,
@@ -435,10 +453,10 @@ def test_unneeded_test_requirements_with_user_mappings(capsys, minimal_structure
 
 
 def test_unneeded_test_requirements_no_tests_requirements(
-    capsys,
-    minimal_structure,
+    capsys, minimal_structure, mock_inspect_wheel
 ):
     path, package_name = minimal_structure
+    mock_inspect_wheel.return_value = dist_info(name=package_name)
 
     package = Package(path)
     package.inspect()
@@ -450,10 +468,12 @@ def test_unneeded_test_requirements_no_tests_requirements(
 
 
 def test_requirements_that_should_be_test_requirements(
-    capsys,
-    minimal_structure,
+    capsys, minimal_structure, mock_inspect_wheel
 ):
     path, package_name = minimal_structure
+    mock_inspect_wheel.return_value = dist_info(
+        name=package_name, requirements=["|one|", "|two|", "test|pytest|", "test|mock|"]
+    )
     write_source_file_at(
         path / package_name,
         "__init__.py",
@@ -463,11 +483,6 @@ def test_requirements_that_should_be_test_requirements(
         path / package_name / "tests",
         "__init__.py",
         "import two",
-    )
-    write_source_file_at(
-        path / f"{package_name}.egg-info",
-        "requires.txt",
-        "\n".join(["one", "two", "[test]", "pytest", "mock"]),
     )
 
     package = Package(path)
@@ -484,10 +499,19 @@ def test_requirements_that_should_be_test_requirements(
 
 
 def test_requirements_that_should_be_test_requirements_with_ignored_packages(
-    capsys,
-    minimal_structure,
+    capsys, minimal_structure, mock_inspect_wheel
 ):
     path, package_name = minimal_structure
+    mock_inspect_wheel.return_value = dist_info(
+        name=package_name,
+        requirements=[
+            "|one|",
+            "|two|",
+            "|three|",
+            "test|pytest|",
+            "test|mock|",
+        ],
+    )
     write_source_file_at(
         path / package_name,
         "__init__.py",
@@ -497,11 +521,6 @@ def test_requirements_that_should_be_test_requirements_with_ignored_packages(
         path / package_name / "tests",
         "__init__.py",
         "\n".join(["import two", "import three"]),
-    )
-    write_source_file_at(
-        path / f"{package_name}.egg-info",
-        "requires.txt",
-        "\n".join(["one", "two", "three", "[test]", "pytest", "mock"]),
     )
     write_source_file_at(
         path,
@@ -524,10 +543,19 @@ def test_requirements_that_should_be_test_requirements_with_ignored_packages(
 
 
 def test_requirements_that_should_be_test_requirements_with_user_mappings(
-    capsys,
-    minimal_structure,
+    capsys, minimal_structure, mock_inspect_wheel
 ):
     path, package_name = minimal_structure
+    mock_inspect_wheel.return_value = dist_info(
+        name=package_name,
+        requirements=[
+            "|one|",
+            "|two|",
+            "|ZODB3|",
+            "test|pytest|",
+            "test|mock|",
+        ],
+    )
     write_source_file_at(
         path / package_name,
         "__init__.py",
@@ -537,11 +565,6 @@ def test_requirements_that_should_be_test_requirements_with_user_mappings(
         path / package_name / "tests",
         "__init__.py",
         "\n".join(["import two", "import BTrees"]),
-    )
-    write_source_file_at(
-        path / f"{package_name}.egg-info",
-        "requires.txt",
-        "\n".join(["one", "two", "ZODB3", "[test]", "pytest", "mock"]),
     )
     write_source_file_at(
         path,
@@ -565,13 +588,16 @@ def test_requirements_that_should_be_test_requirements_with_user_mappings(
 
 
 def test_requirements_that_should_be_test_requirements_with_user_mapping2(
-    capsys,
-    minimal_structure,
+    capsys, minimal_structure, mock_inspect_wheel
 ):
     """Test that user mappings used in both regular and test imports are
     not downgraded to test imports only.
     """
     path, package_name = minimal_structure
+    mock_inspect_wheel.return_value = dist_info(
+        name=package_name,
+        requirements=["|one|", "|two|", "|three|", "|meta-package|", "test|four|"],
+    )
     write_source_file_at(
         path / package_name,
         "__init__.py",
@@ -581,11 +607,6 @@ def test_requirements_that_should_be_test_requirements_with_user_mapping2(
         path / package_name / "tests",
         "__init__.py",
         "\n".join(["import three", "import four", "import part.of.meta"]),
-    )
-    write_source_file_at(
-        path / f"{package_name}.egg-info",
-        "requires.txt",
-        "\n".join(["one", "two", "three", "meta-package", "[test]", "four"]),
     )
     write_source_file_at(
         path,
@@ -620,8 +641,11 @@ def test_print_notice(capsys, minimal_structure):
     assert "" == err
 
 
-def test_exit_status_set(minimal_structure):
+def test_exit_status_set(minimal_structure, mock_inspect_wheel):
     path, package_name = minimal_structure
+    mock_inspect_wheel.return_value = dist_info(
+        name=package_name, requirements=["|one|", "|two|"]
+    )
     package = Package(path)
     package.inspect()
     report = Report(package)
@@ -631,8 +655,8 @@ def test_exit_status_set(minimal_structure):
 
 
 # These 'lines' are instructions for the parametrized test below. A filename + the desired contents.
-PKG_REQUIRES_LINE = ("requires.txt", "zope.interface")
-ZOPE_MAP_REQUIRES_LINE = ("requires.txt", "Zope")
+PKG_REQUIRES_LINE = ("dependencies", ["|zope.interface|"])
+ZOPE_MAP_REQUIRES_LINE = ("dependencies", ["|Zope|"])
 MAPPING_LINE = ("pyproject.toml", '[tool.dependencychecker]\nZope = ["zope.interface"]')
 CODE_LINE = ("__init__.py", "import zope.interface.Interface")
 
@@ -669,7 +693,7 @@ CODE_LINE = ("__init__.py", "import zope.interface.Interface")
     ),
 )
 def test_missing_requirements_report_zope_interface(
-    capsys, minimal_structure, files_data, is_missing
+    capsys, minimal_structure, mock_inspect_wheel, files_data, is_missing
 ):
     """Test the following cases matrix combinations:
 
@@ -688,10 +712,15 @@ def test_missing_requirements_report_zope_interface(
     """
     path, package_name = minimal_structure
 
+    mock_inspect_wheel.return_value = dist_info(name=package_name)
+
     for filename, content in files_data:
-        if filename == "requires.txt":
-            folder = path / f"{package_name}.egg-info"
-        elif filename == "pyproject.toml":
+        if filename == "dependencies":
+            mock_inspect_wheel.return_value = dist_info(
+                name=package_name, requirements=content
+            )
+            continue
+        if filename == "pyproject.toml":
             folder = path
         else:
             folder = path / package_name
@@ -738,7 +767,7 @@ ZPUB_CODE_LINE = ("__init__.py", "import ZPublisher.BaseRequest.RequestContainer
     ),
 )
 def test_missing_requirements_report_zpublisher(
-    capsys, minimal_structure, files_data, is_missing
+    capsys, minimal_structure, mock_inspect_wheel, files_data, is_missing
 ):
     """Test the following cases matrix combinations:
 
@@ -756,10 +785,15 @@ def test_missing_requirements_report_zpublisher(
     """
     path, package_name = minimal_structure
 
+    mock_inspect_wheel.return_value = dist_info(name=package_name)
+
     for filename, content in files_data:
-        if filename == "requires.txt":
-            folder = path / f"{package_name}.egg-info"
-        elif filename == "pyproject.toml":
+        if filename == "dependencies":
+            mock_inspect_wheel.return_value = dist_info(
+                name=package_name, requirements=content
+            )
+            continue
+        if filename == "pyproject.toml":
             folder = path
         else:
             folder = path / package_name

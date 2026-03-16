@@ -28,16 +28,6 @@ class DottedName:
         self.file_path = file_path
         self.is_test = is_test
 
-    @classmethod
-    def from_requirement(cls, requirement, file_path=None):
-        """A requirement in this method's context is a
-        pkg_resources.Requirement
-        """
-        return cls(
-            requirement.project_name,
-            file_path=file_path,
-        )
-
     @cached_property
     def namespaces(self):
         return self.safe_name.split(".")

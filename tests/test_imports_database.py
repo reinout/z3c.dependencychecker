@@ -142,30 +142,6 @@ def test_unique_and_sorted_imports(minimal_database):
     assert dotted_names[2].name == "zope.c"
 
 
-def test_filter_out_known_packages(minimal_database):
-    dotted_name = DottedName("bla")
-    result = minimal_database._filter_out_known_packages(dotted_name)
-    assert result is True
-
-
-def test_filter_out_known_packages_filtered(minimal_database):
-    dotted_name = DottedName("setuptools")
-    result = minimal_database._filter_out_known_packages(dotted_name)
-    assert result is False
-
-
-def test_filter_out_known_packages_filtered_nested(minimal_database):
-    dotted_name = DottedName("setuptools.my.package")
-    result = minimal_database._filter_out_known_packages(dotted_name)
-    assert result is False
-
-
-def test_filter_out_known_packages_filtered_nested_other(minimal_database):
-    dotted_name = DottedName("pkg_resources.my.package")
-    result = minimal_database._filter_out_known_packages(dotted_name)
-    assert result is False
-
-
 def test_filter_out_testing_imports(minimal_database):
     dotted_name = DottedName("bla", is_test=True)
     result = minimal_database._filter_out_testing_imports(dotted_name)

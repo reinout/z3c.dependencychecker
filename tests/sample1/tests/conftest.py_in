@@ -1,0 +1,2 @@
+# check that this import is considered a testing import
+import pytest_cov
