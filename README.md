@@ -1,28 +1,23 @@
 # z3c.dependencychecker
 
-Checks which imports are done and compares them to what's in `setup.py` and
-warn when discovering missing or unneeded dependencies.
+Checks which imports are used within a python distribution
+and compares them to what's declared on the distribution configuration
+(either in `setup.py`, `pyproject.toml`, etc.)
+and warn when discovering missing or unneeded dependencies.
 
 [![Tests](https://github.com/reinout/z3c.dependencychecker/actions/workflows/testing.yml/badge.svg?branch=master)](https://github.com/reinout/z3c.dependencychecker/actions/workflows/testing.yml)
 [![Coverage](https://coveralls.io/repos/github/reinout/z3c.dependencychecker/badge.svg?branch=master)](https://coveralls.io/github/reinout/z3c.dependencychecker?branch=master)
 
 ## What it does
 
-z3c.dependencychecker reports on:
+`z3c.dependencychecker` reports on:
 
-- **Missing (test) requirements**: imports without a corresponding requirement
-  in the `setup.py`. There might be false alarms, but at least you've got a
-  hopefully short list of items to check.
+- **Missing (test) requirements**: imports without a declared requirement.
+  If there are false positives, look at [user mappings](#user-mappings).
 
-  Watch out for packages that have a different name than how they're imported.
-  For instance a requirement on `pydns` which is used as `import DNS` in your
-  code: pydns and DNS lead to separate "missing requirements: DNS" and
-  "unneeded requirements: pydns" warnings.
-
-- **Unneeded (test) requirements**: requirements in your `setup.py` that aren't
+- **Unneeded (test) requirements**: declared requirements that aren't
   imported anywhere in your code. You *might* need them because not everything
-  needs to be imported. It at least gives you a much smaller list to check by
-  hand.
+  needs to be imported. If that's the case, look at [ignore packages](#ignore-packages).
 
 - **Requirements that should be test-only**: if something is only imported in a
   test file, it shouldn't be in the generic defaults. So you get a separate
@@ -40,10 +35,10 @@ It checks the following locations:
 
 Some packages available on PyPI have a different name than the import
 statement needed to use them, for example `python-dateutil` is imported as
-`import dateutil`. Others provide more than one package, for example `Zope2`
+`import dateutil`. Others provide more than one package, for example `Zope`
 provides several packages like `Products.Five` or `Products.OFSP`.
 
-For those cases, z3c.dependencychecker has a solution: user mappings.
+For those cases, `z3c.dependencychecker` has a solution: **user mappings**.
 
 Add a `pyproject.toml` file on the root of your project with the following
 content:
@@ -51,14 +46,14 @@ content:
 ```toml
 [tool.dependencychecker]
 python-dateutil = ["dateutil"]
-Zope2 = ["Products.Five", "Products.OFSP"]
+Zope = ["Products.Five", "Products.OFSP"]
 ```
 
-z3c.dependencychecker will read this information and use it on its reports.
+`z3c.dependencychecker` will read this information and use it on its reports.
 
 ## Ignore packages
 
-Sometimes you need to add a package in `setup.py` although you are not
+Sometimes you declare a dependency although you are not
 importing it directly, but maybe is an extra dependency of one of your
 dependencies, or your package has a soft dependency on a package, and as a
 soft dependency it is not mandatory to install it always.
@@ -77,13 +72,13 @@ content:
 ignore-packages = ["one-package", "another.package"]
 ```
 
-`z3c.dependencychecker` will totally ignore those packages in its reports,
+`z3c.dependencychecker` will ignore those packages in its reports,
 whether they're requirements that appear to be unused, or requirements that
 appear to be missing.
 
 ## Credits
 
-z3c.dependencychecker is a different application/packaging of zope's
+`z3c.dependencychecker` is a different application/packaging of zope's
 importchecker utility. It has been used in quite some projects, I grabbed a
 copy from [lovely.recipe's checkout](http://bazaar.launchpad.net/~vcs-imports/lovely.recipe/trunk/annotate/head%3A/src/lovely/recipe/importchecker/importchecker.py).
 
@@ -94,7 +89,7 @@ copy from [lovely.recipe's checkout](http://bazaar.launchpad.net/~vcs-imports/lo
 - Quite some fixes from [Jonas Baumann](https://github.com/jone).
 - Many updates, basically rewriting the entire codebase to work with AST, to
   work well with modern Plone versions by
-  [Gil Forcada Codinachs](http://gil.badall.net/).
+  [Gil Forcada Codinachs](https://github.com/gforcada).
 
 ## Source code, forking and reporting bugs
 
@@ -104,9 +99,7 @@ The source code can be found on GitHub:
 You can fork and fix it from there. And you can add issues and feature
 requests in the GitHub issue tracker.
 
-Every time you commit something, `bin/code-analysis` is automatically run. Pay
-attention to the output and fix the problems that are reported. Or fix the
-setup so that inappropriate reports are filtered out.
+There are some CI jobs that check for tests and code quality.
 
 ## Local development setup
 
@@ -125,7 +118,7 @@ requirements in `requirements.in`, re-generate `requirements.txt`:
 pip-compile requirements.in
 ```
 
-To run the tests we use the setup of `plone/meta`. So stuff like:
+To run the tests we use the setup of `plone.meta`. So stuff like:
 
 ```bash
 tox -e test
