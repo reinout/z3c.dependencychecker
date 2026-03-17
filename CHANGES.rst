@@ -1,7 +1,7 @@
 Changelog of z3c.dependencychecker
 ==================================
 
-3.0a2 (unreleased)
+3.0a2 (2026-03-17)
 ------------------
 
 - Added Python 3.14 compatibility.
