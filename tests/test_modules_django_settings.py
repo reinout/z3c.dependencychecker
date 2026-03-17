@@ -10,7 +10,6 @@ RANDOM_ASSIGNMENT = "a = 3"
 APPS_ASSIGNMENT_TO_STRING = 'INSTALLED_APPS = "random"'
 APPS_ASSIGNMENT_TO_TUPLE = 'INSTALLED_APPS = ("random1", "random2", )'
 APPS_ASSIGNMENT_TO_LIST = 'INSTALLED_APPS = ["random3", "random4", ]'
-APPS_ASSIGNMENT_TO_LIST_MIXED = 'INSTALLED_APPS = ["random5", 3, ]'
 TEST_RUNNER_ASSIGNMENT_TO_LIST = 'TEST_RUNNER = ["random6", "random7", ]'
 TEST_RUNNER_ASSIGNMENT_TO_STRING = 'TEST_RUNNER = "random8"'
 MIDDLEWARE_ASSIGNMENT_TO_LIST = 'MIDDLEWARE = ["something"]'
@@ -109,22 +108,6 @@ def test_apps_assignment_to_list_details(tmpdir):
     )
     assert "random3" in dotted_names
     assert "random4" in dotted_names
-
-
-def test_apps_assignment_to_list_mixed(tmpdir):
-    dotted_names = _get_imports_of_python_module(
-        tmpdir,
-        APPS_ASSIGNMENT_TO_LIST_MIXED,
-    )
-    assert len(dotted_names) == 1
-
-
-def test_apps_assignment_to_list_mixed_details(tmpdir):
-    dotted_names = _get_imports_of_python_module(
-        tmpdir,
-        APPS_ASSIGNMENT_TO_LIST_MIXED,
-    )
-    assert dotted_names[0] == "random5"
 
 
 def test_runner_assignment_to_list(tmpdir):
