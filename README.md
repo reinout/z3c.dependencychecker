@@ -110,7 +110,7 @@ copy from [lovely.recipe's checkout](http://bazaar.launchpad.net/~vcs-imports/lo
 ## Source code, forking and reporting bugs
 
 The source code can be found on GitHub:
-<https://github.com/reinout/z3c.dependencychecker>
+https://github.com/reinout/z3c.dependencychecker
 
 You can fork and fix it from there. And you can add issues and feature
 requests in the GitHub issue tracker.
