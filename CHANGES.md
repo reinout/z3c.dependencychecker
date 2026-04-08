@@ -2,7 +2,7 @@
 
 ## 3.0a3 (unreleased)
 
-- Nothing changed yet.
+- No problems found, so.... 3.0!
 
 ## 3.0a2 (2026-03-17)
 
