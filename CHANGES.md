@@ -1,6 +1,6 @@
 # Changelog of z3c.dependencychecker
 
-## 3.0a3 (unreleased)
+## 3.0 (2026-04-08)
 
 - No problems found, so.... 3.0!
 
