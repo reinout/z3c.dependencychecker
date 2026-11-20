@@ -2,7 +2,6 @@ from .utils import write_source_file_at
 from pathlib import Path
 from z3c.dependencychecker.modules import GSMetadata
 
-
 XML_TEMPLATE = """<metadata>
 <dependencies>
 {0}

@@ -7,7 +7,6 @@ import logging
 import os
 import re
 
-
 TEST_REGEX = r"""
 {0}    # Needs to start with the path separator
 \w*    # There could be some characters (or none)
@@ -20,9 +19,7 @@ s?     # ensure plurals are handled as well
 \.     # a dot
 \w+    # extension
 )
-""".format(
-    os.sep
-)
+""".format(os.sep)
 
 TEST_IN_PATH_REGEX = re.compile(TEST_REGEX, re.VERBOSE)
 
