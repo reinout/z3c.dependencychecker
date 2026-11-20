@@ -3,7 +3,6 @@ from functools import total_ordering
 
 import hashlib
 
-
 # An umbrella distribution is a Pypi distribution, like `Zope`,
 # of which the importable packages that it provides have different namespaces
 # than the umbrella distribution name.

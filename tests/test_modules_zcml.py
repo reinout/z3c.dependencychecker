@@ -4,7 +4,6 @@ from z3c.dependencychecker.modules import ZCMLFile
 
 import pytest
 
-
 ZCML_TEMPLATE = """
 <configure
   xmlns="http://namespaces.zope.org/zope"

@@ -7,7 +7,6 @@ from z3c.dependencychecker.utils import change_dir
 import pytest
 import sys
 
-
 MAIN_OUTPUT = """
 Missing requirements
 ====================

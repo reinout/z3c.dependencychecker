@@ -5,7 +5,6 @@ from z3c.dependencychecker.modules import PythonModule
 import pytest
 import tempfile
 
-
 IMPORT = "import foo"
 IMPORT_MULTIPLE = "import foo, bar"
 IMPORT_AS = "import foo as bar"

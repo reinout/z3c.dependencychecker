@@ -4,7 +4,6 @@ from z3c.dependencychecker.package import Package
 
 import pytest
 
-
 EMPTY_FILE = ""
 IGNORE_OTHER_KEYS = """[servers]
 one = "1.2.3.4"

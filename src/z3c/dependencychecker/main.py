@@ -7,7 +7,6 @@ import logging
 import optparse
 import sys
 
-
 logger = logging.getLogger(__name__)
 
 

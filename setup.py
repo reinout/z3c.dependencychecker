@@ -1,7 +1,6 @@
 from pathlib import Path
 from setuptools import setup
 
-
 version = "3.1.dev0"
 
 

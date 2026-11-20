@@ -3,7 +3,6 @@ from z3c.dependencychecker.dotted_name import DottedName
 import logging
 import sys
 
-
 logger = logging.getLogger(__name__)
 
 
