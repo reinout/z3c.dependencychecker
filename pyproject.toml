@@ -4,6 +4,61 @@
 [build-system]
 requires = ["setuptools>=68.2,<83", "wheel"]
 
+# START-MARKER-MANUAL-CONFIG
+# Anything from here until END-MARKER-MANUAL-CONFIG
+# will be kept by plone.meta
+
+[project]
+name = "z3c.dependencychecker"
+version = "3.1.dev0"
+description = "Reports on missing or unneeded python dependencies"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Topic :: Software Development :: Quality Assurance",
+]
+license = "BSD-3-Clause"
+dynamic = ["readme"]
+requires-python = ">=3.9"
+authors = [
+    {name = "Reinout van Rees",email = "reinout@vanrees.org"},
+]
+dependencies = [
+    "cached-property",
+    "toml",
+    "wheel-inspect",
+]
+keywords = ["dependencies", "requirements", "missing", "imports"]
+
+[project.scripts]
+dependencychecker = "z3c.dependencychecker.main:main"
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-mock",
+]
+
+[project.urls]
+Source = "https://github.com/reinout/z3c.dependencychecker"
+Issues = "https://github.com/reinout/z3c.dependencychecker/issues"
+Changelog = "https://github.com/reinout/z3c.dependencychecker/blob/master/CHANGES.md"
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.md", "CHANGES.md"], content-type = "text/markdown"}
+# END-MARKER-MANUAL-CONFIG
+
 ##
 # Add extra configuration options in .meta.toml:
 #  [pyproject]
