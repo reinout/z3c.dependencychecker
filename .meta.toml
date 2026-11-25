@@ -1,9 +1,9 @@
 # Generated from:
-# https://github.com/plone/meta/tree/main/config/default
+# https://github.com/plone/meta/tree/2.x/src/plone/meta/default
 # See the inline comments on how to expand/tweak this configuration file
 [meta]
 template = "default"
-commit-id = "bf23101c"
+commit-id = "2.13.1"
 
 [tox]
 test_runner = "pytest"
@@ -21,3 +21,11 @@ extra_lines = """
 create-wheel = true
 extra-message = "[ci skip]"
 """
+
+[github]
+jobs = [
+  "qa",
+  "coverage",
+  "release_ready",
+  "circular",
+]
