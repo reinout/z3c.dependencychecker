@@ -10,7 +10,6 @@ import logging
 import sys
 import toml
 
-
 METADATA_FILES = (
     "setup.py",
     "setup.cfg",
